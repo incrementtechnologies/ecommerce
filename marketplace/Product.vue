@@ -341,8 +341,8 @@ export default {
     }
   },
   components: {
-    'ratings': require('modules/rating/Ratings.vue'),
-    'product-comments': require('modules/comment/Comments.vue')
+    'ratings': require('components/increment/generic/rating/Ratings.vue'),
+    'product-comments': require('components/increment/generic/comment/Comments.vue')
   },
   methods: {
     redirect(parameter){

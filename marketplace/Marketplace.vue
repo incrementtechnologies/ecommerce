@@ -100,8 +100,8 @@ export default {
     }
   },
   components: {
-    'products': require('components/ecommerce/marketplace/Products.vue'),
-    'dynamic-empty': require('modules/empty/EmptyDynamicIcon.vue')
+    'products': require('components/increment/ecommerce/marketplace/Products.vue'),
+    'dynamic-empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue')
   },
   methods: {
     redirect(parameter){

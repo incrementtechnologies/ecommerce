@@ -68,7 +68,7 @@ export default {
   components: {
     'create': require('components/increment/ecommerce/coupon/Create.vue'),
     'update': require('components/increment/ecommerce/coupon/Update.vue'),
-    'empty': require('modules/empty/Empty.vue')
+    'empty': require('components/increment/generic/empty/Empty.vue')
   },
   methods: {
     redirect(parameter){

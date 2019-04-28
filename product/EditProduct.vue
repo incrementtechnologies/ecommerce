@@ -313,9 +313,9 @@ export default {
     }
   },
   components: {
-    'ratings': require('modules/rating/Ratings.vue'),
-    'product-comments': require('modules/comment/Comments.vue'),
-    'browse-images-modal': require('modules/image/BrowseModal.vue'),
+    'ratings': require('components/increment/generic/rating/Ratings.vue'),
+    'product-comments': require('components/increment/generic/comment/Comments.vue'),
+    'browse-images-modal': require('components/increment/generic/image/BrowseModal.vue'),
     'variations': require('components/increment/ecommerce/product/Variations.vue'),
     'inventories': require('components/increment/ecommerce/product/Inventories.vue'),
     'prices': require('components/increment/ecommerce/product/Prices.vue')
