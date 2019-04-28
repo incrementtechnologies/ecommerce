@@ -37,4 +37,20 @@ Product, Wishlist, Coupon, Marketplace
       tokenRequired: true
     }
   },
+  {
+    path: '/marketplace',
+    name: 'marketplace',
+    component: resolve => require(['components/increment/ecommerce/marketplace/Marketplace.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
+  {
+    path: '/marketplace/product/:code/:status?',
+    name: 'marketplaceProduct',
+    component: resolve => require(['components/increment/ecommerce/marketplace/Product.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
 ```
