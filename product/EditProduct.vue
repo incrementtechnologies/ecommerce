@@ -279,9 +279,9 @@
   }
 </style>
 <script>
-import ROUTER from '../../../router'
-import AUTH from '../../../services/auth'
-import CONFIG from '../../../config.js'
+import ROUTER from '../../../../router'
+import AUTH from '../../../../services/auth'
+import CONFIG from '../../../../config.js'
 import axios from 'axios'
 export default {
   mounted(){
@@ -316,9 +316,9 @@ export default {
     'ratings': require('modules/rating/Ratings.vue'),
     'product-comments': require('modules/comment/Comments.vue'),
     'browse-images-modal': require('modules/image/BrowseModal.vue'),
-    'variations': require('components/increment/product/Variations.vue'),
-    'inventories': require('components/increment/product/Inventories.vue'),
-    'prices': require('components/increment/product/Prices.vue')
+    'variations': require('components/increment/ecommerce/product/Variations.vue'),
+    'inventories': require('components/increment/ecommerce/product/Inventories.vue'),
+    'prices': require('components/increment/ecommerce/product/Prices.vue')
   },
   methods: {
     redirect(parameter){

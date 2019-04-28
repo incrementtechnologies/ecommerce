@@ -38,9 +38,9 @@
 <style scoped>
 </style>
 <script>
-import ROUTER from '../../../router'
-import AUTH from '../../../services/auth'
-import CONFIG from '../../../config.js'
+import ROUTER from '../../../../router'
+import AUTH from '../../../../services/auth'
+import CONFIG from '../../../../config.js'
 import axios from 'axios'
 export default {
   mounted(){

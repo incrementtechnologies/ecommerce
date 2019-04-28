@@ -135,9 +135,9 @@
 
 </style>
 <script>
-import ROUTER from '../../../router'
-import AUTH from '../../../services/auth'
-import CONFIG from '../../../config.js'
+import ROUTER from '../../../../router'
+import AUTH from '../../../../services/auth'
+import CONFIG from '../../../../config.js'
 import axios from 'axios'
 export default {
   mounted(){
@@ -155,7 +155,7 @@ export default {
     }
   },
   components: {
-    'create': require('components/increment/product/Create.vue'),
+    'create': require('components/increment/ecommerce/product/Create.vue'),
     'empty': require('modules/empty/Empty.vue')
   },
   methods: {

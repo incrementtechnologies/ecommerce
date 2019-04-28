@@ -85,9 +85,9 @@
 
 </style>
 <script>
-import ROUTER from '../../../router'
-import AUTH from '../../../services/auth'
-import CONFIG from '../../../config.js'
+import ROUTER from '../../../../router'
+import AUTH from '../../../../services/auth'
+import CONFIG from '../../../../config.js'
 import axios from 'axios'
 import PayPal from 'vue-paypal-checkout'
 export default {
@@ -104,7 +104,7 @@ export default {
     }
   },
   components: {
-    'product': require('components/increment/product/WishlistItem.vue'),
+    'product': require('components/increment/ecommerce/wishlist/WishlistItem.vue'),
     'checkout-empty': require('modules/empty/EmptyDynamicIcon.vue')
   },
   methods: {
