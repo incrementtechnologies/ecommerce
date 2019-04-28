@@ -64,7 +64,6 @@ import CONFIG from '../../../../config.js'
 import axios from 'axios'
 export default {
   mounted(){
-    this.retrieve()
   },
   data(){
     return {
@@ -103,22 +102,6 @@ export default {
           }
         })
       }
-    },
-    retrieve(){
-      let parameter = {
-        condition: [{
-          value: this.user.userID,
-          column: 'account_id',
-          clause: '='
-        }]
-      }
-      this.APIRequest('coupons/retrieve', parameter).then(response => {
-        if(response.data.length > 0){
-          this.data = response.data
-        }else{
-          this.data = null
-        }
-      })
     },
     validate(){
       let t = this.input
