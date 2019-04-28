@@ -29,4 +29,12 @@ Product, Wishlist, Coupon, Marketplace
       tokenRequired: true
     }
   },
+  {
+    path: '/coupons',
+    name: 'coupons',
+    component: resolve => require(['components/increment/ecommerce/coupon/Coupons.vue'], resolve),
+    meta: {
+      tokenRequired: true
+    }
+  },
 ```
