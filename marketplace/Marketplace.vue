@@ -116,7 +116,9 @@ export default {
         }],
         account_id: this.user.userID
       }
+      $('#loading').css({display: 'block'})
       this.APIRequest('products/retrieve', parameter).then(response => {
+        $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data
         }
