@@ -6,15 +6,17 @@
     <div class="form-group">
       <label for="exampleInputEmail1" style="font-weight: 600;">Price</label>
       <div>
-        <select class="form-control form-control-custom" style="width: 20%; float: left;" v-model="flag">
+        <select class="form-control form-control-custom" style="width: 100%; float: left;" v-model="flag">
           <option value="fixed">Fixed</option>
           <option value="variable">Variable</option>
         </select>
-        <input type="text" class="form-control form-control-custom" style="float: left; width: 69%; margin-left: 1%;" placeholder="Type price here" v-model="price" @keyup.enter="createRequest()" v-if="flag === 'fixed'">
-        <input type="text" class="form-control form-control-custom" style="float: left; width: 22%; margin-left: 1%;" placeholder="Minimum Qty" v-model="minimum" v-if="flag === 'variable'">
-        <input type="text" class="form-control form-control-custom" style="float: left; width: 22%; margin-left: 1%;" placeholder="Maximum Qty" v-model="maximum" v-if="flag === 'variable'">
-        <input type="text" class="form-control form-control-custom" style="float: left; width: 22%; margin-left: 2%;" placeholder="Type price here" v-model="price" @keyup.enter="createRequest()" v-if="flag === 'variable'">
-        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="createRequest()"><i class="fa fa-plus"></i></button>
+      </div>
+      <div>
+        <input type="text" class="form-control form-control-custom" style="float: left; width: 93.3%; margin-top: 10px;" placeholder="Type price here" v-model="price" @keyup.enter="createRequest()" v-if="flag === 'fixed'">
+        <input type="text" class="form-control form-control-custom" style="float: left; width: 30.3%; margin-top: 10px;" placeholder="Minimum Qty" v-model="minimum" v-if="flag === 'variable'">
+        <input type="text" class="form-control form-control-custom" style="float: left; width: 30.3%; margin-top: 10px;  margin-left: 5px;" placeholder="Maximum Qty" v-model="maximum" v-if="flag === 'variable'">
+        <input type="text" class="form-control form-control-custom" style="float: left; width: 30.3%; margin-top: 10px; margin-left: 5px; margin-right: 5px;" placeholder="Type price here" v-model="price" @keyup.enter="createRequest()" v-if="flag === 'variable'">
+        <button class="btn btn-primary form-control-custom" style="margin-left: 10px; margin-top: 10px;" @click="createRequest()"><i class="fa fa-plus"></i></button>
       </div>
     </div>
     <div class="price-wrapper" v-if="item.price !== null">
