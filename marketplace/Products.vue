@@ -123,6 +123,13 @@
   .product-holder:hover .product-wishlist{
     display: block;
   }
+  @media (max-width: 991px){
+    .product-holder{
+      width: 90%;
+      margin-left: 5%;
+      margin-right: 5%;
+    }
+  }
 
 </style>
 <script>

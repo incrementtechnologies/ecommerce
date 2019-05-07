@@ -308,6 +308,17 @@
     cursor: pointer;
     color: #ffaa81;
   }
+  @media (max-width: 991px){
+    .product-details, .product-image{
+      width: 100%;
+    }
+    .product-row label{
+      width: 25%;
+    }
+    .product-menu, .product-more-details .details-holder{
+      width: 100%;
+    }
+  }
 </style>
 <script>
 import ROUTER from '../../../../router'
@@ -327,7 +338,7 @@ export default {
       code: this.$route.params.code,
       status: this.$route.params.status,
       productMenu: [
-        {title: 'Product Details', flag: true},
+        {title: 'Details', flag: true},
         // {title: 'Supplier', flag: false},
         {title: 'Shippings', flag: false},
         {title: 'Reviews', flag: false}
