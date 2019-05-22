@@ -83,7 +83,7 @@ export default {
       success: null
     }
   },
-  props: ['item', 'method', 'buttonTitle', 'back'],
+  props: ['item', 'method', 'buttonTitle', 'back', 'optionLabel'],
   components: {
     'apply-coupon': require('components/increment/ecommerce/coupon/Apply.vue')
   },

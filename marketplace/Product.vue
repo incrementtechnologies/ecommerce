@@ -447,7 +447,7 @@ export default {
       let size = this.data.size
       if(color !== null){
         if(color.length > 1 && this.activeColor === null){
-          this.errorMessage = 'Please select on of the color variation.'
+          this.errorMessage = 'Please select any of the color variation.'
           return false
         }else if(color.length === 1 && this.activeColor === null){
           this.activeColor = color[0].payload_value
@@ -455,7 +455,7 @@ export default {
       }
       if(size !== null){
         if(size.length > 1 && this.activeSize === null){
-          this.errorMessage = 'Please select on of the size variation.'
+          this.errorMessage = 'Please select any of the size variation.'
           return false
         }else if(size.length === 1 && this.activeSize === null){
           this.activeSize = size[0].payload_value

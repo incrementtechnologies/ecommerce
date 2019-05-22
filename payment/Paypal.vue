@@ -15,8 +15,9 @@
 </template>
 <style scoped>
 .custom-btn{
-  margin-top: 10px !important;
   height: 50px !important;
+  width: 150px;
+  float: left;
 }
 </style>
 <script>
@@ -33,7 +34,7 @@ export default {
       user: AUTH.user,
       config: CONFIG,
       paypal: CONFIG.paypal,
-      paypalStatus: CONFIG.IS_DEV ? 'sandbox' : 'production',
+      paypalStatus: CONFIG.IS_DEV ? 'sandbox' : 'sandbox',
       myStyle: {
         label: 'checkout',
         size: 'responsive',

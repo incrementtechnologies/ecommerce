@@ -2,10 +2,11 @@
   <div class="payment-method-holder">
     <span class="items">
       <div class="payment-method-menu">
-        <span class="menu-item" v-for="item, index in paymentMethod" @click="selectedPaymentMethod(item.payload)">
-          
+        <span class="menu-item" style="border: 0px;">
+           <paypal :item="item" :coupon="coupon" :discount="discount"></paypal>
+        </span>
+        <span class="menu-item" v-for="item, index in paymentMethod" @click="selectedPaymentMethod(item.payload)" v-bind:class="{'bg-primary': selectedMethod === item.payload}" v-if="item.payload !== 'paypal'">
           <span class="title">
-            <input type="radio" name="option">
             {{item.title}}
           </span>
           <span class="icons" v-if="item.icons !== null">
@@ -14,7 +15,7 @@
         </span>
       </div>
       <credit-card v-if="selectedMethod === 'credit-card'"></credit-card>
-      <paypal v-if="selectedMethod === 'paypal'" :item="item" :coupon="coupon" :discount="discount"></paypal>
+     
     </span>
     <span class="sidebar pull-right">
       <total :item="item" :method="method" :buttonTitle="'Complete purchase'" :back="true"></total>
@@ -96,7 +97,7 @@ export default {
       user: AUTH.user,
       config: CONFIG,
       paymentMethod: CONFIG.paymentMethods,
-      selectedMethod: 'credit-card'
+      selectedMethod: 'paypal'
     }
   },
   props: ['item', 'coupon', 'discount', 'method'],
