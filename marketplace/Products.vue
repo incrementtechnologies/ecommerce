@@ -16,14 +16,23 @@
       </div>
       <div class="product-details">
         <div class="product-title">
-          <label style="padding-top: 5px;"><b>{{item.title}}</b></label>
+          <label style="padding-top: 5px;"><b>{{item.title}} </b></label>
+          
           <label>{{item.description}}</label>
         </div>  
-        <div class="product-price">
-          <label v-if="item.price !== null">
-            <label v-if="item.price.length === 1">PHP {{item.price[0].price}}</label>
-            <label v-if="item.price.length > 1">PHP {{item.price[item.price.length - 1].price + ' - ' + item.price[0].price}}</label>
-          </label>
+
+      <div class="product-price">
+         <div class="product-star">
+            <label style="padding-top:5px;"><b>{{item.account.username}}</b></label>
+
+            <div class="rating">
+            <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
+            </div>
+            
+            </label>
+       
+      </div> 
+</div> 
         </div>
       </div>
     </div>
@@ -38,7 +47,7 @@
     border: solid 1px #ddd;
     margin-bottom: 10px;
     color: #555;
-    margin-top: 25px;
+    margin-top: 50px;
   }
   .product-holder:hover{
     cursor: pointer;
@@ -56,9 +65,8 @@
   }
 
   .product-image img{
-    height: 250px;
-    float: left;
-    width: 100%;
+    max-height: 250px;
+    max-width: 100%;
   }
   .product-image .fa-image{
     font-size: 150px;
@@ -83,14 +91,23 @@
     margin: 0px !important;
     padding-left: 10px;
   }
+
+  .product-star{
+    width: 50%;
+    float: left;
+    height: 50px;
+  }
+  .product-star label{
+    width: 100%;
+    float: left;
+    font-size: 10px;
+    margin: 0px !important;
+   
+  }
   .product-price{
     width: 50%;
     float: left;
     height: 50px;
-    line-height: 50px;
-    font-weight: 600;
-    text-align: right;
-    padding-right: 5px;
   }
 
   .product-wishlist{
@@ -130,6 +147,34 @@
       margin-right: 5%;
     }
   }
+
+.rating {
+  unicode-bidi: bidi-override;
+  direction: rtl;
+  text-align: left;
+}
+.rating > span {
+  display: inline-block;
+  position: relative;
+  width: 1.1em;
+}
+.rating > span:hover,
+.rating > span:hover ~ span {
+  color: transparent;
+}
+.rating > span:hover:before,
+.rating > span:hover ~ span:before {
+   content: "\2605";
+   position: absolute;
+   left: 0; 
+   color: gold;
+}
+
+
+
+
+body { padding: 100px; }
+
 
 </style>
 <script>
