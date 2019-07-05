@@ -12,8 +12,6 @@
               <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
               Sorting
             </button>
-
-
               <div class="dropdown-menu">
                 <a class="dropdown-item" value="high">Price(highest)</a>
                 <a class="dropdown-item" value="low">Price(lowest)</a>

@@ -16,24 +16,29 @@
       </div>
       <div class="product-details">
         <div class="product-title">
-          <label style="padding-top: 5px;"><b>{{item.title}} </b></label>
-          
-          <label>{{item.description}}</label>
+            <label style="padding-top: 5px;"><b>{{item.title}}</b></label>
+            <label style="padding-top:5px;"><b>{{item.account.username}}</b></label> 
         </div>  
+        <div class="product-price">
+          <label v-if="item.price !== null">
 
-      <div class="product-price">
-         <div class="product-star">
-            <label style="padding-top:5px;"><b>{{item.account.username}}</b></label>
+          <label v-if="item.price.length === 1">PHP {{item.price[0].price}}</label>
+          <label v-if="item.price.length > 1">PHP {{item.price[0].price + ' - ' + item.price[item.price.length - 1].price}}</label>
 
-            <div class="rating">
-            <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
-            </div>
-            
+
+            <label id="ratings">
+              <span>
+                <span class="rating-holder">
+                  <span class="text">
+                    Ratings
+                    <i v-bind:class="{'far': stars === 0 || i > stars || status === false, 'fas text-warning': i <= stars}" class="fa-star" v-for="i in 5"></i> <label v-if="status !== false">({{avg.toFixed(1)}})</label>
+                  </span>
+                </span>
+              </span>
             </label>
-       
-      </div> 
-</div> 
+          </label>    
         </div>
+       
       </div>
     </div>
   </div>
@@ -170,8 +175,9 @@
    color: gold;
 }
 
-
-
+label {
+    display: inline-grid;
+}
 
 body { padding: 100px; }
 
@@ -189,7 +195,12 @@ export default {
     return {
       user: AUTH.user,
       config: CONFIG,
-      errorMessage: null
+      errorMessage: null,
+      total: 0,
+      avg: 0,
+      data: null,
+      stars: 0,
+      status: true
     }
   },
   props: ['data'],
