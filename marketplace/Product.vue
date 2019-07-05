@@ -39,7 +39,7 @@
         </div>
         <div class="product-row text-primary" v-if="data.price !== null">
           <label v-if="data.price.length === 1">PHP {{data.price[0].price}}</label>
-          <label v-if="data.price.length > 1">PHP {{data.price[data.price.length - 1].price + ' - ' + data.price[0].price}}</label>
+          <label v-if="data.price.length > 1">PHP {{data.price[0].price + ' - ' + data.price[data.price.length - 1].price}}</label>
           <i class="fa fa-chevron-down show-prices" style="padding-left: 20px;" @click="showPrice(true)" v-if="data.price.length > 1 && priceFlag === false"></i>
           <i class="fa fa-chevron-up show-prices" style="padding-left: 20px;" @click="showPrice(false)" v-if="data.price.length > 1 && priceFlag === true"></i>
         </div>
