@@ -26,16 +26,9 @@
           <label v-if="item.price.length > 1">PHP {{item.price[0].price + ' - ' + item.price[item.price.length - 1].price}}</label>
 
 
-            <label id="ratings">
-              <span>
-                <span class="rating-holder">
-                  <span class="text">
-                    Ratings
-                    <i v-bind:class="{'far': stars === 0 || i > stars || status === false, 'fas text-warning': i <= stars}" class="fa-star" v-for="i in 5"></i> <label v-if="status !== false">({{avg.toFixed(1)}})</label>
-                  </span>
-                </span>
-              </span>
-            </label>
+          <label id="ratings">
+            <ratings :ratings="{size: 0, stars: 2}"></ratings>
+          </label>
           </label>    
         </div>
        
@@ -204,6 +197,9 @@ export default {
     }
   },
   props: ['data'],
+  components: {
+    'ratings': require('components/increment/generic/rating/DirectRatings.vue')
+  },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
