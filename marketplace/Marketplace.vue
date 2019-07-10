@@ -1,45 +1,19 @@
 <template>
-<div class="marketplace-holder">
-  <div class="banner text-white">
-    <h1>Welcome {{user.username}} to Marketplace</h1> 
-    <h3>We have all you need.</h3>
-    <button class="btn btn-primary btn"@click="redirect('editor/v2')">Want to print something?</button>
-  </div>  
+  <div class="marketplace-holder">
+    <div class="banner text-white">
+      <h1>Welcome {{user.username}} to Marketplace</h1> 
+      <h3>We have all you need.</h3>
+      <button class="btn btn-primary btn"@click="redirect('/editor/v2')">Want to print something?</button>
+    </div>  
     <div class="product-holder">  
-      <div class="filter">
-        <br></br>
-          <div class="input-group">
-              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-              Sorting
-            </button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" value="high">Price(highest)</a>
-                <a class="dropdown-item" value="low">Price(lowest)</a>
-                <!-- <a class="dropdown-item" @click="redirect('editor/v2')">Description(ascending)</a> -->
-                <!-- test -->
-                <!-- test -->
-                <!-- test -->
-                <a class="dropdown-item" value="downtop">Description(descending)</a>
-              </div>  
-            <select class="btn btn-white" v-model="filterValue">
-              <option v-for="(item, index) in sort"  :key="index">
-                {{item.title}}
-              </option>
-            </select>
-            <input type="text" class="form-control" v-model="searchValue" :placeholder="'Search ' + filterValue + '...'">
-          </div>
-        <div class="results">
-          <products v-if="data !== null" :data="sortedData"></products>
-          <dynamic-empty v-if="data === null" :title="'No products yet!'" :action="'Please be back soon.'" :icon="'far fa-smile'" :iconColor="'text-primary'"></dynamic-empty>
-          </div>
+      <generic-filter :category="category" @changeSortEvent="retrieve($event)"></generic-filter>
+      <div class="results">
+        <products v-if="data !== null" :data="data"></products>
+        <dynamic-empty v-if="data === null" :title="'No products yet!'" :action="'Please be back soon.'" :icon="'far fa-smile'" :iconColor="'text-primary'"></dynamic-empty>
       </div>
     </div>
   </div>
-
 </template>
-
-
-
 <style scoped lang="scss">
 @import "~assets/style/colors.scss";
 .marketplace-holder{
@@ -64,37 +38,8 @@
   overflow-y: hidden;
  
 }
-.listing{
-  width: 100%;
-  float: left;
-  min-height: 10px;
-  overflow-y: hidden;
-}
-.listing .filter{
-  width: 100%;
-  float: left;
-  height: 50px;
-  margin-top: 25px;
-}
 
-.form-control{
-  height: 40px !important;
-}
-.input-group{
-  margin-bottom: 10px !important;
-}
-.input-group-addon{
-  width: 100px !important;
-  background: #22b173 !important;
-  color: #fff !important;
-}
-.input-group-title{
-  width: 100px !important;
-  background: #028170 !important;
-  color: #fff !important;
-}
-
-.listing .results{
+.product-holder .results{
   width: 100%;
   font-size: left;
   min-height: 10px;
@@ -150,6 +95,19 @@ select.btn.btn-white {
 button.btn.btn-primary.dropdown-toggle {
     min-height: 40px;
 }
+
+
+option {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: .255em;
+    vertical-align: .255em;
+    content: "";
+    border-top: .3em solid;
+    border-right: .3em solid transparent;
+    border-left: .3em solid transparent;
+}
 </style>
 <script>
 import ROUTER from '../../../../router'
@@ -158,7 +116,7 @@ import CONFIG from '../../../../config.js'
 import axios from 'axios'
 export default {
   mounted(){
-    this.retrieve()
+    this.retrieve({'title': 'asc'})
   },
   data(){
     return {
@@ -166,20 +124,39 @@ export default {
       config: CONFIG,
       errorMessage: null,
       data: null,
-      searchValue: '',
-      filterValue: 'Product',
-      sort: [{
-        title: 'Product'
+      category: [{
+        title: 'Company',
+        sorting: [{
+          title: 'Title ascending',
+          payload: 'title',
+          payload_value: 'asc'
+        }]
       }, {
-        title: 'Company'
-      }, {
-        title: 'Location'
-      } ]
+        title: 'Product',
+        sorting: [{
+          title: 'Title ascending',
+          payload: 'title',
+          payload_value: 'asc'
+        }, {
+          title: 'Title descending',
+          payload: 'title',
+          payload_value: 'desc'
+        }, {
+          title: 'Description ascending',
+          payload: 'description',
+          payload_value: 'asc'
+        }, {
+          title: 'Description descending',
+          payload: 'description',
+          payload_value: 'desc'
+        }]
+      }]
     }
   },
   components: {
     'products': require('components/increment/ecommerce/marketplace/Products.vue'),
-    'dynamic-empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue')
+    'dynamic-empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue'),
+    'generic-filter': require('components/increment/ecommerce/marketplace/Filter.vue')
   },
   methods: {
     redirect(parameter){
@@ -188,17 +165,14 @@ export default {
         AUTH.mode = 1
       }
     },
-    retrieve(){
+    retrieve(sort){
       let parameter = {
         condition: [{
           value: 'published',
           column: 'status',
           clause: '='
         }],
-        sort: {
-          // 'created_at': 'desc'
-          // 'title': 'desc'
-        },
+        sort: sort,
         account_id: this.user.userID
       }
       $('#loading').css({display: 'block'})
@@ -207,7 +181,6 @@ export default {
         if(response.data.length > 0){
           this.data = response.data
         }
-        console.log(this.data)
       })
     },
     attachFile(){

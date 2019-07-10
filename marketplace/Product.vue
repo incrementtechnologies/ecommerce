@@ -80,7 +80,7 @@
         </div>
         <div class="product-row">
           <button class="btn btn-primary" @click="addToCart(data.id)"><i class="fa fa-shopping-cart" style="padding-right: 10px;"></i>ADD TO CART</button>
-          <button class="btn btn-warning two" style="padding-right: 10px;"@click="redirect('editor/v2')" ><i class="fa fa-pencil" style="padding-right: 10px;"></i>CUSTOMIZE</button> 
+          <button class="btn btn-warning two" style="padding-right: 10px;"@click="redirect('/editor/v2')" ><i class="fa fa-pencil" style="padding-right: 10px;"></i>CUSTOMIZE</button> 
           <button class="btn btn-danger" @click="addToWishlist(data.id)" v-if="data.wishlist_flag === false && data.checkout_flag === false"><i class="far fa-heart" style="padding-right: 10px;"></i>ADD TO WISHLIST</button>
           <button class="btn btn-warning" @click="redirect('/checkout')" v-if="data.checkout_flag === true">PROCEED TO CHECKOUT</button>
         </div>
