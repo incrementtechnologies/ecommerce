@@ -10,10 +10,9 @@
         Sorting
       </button>
       <div class="dropdown-menu" v-if="activeCategory !== null">
-          <!-- make a loop instead of calling repeatedly -->
         <a class="dropdown-item" value="high" v-for="(item, index) in activeCategory" :key="index" @click="changeSort(item)">{{item.title}}</a>
       </div>  
-      <input type="text" class="form-control" v-model="searchValue" :placeholder="'Search ' + filterValue + '...'">
+      <input type="text" class="form-control" v-model="searchValue" :placeholder="'Search ' + '...'">
     </div>
   </div>
 </template>
@@ -42,7 +41,6 @@
   background: #028170 !important;
   color: #fff !important;
 }
-
 .btn{
   border-radius: 0px !important;
   height: 40px !important;
@@ -51,7 +49,6 @@
   border-top-left-radius: 5px !important;
   border-bottom-left-radius: 5px !important;
 }
-
 </style>
 <script>
 import ROUTER from '../../../../router'
@@ -68,6 +65,9 @@ export default {
       searchValue: '',
       filterValue: null,
       sortValue: '',
+      title: '',
+      payload: '',
+      payloadValue: '',
       SortOrder: '',
       sortData: {
         'title': 'asc'
@@ -90,8 +90,17 @@ export default {
     },
     changeSort(item){
       let object = {}
-      object[item.payload] = item.payload_value
-      this.$emit('changeSortEvent', object)
+      let filter = {
+        column: item.payload,
+        value: this.searchValue
+      }
+      object[item.payload] = item.payloadValue
+      console.log(object)
+      let parameter = {
+        sort: object,
+        filter: filter
+      }
+      this.$emit('changeSortEvent', parameter)
     },
     sortHandler(name, val){
       switch(name){

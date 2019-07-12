@@ -6,7 +6,7 @@
       <button class="btn btn-primary btn"@click="redirect('/editor/v2')">Want to print something?</button>
     </div>  
     <div class="product-holder">  
-      <generic-filter :category="category" @changeSortEvent="retrieve($event)"></generic-filter>
+      <generic-filter :category="category" @changeSortEvent="retrieve($event.sort, $event.filter)"></generic-filter>
       <div class="results">
         <products v-if="data !== null" :data="data"></products>
         <dynamic-empty v-if="data === null" :title="'No products yet!'" :action="'Please be back soon.'" :icon="'far fa-smile'" :iconColor="'text-primary'"></dynamic-empty>
@@ -96,7 +96,6 @@ button.btn.btn-primary.dropdown-toggle {
     min-height: 40px;
 }
 
-
 option {
     display: inline-block;
     width: 0;
@@ -116,7 +115,7 @@ import CONFIG from '../../../../config.js'
 import axios from 'axios'
 export default {
   mounted(){
-    this.retrieve({'title': 'asc'})
+    this.retrieve({'title': 'asc'}, {value: null, column: 'title'})
   },
   data(){
     return {
@@ -124,12 +123,17 @@ export default {
       config: CONFIG,
       errorMessage: null,
       data: null,
+      filterValue: '',
       category: [{
         title: 'Company',
         sorting: [{
           title: 'Title ascending',
           payload: 'title',
           payload_value: 'asc'
+        }, {
+          title: 'Title descending',
+          payload: 'title',
+          payload_value: 'desc'
         }]
       }, {
         title: 'Product',
@@ -165,12 +169,16 @@ export default {
         AUTH.mode = 1
       }
     },
-    retrieve(sort){
+    retrieve(sort, filter){
       let parameter = {
         condition: [{
           value: 'published',
           column: 'status',
           clause: '='
+        }, {
+          value: filter.value + '%',
+          column: filter.column,
+          clause: 'like'
         }],
         sort: sort,
         account_id: this.user.userID
