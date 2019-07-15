@@ -30,15 +30,14 @@
   overflow-y: hidden;
   padding: 20px;
   background: #ffaa81;
+  margin-bottom: 15px;
 }
 .product-holder{
   width: 100%;
   float: left;
   min-height: 10px;
   overflow-y: hidden;
- 
 }
-
 .product-holder .results{
   width: 100%;
   font-size: left;
@@ -77,21 +76,17 @@
     margin-bottom: 10px;
   } 
 }
-
 .modal-content {
     max-width: 700px;
     margin: 0 auto;
 }
-
 .btn-primary {
     background: #22b173;
     border-color: #22b173;
 }
-
 select.btn.btn-white {
     border-color: lightgrey;
 }
-
 button.btn.btn-primary.dropdown-toggle {
     min-height: 40px;
 }
@@ -115,7 +110,7 @@ import CONFIG from '../../../../config.js'
 import axios from 'axios'
 export default {
   mounted(){
-    this.retrieve({'title': 'asc'}, {value: null, column: 'title'})
+    this.retrieve({'title': 'asc'}, {column: 'title', value: ''})
   },
   data(){
     return {
@@ -196,22 +191,6 @@ export default {
     },
     attachTemplate(){
       alert('Attach TEMPLATE!')
-    }
-  },
-  computed: {
-    sortedData(){
-      return this.data.filter(product => {
-        if(this.filterValue === 'Product'){
-          return (
-            product.title.toLowerCase().includes(this.searchValue.toLowerCase())
-          )
-        }
-        if(this.filterValue === 'Company'){
-          return (
-            product.account.username.toLowerCase().includes(this.searchValue.toLowerCase())
-          )
-        }
-      })
     }
   }
 }

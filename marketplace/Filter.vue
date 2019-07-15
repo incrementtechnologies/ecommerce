@@ -12,7 +12,7 @@
       <div class="dropdown-menu" v-if="activeCategory !== null">
         <a class="dropdown-item" value="high" v-for="(item, index) in activeCategory" :key="index" @click="changeSort(item)">{{item.title}}</a>
       </div>  
-      <input type="text" class="form-control" v-model="searchValue" :placeholder="'Search ' + '...'">
+      <input type="text" class="form-control" v-model="searchValue" @keypress="keypressHandler" :placeholder="'Search ' + '...'">
     </div>
   </div>
 </template>
@@ -22,9 +22,7 @@
   width: 100%;
   float: left;
   height: 50px;
-  margin-top: 25px;
 }
-
 .form-control{
   height: 40px !important;
 }
@@ -73,7 +71,12 @@ export default {
         'title': 'asc'
       },
       activeCategory: null,
-      activeSort: null
+      activeSort: null,
+      itemTemp: {
+        'payload': 'title',
+        'payload_value': 'asc',
+        'title': 'Title ascending'
+      }
     }
   },
   props: ['category'],
@@ -87,31 +90,38 @@ export default {
     selectCategory(){
       this.activeSort = null
       this.activeCategory = this.category[this.filterValue].sorting
+      this.itemTemp = this.activeCategory
     },
     changeSort(item){
+      this.itemTemp = item
       let object = {}
       let filter = {
         column: item.payload,
         value: this.searchValue
       }
-      object[item.payload] = item.payloadValue
-      console.log(object)
+      object[item.payload] = item.payload_value
       let parameter = {
         sort: object,
         filter: filter
       }
       this.$emit('changeSortEvent', parameter)
     },
-    sortHandler(name, val){
-      switch(name){
-        case 'description': this.sortData = {'description': val}
-          break
-        case 'title': this.sortData = {'title': val}
-          break
-        default: this.sortData = {'title': 'asc'}
+    keypressHandler(event){
+      if(event.charCode === 13){
+        console.log(this.itemTemp)
+        let item = this.itemTemp
+        let object = {}
+        let filter = {
+          column: item.payload,
+          value: this.searchValue
+        }
+        object[item.payload] = item.payloadValue
+        let parameter = {
+          sort: object,
+          filter: filter
+        }
+        this.$emit('changeSortEvent', parameter)
       }
-      console.log(this.sortData)
-      this.retrieve()
     }
   }
 }
