@@ -6,12 +6,11 @@
           {{item.title}}
         </option>
       </select>
-      <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" v-if="activeCategory !== null">
-        Sorting
-      </button>
-      <div class="dropdown-menu" v-if="activeCategory !== null">
-        <a class="dropdown-item" value="high" v-for="(item, index) in activeCategory" :key="index" @click="changeSort(item)">{{item.title}}</a>
-      </div>  
+      <select class="btn btn-warning select-btn" v-model="sortValue" @change="changeSort" v-if="activeSort !== null">
+        <option v-for="(item, index) in activeSort" :value="index" :key="index">
+          {{item.title}}
+        </option>
+      </select>
       <input type="text" class="form-control" v-model="searchValue" @keypress="keypressHandler" :placeholder="'Search ' + '...'">
     </div>
   </div>
@@ -44,8 +43,10 @@
   height: 40px !important;
 }
 .select-btn{
-  border-top-left-radius: 5px !important;
-  border-bottom-left-radius: 5px !important;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
 }
 </style>
 <script>
@@ -55,6 +56,12 @@ import CONFIG from '../../../../config.js'
 import axios from 'axios'
 export default {
   mounted(){
+    this.activeCategoryIndex = this.activeCategoryIndex !== null ? this.activeCategoryIndex : 0
+    this.activeSortingIndex = this.activeSortingIndex !== null ? this.activeSortingIndex : 0
+    this.activeCategory = this.category[this.activeCategoryIndex]
+    this.activeSort = this.category[this.activeCategoryIndex].sorting
+    this.filterValue = this.activeCategoryIndex
+    this.sortValue = this.activeSortingIndex
   },
   data(){
     return {
@@ -62,7 +69,7 @@ export default {
       config: CONFIG,
       searchValue: '',
       filterValue: null,
-      sortValue: '',
+      sortValue: null,
       title: '',
       payload: '',
       payloadValue: '',
@@ -79,7 +86,7 @@ export default {
       }
     }
   },
-  props: ['category'],
+  props: ['category', 'activeCategoryIndex', 'activeSortingIndex'],
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
@@ -88,18 +95,17 @@ export default {
       //
     },
     selectCategory(){
-      this.activeSort = null
-      this.activeCategory = this.category[this.filterValue].sorting
-      this.itemTemp = this.activeCategory
+      this.activeSort = this.category[this.filterValue].sorting
+      this.activeCategory = this.category[this.filterValue]
+      this.sortValue = 0
     },
-    changeSort(item){
-      this.itemTemp = item
+    changeSort(){
       let object = {}
       let filter = {
-        column: item.payload,
+        column: this.activeSort[this.sortValue].payload,
         value: this.searchValue
       }
-      object[item.payload] = item.payload_value
+      object[this.activeSort[this.sortValue].payload] = this.activeSort[this.sortValue].payload_value
       let parameter = {
         sort: object,
         filter: filter
@@ -108,7 +114,7 @@ export default {
     },
     keypressHandler(event){
       if(event.charCode === 13){
-        console.log(this.itemTemp)
+       // console.log(this.itemTemp)
         let item = this.itemTemp
         let object = {}
         let filter = {

@@ -21,7 +21,7 @@
         </div>  
         <div class="product-price">
           <label v-if="item.price !== null">
-            <label v-if="item.price.length === 1">PHP {{item.price[0].price}}</label>
+            <label v-if="item.price.length === 1">{{currency.display(item.price[0].price)}}</label>
             <label v-if="item.price.length > 1">PHP {{item.price[0].price + ' - ' + item.price[item.price.length - 1].price}}</label>
               <label id="ratings">
               <ratings :ratings="{size: 0, stars: 2}"></ratings>
@@ -177,6 +177,7 @@ body { padding: 100px; }
 import ROUTER from '../../../../router'
 import AUTH from '../../../../services/auth'
 import CONFIG from '../../../../config.js'
+import CURRENCY from 'src/services/currency.js'
 import axios from 'axios'
 export default {
   mounted(){
@@ -189,7 +190,8 @@ export default {
       total: 0,
       avg: 0,
       stars: 0,
-      status: true
+      status: true,
+      currency: CURRENCY
     }
   },
   props: ['data'],

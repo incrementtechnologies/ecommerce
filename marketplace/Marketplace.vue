@@ -6,7 +6,7 @@
       <button class="btn btn-primary btn"@click="redirect('/editor/v2')">Want to print something?</button>
     </div>  
     <div class="product-holder">  
-      <generic-filter :category="category" @changeSortEvent="retrieve($event.sort, $event.filter)"></generic-filter>
+      <generic-filter v-bind:category="category" :activeCategoryIndex="1" :activeSortingIndex="0" @changeSortEvent="retrieve($event.sort, $event.filter)"></generic-filter>
       <div class="results">
         <products v-if="data !== null" :data="data"></products>
         <dynamic-empty v-if="data === null" :title="'No products yet!'" :action="'Please be back soon.'" :icon="'far fa-smile'" :iconColor="'text-primary'"></dynamic-empty>

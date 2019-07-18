@@ -3,11 +3,11 @@
     <span class="title">Order Summary</span>
     <span class="item">
       <label>Subtotal</label>
-      <label class="pull-right" style="padding-right: 10px;">PHP {{item.sub_total}}</label>
+      <label class="pull-right" style="padding-right: 10px;">{{currency.display(item.sub_total)}}</label>
     </span>
     <span class="item">
       <label>Tax</label>
-      <label class="pull-right" style="padding-right: 10px;">PHP {{item.tax}}</label>
+      <label class="pull-right" style="padding-right: 10px;">{{currency.display(item.tax)}}</label>
     </span>
     <span class="item" style="border-bottom: 0px;">
       <label class="text-primary">
@@ -20,7 +20,7 @@
     </span>
     <span class="item" style="border-bottom: 0px;">
       <label><b>Total</b></label>
-      <label class="pull-right" style="padding-right: 10px;"><b>PHP {{item.total}}</b></label>
+      <label class="pull-right" style="padding-right: 10px;"><b>{{currency.display(item.total)}}</b></label>
     </span>
     <button class="btn btn-warning custom-btn" @click="next()">{{buttonTitle}}</button>
     <button class="btn btn-danger custom-btn" @click="previous()" v-if="back === true">Back</button>
@@ -69,6 +69,7 @@
 import ROUTER from '../../../../router'
 import AUTH from '../../../../services/auth'
 import CONFIG from '../../../../config.js'
+import CURRENCY from 'src/services/currency.js'
 import axios from 'axios'
 export default {
   mounted(){
@@ -80,7 +81,8 @@ export default {
       errorMessage: null,
       coupon: null,
       discount: null,
-      success: null
+      success: null,
+      currency: CURRENCY
     }
   },
   props: ['item', 'method', 'buttonTitle', 'back', 'optionLabel'],
