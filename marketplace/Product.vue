@@ -95,13 +95,13 @@
         <div class="product-row-rating">
           <ratings :payload="'product'" :payloadValue="data.id"></ratings>
         </div> 
-          <button class="btn btn-primary" data-toggle="modal" data-target="#createTemplateModal" v-on:click="redirect('/messenger/' + item.account.username)"><i class="fa fa-wrench"></i>  SPECIAL QUOTATION</button>
+          <button class="btn btn-primary" data-toggle="modal" data-target="#createTemplateModal" @click="redirect(`/messenger/${data.account.username}/product/${data.code}`)"><i class="fa fa-wrench"></i>  SPECIAL QUOTATION</button>
         </div>
       </div>
     <div class="product-more-details">
       <div class="pagination-holder">
-        <ul class="product-menu">
-          <li v-for="item, index in productMenu" v-bind:class="{'menu-active': item.flag === true}" class="" @click="selectMenu(index)">{{item.title}}</li>
+        <ul class="product-menu"> <!--  do dis --> 
+          <li v-for="(item, index) in productMenu" :key="index" v-bind:class="{'menu-active': item.flag === true}" class="" @click="selectMenu(index)">{{item.title}}</li>
         </ul>
       </div>
       <div class="details-holder" v-if="prevMenuIndex === 0">
@@ -357,7 +357,8 @@ export default {
       priceFlag: false,
       activeSize: null,
       activeColor: null,
-      currency: CURRENCY
+      currency: CURRENCY,
+      productCode: null
     }
   },
   components: {
@@ -369,6 +370,8 @@ export default {
       ROUTER.push(parameter)
       if(parameter === 'editor/v2'){
         AUTH.mode = 1
+      }else{
+        AUTH.redirect(parameter)
       }
     },
     selectMenu(index){
