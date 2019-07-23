@@ -1,38 +1,43 @@
 <template>
-  <div v-if="data !== null">
-    <div class="product-holder" v-for="item, index in data" @click="redirect('marketplace/product/' + item.code)">
-      <div class="product-image">
-        <img :src="config.BACKEND_URL + item.featured[0].url" v-if="item.featured !== null">
-        <i class="fa fa-image" v-else></i>
-<!--         <div class="product-wishlist bg-primary" v-if="item.wishlist_flag === false && item.checkout_flag === false">
-          <label>
-            <i class="fa fa-heart"  @click="addToWishlist(item.id)" v-if="item.wishlist_flag === false && item.checkout_flag === false"></i>  
-          </label>
-          <label @click="redirect('marketplace/product/' + item.code)" style="border-left: solid 1px #ddd;">View</label>
+  <div v-if="data !== null" :class="listStyle === true ? 'list-style' : ''">
+      <div class="product-holder" v-for="item, index in data" @click="redirect('marketplace/product/' + item.code)">
+        <div class="product-image">
+          <img :src="config.BACKEND_URL + item.featured[0].url" v-if="item.featured !== null">
+          <i class="fa fa-image" v-else></i>
+            <!--  <div class="product-wishlist bg-primary" v-if="item.wishlist_flag === false && item.checkout_flag === false">
+                      <label>
+                        <i class="fa fa-heart"  @click="addToWishlist(item.id)" v-if="item.wishlist_flag === false && item.checkout_flag === false"></i>  
+                      </label>
+                      <label @click="redirect('marketplace/product/' + item.code)" style="border-left: solid 1px #ddd;">View</label>
+                    </div>
+                    <div class="product-wishlist bg-primary" v-else>
+                      <label @click="redirect('marketplace/product/' + item.code)" style="width: 100%;">View</label>
+                    </div> -->
         </div>
-        <div class="product-wishlist bg-primary" v-else>
-          <label @click="redirect('marketplace/product/' + item.code)" style="width: 100%;">View</label>
-        </div> -->
+        <div class="product-details">
+          <div class="product-title">
+              <label style="padding-top: 5px;"><b>{{item.title}}</b></label>
+              <label style="padding-top:5px;"><b>{{item.account.username}}</b></label> 
+          </div>
+          <div class="product-price">
+            <label v-if="item.price !== null">
+              <label v-if="item.price.length === 1">{{currency.display(item.price[0].price)}}</label>
+              <label v-if="item.price.length > 1">PHP {{item.price[0].price + ' - ' + item.price[item.price.length - 1].price}}</label>
+                <label id="ratings">
+                <ratings :ratings="{size: 0, stars: 2}"></ratings>
+                </label>
+            </label>
+          </div>
+        </div> 
       </div>
-      <div class="product-details">
-        <div class="product-title">
-            <label style="padding-top: 5px;"><b>{{item.title}}</b></label>
-            <label style="padding-top:5px;"><b>{{item.account.username}}</b></label> 
-        </div>  
-        <div class="product-price">
-          <label v-if="item.price !== null">
-            <label v-if="item.price.length === 1">{{currency.display(item.price[0].price)}}</label>
-            <label v-if="item.price.length > 1">PHP {{item.price[0].price + ' - ' + item.price[item.price.length - 1].price}}</label>
-              <label id="ratings">
-              <ratings :ratings="{size: 0, stars: 2}"></ratings>
-              </label>
-          </label>    
-        </div>
-      </div>
-    </div>
   </div>
+  
 </template>
 <style scoped>
+  .list-style {
+    display: flex;
+    flex-direction: column;
+  }
   .product-holder{
     width: 24%;
     float: left;
@@ -193,9 +198,10 @@ export default {
       currency: CURRENCY
     }
   },
-  props: ['data'],
+  props: ['data', 'listStyle'],
   components: {
-    'ratings': require('components/increment/generic/rating/DirectRatings.vue')
+    'ratings': require('components/increment/generic/rating/DirectRatings.vue'),
+    'generic-filter': require('components/increment/ecommerce/marketplace/Filter.vue')
   },
   methods: {
     redirect(parameter){

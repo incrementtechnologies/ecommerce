@@ -17,7 +17,7 @@
         <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image" v-if="selectedImage === null && data.featured !== null">
         <i class="fa fa-image" v-if="selectedImage === null && data.featured === null"></i>
        <div class="images-holder" v-if="data.images !== null">
-        <div v-for="item, index in data.images" class="image-item" @click="selectImage(item.url)">
+        <div v-for="(item, index) in data.images" :key="index" class="image-item" @click="selectImage(item.url)">
           <img :src="config.BACKEND_URL + item.url" class="other-image">
           <div class="overlay"></div>
         </div>
@@ -63,11 +63,11 @@
         </div>
         <div class="product-row" v-if="data.color !== null">
           <label>Color</label>
-          <span v-for="item, index in data.color" v-bind:style="{background: item.payload_value}" class="attribute" v-bind:class="{'active-color': activeColor === item.payload_value}" @click="activeColor = item.payload_value"></span>
+          <span v-for="(item, index) in data.color" :key="index" v-bind:style="{background: item.payload_value}" class="attribute" v-bind:class="{'active-color': activeColor === item.payload_value}" @click="activeColor = item.payload_value"></span>
         </div>
         <div class="product-row" v-if="data.size !== null">
           <label>Size</label>
-          <span class="attribute attribute-flexible" v-for="item, index in data.size" v-bind:class="{'bg-primary': activeSize === item.payload_value}" @click="activeSize = item.payload_value">{{item.payload_value}}</span>
+          <span class="attribute attribute-flexible" v-for="(item, index) in data.size" :key="index" v-bind:class="{'bg-primary': activeSize === item.payload_value}" @click="activeSize = item.payload_value">{{item.payload_value}}</span>
         </div>
         <div class="product-row" v-if="parseInt(data.qty) > 0">
           <label>Quantity</label>
@@ -90,7 +90,7 @@
         </div>
         <div class="product-row-tags" v-if="data.tags !== null && data.tag_array !== null">
           <label style="width: 15%;">Tags</label>
-          <label class="tag-label" v-for="item, index in data.tag_array">{{item.title}}</label>
+          <label class="tag-label" v-for="(item, index) in data.tag_array" :key="index">{{item.title}}</label>
         </div>
         <div class="product-row-rating">
           <ratings :payload="'product'" :payloadValue="data.id"></ratings>

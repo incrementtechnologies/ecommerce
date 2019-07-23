@@ -1,17 +1,20 @@
 <template>
   <div class="filter">
     <div class="input-group">
-      <select class="btn btn-primary select-btn" v-model="filterValue" @change="selectCategory">
-        <option v-for="(item, index) in category" :value="index" :key="index">
+      <select class="btn btn-primary select-btn dropdown" v-model="filterValue" @change="selectCategory">
+        <option class="dropdown-title" v-for="(item, index) in category" :value="index" :key="index">
           {{item.title}}
         </option>
       </select>
-      <select class="btn btn-warning select-btn" v-model="sortValue" @change="changeSort" v-if="activeSort !== null">
-        <option v-for="(item, index) in activeSort" :value="index" :key="index">
+      <select class="btn btn-warning select-btn dropdown" v-model="sortValue" @change="changeSort" v-if="activeSort !== null">
+        <option class="dropdown-title" v-for="(item, index) in activeSort" :value="index" :key="index">
           {{item.title}}
         </option>
       </select>
       <input type="text" class="form-control" v-model="searchValue" @keypress="keypressHandler" :placeholder="'Search ' + '...'">
+      <div class="view-option">
+       <h3> <i :class="`fa fa-${toggleStyle === true ? 'list' : 'th'}`" @click="changeView()" aria-hidden="true"></i></h3>
+      </div>
     </div>
   </div>
 </template>
@@ -48,6 +51,27 @@
   border-top-right-radius: 0px !important;
   border-bottom-right-radius: 0px !important;
 }
+@media (max-width: 650px){
+  .dropdown {
+      width: 20%;
+  }
+  .dropdown-title {
+    font-size: 10px;
+  }
+}
+.view-option{
+  i:hover{
+    cursor: pointer;
+    background: $secondary;
+  }
+  .fa-list{
+    float: right;
+    margin-left: 15px;
+  }
+  .fa-th{
+    float: right;
+  }
+}
 </style>
 <script>
 import ROUTER from '../../../../router'
@@ -83,7 +107,8 @@ export default {
         'payload': 'title',
         'payload_value': 'asc',
         'title': 'Title ascending'
-      }
+      },
+      toggleStyle: false
     }
   },
   props: ['category', 'activeCategoryIndex', 'activeSortingIndex'],
@@ -93,6 +118,10 @@ export default {
     },
     retrieve(){
       //
+    },
+    changeView(){
+      this.toggleStyle = !this.toggleStyle
+      this.$emit('changeStyle', this.toggleStyle)
     },
     selectCategory(){
       this.activeSort = this.category[this.filterValue].sorting
