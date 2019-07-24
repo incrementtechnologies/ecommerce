@@ -1,6 +1,6 @@
 <template>
-  <div v-if="data !== null" :class="listStyle === true ? 'list-style' : ''">
-      <div class="product-holder" v-for="item, index in data" @click="redirect('marketplace/product/' + item.code)">
+  <div v-if="data !== null">
+      <div class="product-holder" v-bind:class="listStyle" v-for="(item, index) in data" @click="redirect('marketplace/product/' + item.code)" :key="index"> 
         <div class="product-image">
           <img :src="config.BACKEND_URL + item.featured[0].url" v-if="item.featured !== null">
           <i class="fa fa-image" v-else></i>
@@ -39,15 +39,29 @@
     flex-direction: column;
   }
   .product-holder{
-    width: 24%;
     float: left;
-    height: 300px;
     margin-right: 1%;
     border: solid 1px #ddd;
     margin-bottom: 10px;
     color: #555;
     margin-top: 50px;
   }
+
+  .four-columns{
+    width: 24%;
+    height: 300px;
+  }
+
+  .three-columns{
+    width: 32%;
+    height: 300px;
+  }
+
+  .two-columns{
+    width: 49%;
+    height: 300px;
+  }
+
   .product-holder:hover{
     cursor: pointer;
     border: solid 1px #ffaa81;

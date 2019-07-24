@@ -12,8 +12,11 @@
         </option>
       </select>
       <input type="text" class="form-control" v-model="searchValue" @keypress="keypressHandler" :placeholder="'Search ' + '...'">
-      <div class="view-option">
-       <h3> <i :class="`fa fa-${toggleStyle === true ? 'list' : 'th'}`" @click="changeView()" aria-hidden="true"></i></h3>
+      <div class="view-container">
+        <div class="view-option">
+          <!-- <i :class="`fa fa-${toggleStyle === true ? 'list' : 'th'}`" @click="changeView()" aria-hidden="true"></i> -->
+          <i :class="`fa fa-${grid[toggleStyle]}`" @click="changeView()" aria-hidden="true"></i>
+        </div>
       </div>
     </div>
   </div>
@@ -60,16 +63,18 @@
   }
 }
 .view-option{
+     font-size: 40px;
+    /* margin-left: 20px; */
+    margin-right: 10px;
+    /* margin-bottom: 20px; */
+    line-height: 20%;
+    border: solid 1px #ccc;
+    height: 40px;
+        padding: 5px;
+    font-size: 29px;
   i:hover{
     cursor: pointer;
-    background: $secondary;
-  }
-  .fa-list{
-    float: right;
-    margin-left: 15px;
-  }
-  .fa-th{
-    float: right;
+    background: $primary;
   }
 }
 </style>
@@ -108,10 +113,11 @@ export default {
         'payload_value': 'asc',
         'title': 'Title ascending'
       },
-      toggleStyle: false
+      toggleStyle: 0,
+      toggleFlag: false
     }
   },
-  props: ['category', 'activeCategoryIndex', 'activeSortingIndex'],
+  props: ['category', 'activeCategoryIndex', 'activeSortingIndex', 'grid'],
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
@@ -120,8 +126,18 @@ export default {
       //
     },
     changeView(){
-      this.toggleStyle = !this.toggleStyle
-      this.$emit('changeStyle', this.toggleStyle)
+      if(this.toggleStyle < this.grid.length - 1 && this.toggleFlag === false){
+        this.toggleStyle++
+        if(this.toggleStyle === this.grid.length - 1){
+          this.toggleFlag = true
+        }
+      }else if(this.toggleStyle > 0 && this.toggleFlag === true){
+        this.toggleStyle--
+        if(this.toggleStyle === 0){
+          this.toggleFlag = false
+        }
+      }
+      this.$emit('changeStyle', this.grid[this.toggleStyle])
     },
     selectCategory(){
       this.activeSort = this.category[this.filterValue].sorting

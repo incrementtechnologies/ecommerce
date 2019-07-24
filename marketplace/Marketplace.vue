@@ -10,7 +10,8 @@
         :activeCategoryIndex="1"
         :activeSortingIndex="0"
         @changeSortEvent="retrieve($event.sort, $event.filter)"
-        @changeStyle="listStyle = $event">
+        @changeStyle="manageGrid($event)"
+        :grid="['list', 'th', 'th-large']">
         </generic-filter>
       <div class="results">
         <products v-if="data !== null" :data="data" :listStyle="listStyle"></products> 
@@ -127,7 +128,7 @@ export default {
       config: CONFIG,
       errorMessage: null,
       data: null,
-      listStyle: false,
+      listStyle: 'four-columns',
       filterValue: '',
       category: [{
         title: 'Company',
@@ -202,6 +203,16 @@ export default {
     },
     attachTemplate(){
       alert('Attach TEMPLATE!')
+    },
+    manageGrid(event){
+      switch(event){
+        case 'th-large': this.listStyle = 'two-columns'
+          break
+        case 'th': this.listStyle = 'three-columns'
+          break
+        case 'list': this.listStyle = 'four-columns'
+          break
+      }
     }
   }
 }
