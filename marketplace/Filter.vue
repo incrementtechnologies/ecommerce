@@ -14,7 +14,6 @@
       <input type="text" class="form-control" v-model="searchValue" @keypress="keypressHandler" :placeholder="'Search ' + '...'">
       <div class="view-container">
         <div class="view-option">
-          <!-- <i :class="`fa fa-${toggleStyle === true ? 'list' : 'th'}`" @click="changeView()" aria-hidden="true"></i> -->
           <i :class="`fa fa-${grid[toggleStyle]}`" @click="changeView()" aria-hidden="true"></i>
         </div>
       </div>
@@ -63,18 +62,22 @@
   }
 }
 .view-option{
-     font-size: 40px;
-    /* margin-left: 20px; */
+    color: $primary;
+    font-size: 40px;
     margin-right: 10px;
-    /* margin-bottom: 20px; */
     line-height: 20%;
     border: solid 1px #ccc;
     height: 40px;
-        padding: 5px;
+    padding: 5px;
     font-size: 29px;
-  i:hover{
+    i:hover{
     cursor: pointer;
-    background: $primary;
+    color: $secondary;
+  }
+}
+@media (max-width: 992px){
+  .view-option{
+    display: none;
   }
 }
 </style>

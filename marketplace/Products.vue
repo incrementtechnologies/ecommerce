@@ -1,30 +1,26 @@
 <template>
   <div v-if="data !== null">
       <div class="product-holder" v-bind:class="listStyle" v-for="(item, index) in data" @click="redirect('marketplace/product/' + item.code)" :key="index"> 
-        <div class="product-image">
+        <div v-if="listStyle !== 'four-columns'" class="product-image">
           <img :src="config.BACKEND_URL + item.featured[0].url" v-if="item.featured !== null">
-          <i class="fa fa-image" v-else></i>
-            <!--  <div class="product-wishlist bg-primary" v-if="item.wishlist_flag === false && item.checkout_flag === false">
-                      <label>
-                        <i class="fa fa-heart"  @click="addToWishlist(item.id)" v-if="item.wishlist_flag === false && item.checkout_flag === false"></i>  
-                      </label>
-                      <label @click="redirect('marketplace/product/' + item.code)" style="border-left: solid 1px #ddd;">View</label>
-                    </div>
-                    <div class="product-wishlist bg-primary" v-else>
-                      <label @click="redirect('marketplace/product/' + item.code)" style="width: 100%;">View</label>
-                    </div> -->
+          <img :src="config.BACKEND_URL + '/storage/image/no_image.png'" v-else>
+        </div>          
+        <div v-else class="fourColumn">
+          <img :src="config.BACKEND_URL + item.featured[0].url" v-if="item.featured !== null">
+          <img :src="config.BACKEND_URL + '/storage/image/no_image.png'" v-else>
         </div>
+
         <div class="product-details">
           <div class="product-title">
-              <label style="padding-top: 5px;"><b>{{item.title}}</b></label>
-              <label style="padding-top:5px;"><b>{{item.account.username}}</b></label> 
+              <label class="text" style="padding-top:5px;"><b>{{item.title}}</b></label>
+              <label class="text" style="padding-top:5px;"><b>{{item.account.username}}</b></label> 
           </div>
           <div class="product-price">
-            <label v-if="item.price !== null">
-              <label v-if="item.price.length === 1">{{currency.display(item.price[0].price)}}</label>
+            <label class="price-label" v-if="item.price !== null">
+              <label  class="text" v-if="item.price.length === 1">{{currency.display(item.price[0].price)}}</label>
               <label v-if="item.price.length > 1">PHP {{item.price[0].price + ' - ' + item.price[item.price.length - 1].price}}</label>
                 <label id="ratings">
-                <ratings :ratings="{size: 0, stars: 2}"></ratings>
+                  <ratings :ratings="{size: 0, stars: 2}"></ratings>
                 </label>
             </label>
           </div>
@@ -34,9 +30,32 @@
   
 </template>
 <style scoped>
-  .list-style {
+  .text{
+    display: block;
+    /* width: 100px; */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .price-label label:first-child{
+      padding-top: 5px;
+      margin-bottom: 0px !important;
+  }
+  .rating-holder{
+    margin-bottom: 20px;
+  }
+  .list-style{
     display: flex;
     flex-direction: column;
+  }
+  .fourColumn img{
+    max-width: 100%;
+    height: auto;
+    width: auto;
+    min-height: 300px;
+    max-height: 300px;
+    margin: 20px auto 20px auto;
   }
   .product-holder{
     float: left;
@@ -46,45 +65,43 @@
     color: #555;
     margin-top: 50px;
   }
-
   .four-columns{
     width: 24%;
-    height: 300px;
   }
-
   .three-columns{
     width: 32%;
-    height: 300px;
   }
-
   .two-columns{
     width: 49%;
-    height: 300px;
   }
-
   .product-holder:hover{
     cursor: pointer;
     border: solid 1px #ffaa81;
+    color: white;
     background: #ffaa81;
-    color: #fff;
   }
-
   .product-image{
     width: 100%;
     float: left;
     position: relative;
-    height: 250px;
+    height: auto;
     text-align: center;
+    min-height: 350px;
   }
 
   .product-image img{
-    max-height: 250px;
     max-width: 100%;
+    height: auto;
+    width: auto;
+    min-height: 400px;
+    max-height: 400px;
+    /* margin-top: 20px;
+    margin-bottom: 20px; */
+    margin: 20px auto 20px auto;
   }
   .product-image .fa-image{
     font-size: 150px;
     line-height: 250px;
-
   }
   .product-details{
     height: 50px;
