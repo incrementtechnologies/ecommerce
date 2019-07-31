@@ -1,7 +1,7 @@
 <template>
   <div class="marketplace-holder">
     <div class="banner text-white">
-      <h1>Welcome {{user.username}} to Marketplace</h1> 
+      <h1>Welcome {{user.username}} to PaPrint</h1> 
       <h3>We have all you need.</h3>
       <button class="btn btn-primary btn"@click="redirect('/editor/v2')">Want to print something?</button>
     </div>  
