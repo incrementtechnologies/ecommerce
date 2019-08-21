@@ -1,7 +1,14 @@
 <template>
 	<div class="holder">
     <create></create>
-    <div class="products-holder" v-for="item, index in data" @click="redirect('/product/edit/' + item.code)">
+    <filter-product v-bind:category="category" 
+      :activeCategoryIndex="0"
+      :activeSortingIndex="0"
+      @changeSortEvent="retrieve($event.sort, $event.filter)"
+      @changeStyle="manageGrid($event)"
+      :grid="['list', 'th-large']">
+    </filter-product>
+    <div class="products-holder" v-for="item, index in data" @click="redirect('/product/edit/' + item.code)" v-if="listStyle === 'columns'">
       <div class="products-image">
         <img :src="config.BACKEND_URL + item.featured[0].url" v-if="item.featured !== null">
         <i class="fa fa-image" v-else></i>
@@ -19,6 +26,7 @@
         </div>
       </div>
     </div>
+    <table-view :data="data" v-if="listStyle === 'list' && data !== null"></table-view>
     <empty v-if="data === null" :title="'Looks like you have not added a product!'" :action="'Click the New Product Button to get started.'"></empty>
 	</div>
 </template>
@@ -135,14 +143,13 @@
 
 </style>
 <script>
-import ROUTER from '../../../../router'
-import AUTH from '../../../../services/auth'
-import CONFIG from '../../../../config.js'
+import ROUTER from 'src/router'
+import AUTH from 'src/services/auth'
+import CONFIG from 'src/config.js'
 import axios from 'axios'
 export default {
   mounted(){
-    AUTH.checkPlan()
-    this.retrieve()
+    this.retrieve({'title': 'asc'}, {column: 'title', value: ''})
   },
   data(){
     return {
@@ -151,24 +158,48 @@ export default {
       errorMessage: null,
       data: null,
       selectedItem: null,
-      selectedIndex: null
+      selectedIndex: null,
+      listStyle: 'list',
+      category: [{
+        title: 'Product',
+        sorting: [{
+          title: 'Title ascending',
+          payload: 'title',
+          payload_value: 'asc'
+        }, {
+          title: 'Title descending',
+          payload: 'title',
+          payload_value: 'desc'
+        }, {
+          title: 'Description ascending',
+          payload: 'description',
+          payload_value: 'asc'
+        }, {
+          title: 'Description descending',
+          payload: 'description',
+          payload_value: 'desc'
+        }]
+      }]
     }
   },
   components: {
     'create': require('components/increment/ecommerce/product/Create.vue'),
-    'empty': require('components/increment/generic/empty/Empty.vue')
+    'table-view': require('components/increment/ecommerce/product/TableView.vue'),
+    'empty': require('components/increment/generic/empty/Empty.vue'),
+    'filter-product': require('components/increment/ecommerce/filter/Product.vue')
   },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    retrieve(){
+    retrieve(sort, filter){
       let parameter = {
         condition: [{
-          value: this.user.userID,
-          column: 'account_id',
-          clause: '='
+          value: filter.value + '%',
+          column: filter.column,
+          clause: 'like'
         }],
+        sort: sort,
         account_id: this.user.userID
       }
       $('#loading').css({'display': 'block'})
@@ -193,6 +224,14 @@ export default {
           this.selectedIndex = index
           this.$children[i].modal()
         }
+      }
+    },
+    manageGrid(event){
+      switch(event){
+        case 'th-large': this.listStyle = 'columns'
+          break
+        case 'list': this.listStyle = 'list'
+          break
       }
     }
   }
