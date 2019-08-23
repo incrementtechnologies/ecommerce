@@ -4,7 +4,7 @@
     <div class="form-group">
       <label for="exampleInputEmail1" style="font-weight: 600;">Stocks</label>
       <div>
-        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="create()"> Add</button>
+        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="showModal('create')"> Add</button>
         <button class="btn btn-warning form-control-custom" style="margin-left: 10px;" @click="create()"> Import</button>
       </div>
     </div>
@@ -40,6 +40,7 @@
         </tbody>
       </table>
     </div>
+    <create-modal :property="createProductTraceModal"></create-modal>
   </div>
 </template>
 <style scoped>
@@ -82,6 +83,7 @@ import ROUTER from '../../../../router'
 import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import axios from 'axios'
+import ProductTrace from './CreateProductTrace.js'
 export default {
   mounted(){
   },
@@ -94,25 +96,93 @@ export default {
       newItem: {
         product_id: this.item.id,
         qty: null
-      }
+      },
+      createProductTraceModal: ProductTrace
     }
+  },
+
+  components: {
+    'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue'),
+    'create-modal': require('components/increment/generic/modal/Modal.vue')
   },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    create(){
-      if(this.newItem.qty !== null && this.newItem.qty !== '' && isNaN(this.newItem.qty) === false){
-        this.APIRequest('product_traces/create', this.newItem).then(response => {
-          if(response.data > 0){
-            this.newItem.qty = null
-            this.errorMessage = null
-            this.$parent.retrieve()
+    showModal(action, item = null){
+      switch(action){
+        case 'create':
+          this.createProductTraceModal = {...ProductTrace}
+          let inputs = this.createProductTraceModal.inputs
+          inputs.map(input => {
+            if(input.variable !== 'status'){
+              input.value = null
+            }else{
+              input.value = 'Normal'
+            }
+            input.disabled = false
+          })
+          this.createProductTraceModal.params = [{
+            variable: 'account_id',
+            value: AUTH.user.userID
+          }, {
+            variable: 'referral_code',
+            value: null
+          }, {
+            variable: 'account_id',
+            value: AUTH.user.userID
+          }, {
+            variable: 'account_type',
+            value: AUTH.user.type
+          }, {
+            variable: 'config',
+            value: CONFIG
+          }]
+          break
+        case 'update':
+          let modalData = {...this.createProductTraceModal}
+          let parameter = {
+            title: 'Update Sub Account',
+            route: 'sub_accounts/update',
+            button: {
+              left: 'Cancel',
+              right: 'Update'
+            },
+            sort: {
+              column: 'created_at',
+              value: 'desc'
+            },
+            params: [{
+              variable: 'id',
+              value: item.id
+            }, {
+              variable: 'account_id',
+              value: item.member
+            }]
           }
-        })
-      }else{
-        this.errorMessage = 'Input must be a number greater than 0.'
+          modalData = {...modalData, ...parameter} // updated data without input values
+          let selectedData = item
+          modalData.inputs.map(data => {
+            if(data.variable === 'status'){
+              data.value = item.status
+            }
+            if(data.variable === 'username'){
+              data.value = item.account.username
+              data.disabled = true
+            }
+            if(data.variable === 'email'){
+              data.value = item.account.email
+              data.disabled = true
+            }
+            if(data.variable === 'password'){
+              data.value = '*****'
+              data.disabled = true
+            }
+          })
+          this.createProductTraceModal = {...modalData}
+          break
       }
+      $('#createProductTraceModal').modal('show')
     },
     deleteItem(item){
       let parameter = {
