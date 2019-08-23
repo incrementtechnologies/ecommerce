@@ -79,7 +79,8 @@
         <prices :item="data"></prices>
       </div>
       <div class="details-holder" v-if="prevMenuIndex === 2">
-        <inventories :item="data"></inventories>
+        <inventories :item="data" v-if="common.ecommerce.inventoryType === 'inventory'"></inventories>
+        <product-trace v-if="common.ecommerce.inventoryType === 'product_trace'" :item="data"></product-trace>
       </div>
       <div class="details-holder" v-if="prevMenuIndex === 3">
         <product-comments :payloadValue="data.id" :payload="'product'" :load="true"></product-comments>
@@ -279,9 +280,10 @@
   }
 </style>
 <script>
-import ROUTER from '../../../../router'
-import AUTH from '../../../../services/auth'
-import CONFIG from '../../../../config.js'
+import ROUTER from 'src/router'
+import AUTH from 'src/services/auth'
+import CONFIG from 'src/config.js'
+import COMMON from 'src/common.js'
 import axios from 'axios'
 export default {
   mounted(){
@@ -309,7 +311,8 @@ export default {
         url: null,
         status: null
       },
-      imageStatus: null
+      imageStatus: null,
+      common: COMMON
     }
   },
   components: {
@@ -318,6 +321,7 @@ export default {
     'browse-images-modal': require('components/increment/generic/image/BrowseModal.vue'),
     'variations': require('components/increment/ecommerce/product/Variations.vue'),
     'inventories': require('components/increment/ecommerce/product/Inventories.vue'),
+    'product-trace': require('components/increment/ecommerce/product/ProductTrace.vue'),
     'prices': require('components/increment/ecommerce/product/Prices.vue')
   },
   methods: {
@@ -341,7 +345,8 @@ export default {
           column: 'code',
           clause: '='
         }],
-        account_id: this.user.userID
+        account_id: this.user.userID,
+        inventory_type: this.common.ecommerce.inventoryType
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('products/retrieve', parameter).then(response => {

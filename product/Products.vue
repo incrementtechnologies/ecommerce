@@ -147,6 +147,7 @@ import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import axios from 'axios'
+import COMMON from 'src/common.js'
 export default {
   mounted(){
     this.retrieve({'title': 'asc'}, {column: 'title', value: ''})
@@ -179,7 +180,8 @@ export default {
           payload: 'description',
           payload_value: 'desc'
         }]
-      }]
+      }],
+      common: COMMON
     }
   },
   components: {
@@ -200,7 +202,8 @@ export default {
           clause: 'like'
         }],
         sort: sort,
-        account_id: this.user.userID
+        account_id: this.user.userID,
+        inventory_type: this.common.ecommerce.inventoryType
       }
       $('#loading').css({'display': 'block'})
       this.APIRequest('products/retrieve', parameter).then(response => {

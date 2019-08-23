@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#createProductModal" style="margin-bottom: 15px;"><i class="fa fa-plus"></i> New Product
+    <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#createProductModal" style="margin-bottom: 25px;"><i class="fa fa-plus"></i> New Product
     </button>
     <div class="modal fade" id="createProductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-md" role="document">
@@ -35,16 +35,19 @@
     </div>
   </div>
 </template>
-<style scoped>
+<style scoped lang="scss">
+@import "~assets/style/colors.scss";
+.bg-primary{
+  background: $primary !important;
+}
 </style>
 <script>
-import ROUTER from '../../../../router'
-import AUTH from '../../../../services/auth'
-import CONFIG from '../../../../config.js'
+import ROUTER from 'src/router'
+import AUTH from 'src/services/auth'
+import CONFIG from 'src/config.js'
 import axios from 'axios'
 export default {
   mounted(){
-    this.retrieve()
   },
   data(){
     return {
@@ -73,27 +76,10 @@ export default {
             this.title = null
             this.description = null
             $('#createProductModal').modal('hide')
-            this.$parent.retrieve()
+            this.$parent.retrieve({'title': 'asc'}, {column: 'title', value: ''})
           }
         })
       }
-    },
-    retrieve(){
-      let parameter = {
-        condition: [{
-          value: this.user.userID,
-          column: 'account_id',
-          clause: '='
-        }],
-        account_id: this.user.userID
-      }
-      this.APIRequest('products/retrieve', parameter).then(response => {
-        if(response.data.length > 0){
-          this.data = response.data
-        }else{
-          this.data = null
-        }
-      })
     },
     validate(){
       if(this.title !== null || this.title !== '' || this.description !== null || this.description !== ''){
