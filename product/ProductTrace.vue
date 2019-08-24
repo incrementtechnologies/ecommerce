@@ -84,6 +84,7 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import axios from 'axios'
 import ProductTrace from './CreateProductTrace.js'
+import COMMON from 'src/common.js'
 export default {
   mounted(){
   },
@@ -126,17 +127,14 @@ export default {
             variable: 'account_id',
             value: AUTH.user.userID
           }, {
-            variable: 'referral_code',
-            value: null
-          }, {
-            variable: 'account_id',
-            value: AUTH.user.userID
-          }, {
             variable: 'account_type',
             value: AUTH.user.type
           }, {
-            variable: 'config',
-            value: CONFIG
+            variable: 'product_id',
+            value: this.item.id
+          }, {
+            variable: 'inventory_type',
+            value: COMMON.ecommerce.inventoryType
           }]
           break
         case 'update':
@@ -191,6 +189,9 @@ export default {
       this.APIRequest('product_traces/delete', parameter).then(response => {
         this.$parent.retrieve()
       })
+    },
+    retrieve(sort){
+      this.$parent.retrieve(sort)
     },
     update(item){
       if(item.qty !== null && item.qty !== '' && isNaN(item.qty) === false){

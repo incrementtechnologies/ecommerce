@@ -1,5 +1,6 @@
 import CONFIG from 'src/config.js'
 import AUTH from 'src/services/auth'
+import COMMON from 'src/common.js'
 export default {
   id: 'createProductTraceModal',
   size: 'modal-md',
@@ -22,7 +23,7 @@ export default {
     }
   }, {
     row: 'full',
-    label: 'Manufactu',
+    label: 'Manufacture Date',
     variable: 'manufacturing_date',
     placeholder: 'Enter manufacture date',
     disabled: false,
@@ -30,10 +31,10 @@ export default {
     required: true,
     id: 'manufacturing_date',
     type: 'input',
-    inputType: 'text',
+    inputType: 'datetime-local',
     validation: {
       size: 5,
-      type: 'text'
+      type: 'datetime-local'
     }
   }],
   route: 'product_traces/create',
@@ -45,5 +46,14 @@ export default {
     column: 'created_at',
     value: 'desc'
   },
-  params: []
+  params: [{
+    variable: 'product_id',
+    value: null
+  }, {
+    variable: 'account_id',
+    value: null
+  }, {
+    variable: 'inventory_type',
+    value: COMMON.ecommerce.inventoryType
+  }]
 }
