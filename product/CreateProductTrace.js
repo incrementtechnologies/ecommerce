@@ -18,7 +18,7 @@ export default {
     type: 'input',
     inputType: 'text',
     validation: {
-      size: 5,
+      size: 2,
       type: 'text'
     }
   }, {
@@ -31,10 +31,10 @@ export default {
     required: true,
     id: 'manufacturing_date',
     type: 'input',
-    inputType: 'datetime-local',
+    inputType: 'text',
     validation: {
-      size: 5,
-      type: 'datetime-local'
+      size: 2,
+      type: 'text'
     }
   }],
   route: 'product_traces/create',

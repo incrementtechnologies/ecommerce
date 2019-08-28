@@ -25,7 +25,7 @@
         <tbody>
           <tr v-for="itemI, indexI in item.product_traces">
             <td>
-              {{itemI.id}}
+              {{itemI.code}}
             </td>
             <td>
               {{itemI.batch_number}}
@@ -34,7 +34,7 @@
           </tr>
           <tr>
             <td colspan="3" class="text-center">
-              <button class="btn btn-primary">View More</button>
+              <button class="btn btn-primary" @click="redirect('/traces/' + item.code)">View More</button>
             </td>
           </tr>
         </tbody>
