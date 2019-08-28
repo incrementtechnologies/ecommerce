@@ -72,17 +72,17 @@
           <li v-for="item, index in productMenu" v-bind:class="{'menu-active': item.flag === true}" class="" @click="selectMenu(index)">{{item.title}}</li>
         </ul>
       </div>
-      <div class="details-holder" v-if="prevMenuIndex === 0">
+      <div class="details-holder" v-if="selectedMenu.title === 'Variation'">
         <variations :item="data"></variations>
       </div>
-      <div class="details-holder" v-if="prevMenuIndex === 1">
+      <div class="details-holder" v-if="selectedMenu.title === 'Price'">
         <prices :item="data"></prices>
       </div>
-      <div class="details-holder" v-if="prevMenuIndex === 2">
+      <div class="details-holder" v-if="selectedMenu.title === 'Inventory'">
         <inventories :item="data" v-if="common.ecommerce.inventoryType === 'inventory'"></inventories>
         <product-trace v-if="common.ecommerce.inventoryType === 'product_trace'" :item="data"></product-trace>
       </div>
-      <div class="details-holder" v-if="prevMenuIndex === 3">
+      <div class="details-holder" v-if="selectedMenu.title === 'Comment'">
         <product-comments :payloadValue="data.id" :payload="'product'" :load="true"></product-comments>
       </div>
     </div>
@@ -296,13 +296,9 @@ export default {
       errorMessage: null,
       data: null,
       code: this.$route.params.code,
-      productMenu: [
-        {title: 'Variations', flag: true},
-        {title: 'Price', flag: false},
-        {title: 'Inventory', flag: false},
-        {title: 'Comments', flag: false}
-      ],
+      productMenu: COMMON.ecommerce.editProductMenu,
       prevMenuIndex: 0,
+      selectedMenu: COMMON.ecommerce.editProductMenu[0],
       selectedImage: null,
       qty: 1,
       priceFlag: false,
@@ -333,6 +329,7 @@ export default {
         this.productMenu[this.prevMenuIndex].flag = false
         this.productMenu[index].flag = true
         this.prevMenuIndex = index
+        this.selectedMenu = this.productMenu[index]
       }
     },
     selectImage(url){

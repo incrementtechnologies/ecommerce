@@ -1,24 +1,25 @@
 <template>
-  <table class="table table-bordered">
+  <table class="table table-bordered table-hover">
     <thead>
       <tr>
         <td>SKU</td>
         <td>Title</td>
         <td>Tags</td>
         <td>Inventory</td>
-        <td>Actions</td>
+        <td>Date</td>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="(item, index) in data" :key="index">
+      <tr v-for="(item, index) in data" :key="index" @click="redirect('/product/edit/' + item.code)">
         <td>{{item.sku}}</td>
         <td>{{item.title}}</td>
         <td>{{item.tags}}</td>
         <td>{{item.sku}}</td>
-        <td>
-          <label class="text-primary action-link">EDIT</label> / 
+        <td>{{item.created_at_human}}</td>
+<!--         <td>
+          <label class="text-primary action-link" @click="redirect('/product/edit/' + item.code)">EDIT</label> / 
           <label class="text-danger action-link">DELETE</label>
-        </td>
+        </td> -->
       </tr>
     </tbody>
   </table>

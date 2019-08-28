@@ -69,7 +69,8 @@ export default {
           account_id: this.user.userID,
           title: this.title,
           description: this.description,
-          status: 'pending'
+          status: 'pending',
+          merchant_id: this.user.subAccount.merchant.id
         }
         this.APIRequest('products/create', parameter).then(response => {
           if(response.data > 0){
