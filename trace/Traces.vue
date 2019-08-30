@@ -7,7 +7,7 @@
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']">
     </filter-product>
-    <table class="table table-bordered table-hover">
+    <table class="table table-bordered" v-if="data !== null">
       <thead>
         <tr>
           <td>Trace ID</td>

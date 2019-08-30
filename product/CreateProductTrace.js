@@ -36,6 +36,20 @@ export default {
       size: 2,
       type: 'text'
     }
+  }, {
+    row: 'full',
+    label: 'Quantity',
+    variable: 'qty',
+    placeholder: 'Enter Quantity',
+    disabled: false,
+    value: null,
+    required: true,
+    id: 'qty',
+    type: 'input',
+    inputType: 'number',
+    validation: {
+      type: 'number'
+    }
   }],
   route: 'product_traces/create',
   button: {

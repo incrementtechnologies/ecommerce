@@ -181,7 +181,9 @@ export default {
           payload_value: 'desc'
         }]
       }],
-      common: COMMON
+      common: COMMON,
+      currentFilter: null,
+      currentSort: null
     }
   },
   components: {
@@ -195,13 +197,19 @@ export default {
       ROUTER.push(parameter)
     },
     retrieve(sort, filter){
+      if(filter !== null){
+        this.currentFilter = filter
+      }
+      if(sort !== null){
+        this.currentSort = sort
+      }
       let parameter = {
         condition: [{
-          value: filter.value + '%',
-          column: filter.column,
+          value: this.currentFilter.value + '%',
+          column: this.currentFilter.column,
           clause: 'like'
         }],
-        sort: sort,
+        sort: this.currentSort,
         account_id: this.user.userID,
         inventory_type: this.common.ecommerce.inventoryType
       }
