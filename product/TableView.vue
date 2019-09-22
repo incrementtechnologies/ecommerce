@@ -3,23 +3,19 @@
     <table class="table table-bordered">
       <thead>
         <tr>
-          <td>SKU</td>
           <td>Title</td>
           <td>Tags</td>
           <td>Inventory</td>
-          <td>Date</td>
           <td>Action</td>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td>{{item.sku}}</td>
           <td>{{item.title}}</td>
           <td>{{item.tags}}</td>
           <td @click="redirect('/traces/' + item.code)">
              <button class="btn btn-primary" @click="redirect('/traces/' + item.code)">{{item.qty}}</button>
           </td>
-          <td>{{item.created_at_human}}</td>
           <td>
             <button class="btn btn-primary" @click="redirect('/product/edit/' + item.code)">EDIT</button>
             <button class="btn btn-warning" @click="showModal('create', item)">Add Inventory</button>

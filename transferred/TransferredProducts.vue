@@ -1,37 +1,26 @@
 <template>
   <div class="holder">
-    <filter-product v-bind:category="category" 
-      :activeCategoryIndex="0"
-      :activeSortingIndex="0"
-      @changeSortEvent="retrieve($event.sort, $event.filter)"
-      @changeStyle="manageGrid($event)"
-      :grid="['list', 'th-large']">
-    </filter-product>
     <table class="table table-bordered" v-if="data !== null">
       <thead>
         <tr>
-          <td>Transfer Code</td>
-          <td>Transferred by</td>
-          <td>Transferred to</td>
-          <td>Number of Items</td>
-          <td>Transffered On</td>
+          <td>Product Title</td>
+          <td>Batch Number</td>
+          <td>Manufactured Date</td>
+          <td>Action</td>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td>{{item.code}}</td>
-          <td>{{item.account.username}}</td>
-          <td>{{item.to_details.name}}</td>
+          <td>{{item.product_trace_details[0].product.title}}</td>
+          <td>{{item.product_trace_details[0].batch_number}}</td>
+          <td>{{item.product_trace_details[0].manufacturing_date}}</td>
           <td>
-            <button class="btn btn-primary" @click="redirect('/transferred_products/' + item.code)">
-              {{item.transferred_products !== null ? item.transferred_products.length : 0}}
-            </button>
+            <i class="fas fa-trash text-danger" @click="remove(item.id)"></i>
           </td>
-          <td>{{item.created_at_human}}</td>
         </tr>
       </tbody>
     </table>
-    <empty v-if="data === null" :title="'Looks like you have not added a product!'" :action="'Click the New Product Button to get started.'"></empty>
+    <empty v-if="data === null" :title="'Transferred product is empty!'" :action="'Check back again later'"></empty>
   </div>
 </template>
 <style>
@@ -154,7 +143,7 @@ import axios from 'axios'
 import COMMON from 'src/common.js'
 export default {
   mounted(){
-    this.retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''})
+    this.retrieveTransfer()
   },
   data(){
     return {
@@ -162,86 +151,60 @@ export default {
       config: CONFIG,
       errorMessage: null,
       data: null,
-      selectedItem: null,
-      selectedIndex: null,
-      listStyle: 'list',
-      category: [{
-        title: 'Product Traces',
-        sorting: [{
-          title: 'Created ascending',
-          payload: 'created_at',
-          payload_value: 'asc'
-        }, {
-          title: 'Created descending',
-          payload: 'created_at',
-          payload_value: 'desc'
-        }, {
-          title: 'Batch number ascending',
-          payload: 'batch_number',
-          payload_value: 'asc'
-        }, {
-          title: 'Batch number descending',
-          payload: 'batch_number',
-          payload_value: 'desc'
-        }, {
-          title: 'Updated ascending',
-          payload: 'updated_at',
-          payload_value: 'asc'
-        }, {
-          title: 'Updated descending',
-          payload: 'updated_at',
-          payload_value: 'desc'
-        }]
-      }],
-      common: COMMON
+      common: COMMON,
+      transferId: null
     }
   },
   components: {
-    'empty': require('components/increment/generic/empty/Empty.vue'),
-    'filter-product': require('components/increment/ecommerce/filter/Product.vue')
+    'empty': require('components/increment/generic/empty/Empty.vue')
   },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    retrieve(sort, filter){
+    retrieveTransfer(){
+      $('#loading').css({'display': 'block'})
       let parameter = {
         condition: [{
-          value: filter.value + '%',
-          column: filter.column,
-          clause: 'like'
-        }],
-        sort: sort
+          value: this.$route.params.code,
+          clause: '=',
+          column: 'code'
+        }]
       }
-      $('#loading').css({'display': 'block'})
       this.APIRequest('transfers/retrieve', parameter).then(response => {
-        $('#loading').css({'display': 'none'})
         if(response.data.length > 0){
-          this.data = response.data
-          if(this.selectedItem !== null){
-            this.selectedItem = this.data[this.selectedIndex]
-          }
+          this.transferId = response.data[0].id
+          this.retrieve(this.transferId)
         }else{
-          this.data = null
-          this.selectedIndex = null
-          this.selectedItem = null
+          $('#loading').css({'display': 'none'})
         }
       })
     },
-    editModal(item, index){
-      for (var i = 0; i < this.$children.length; i++) {
-        if(this.$children[i].$el.id === 'updateProducts'){
-          this.selectedItem = item
-          this.selectedIndex = index
-          this.$children[i].modal()
+    retrieve(id){
+      let parameter = {
+        condition: [{
+          value: id,
+          column: 'transfer_id',
+          clause: '='
+        }]
+      }
+      this.APIRequest('transferred_products/retrieve', parameter).then(response => {
+        $('#loading').css({'display': 'none'})
+        if(response.data.length > 0){
+          this.data = response.data
+        }else{
+          this.data = null
         }
-      }
+      })
     },
-    manageGrid(event){
-      switch(event){
-        case 'list': this.listStyle = 'list'
-          break
+    remove(id){
+      let parameter = {
+        id: id
       }
+      $('#loading').css({'display': 'block'})
+      this.APIRequest('transferred_products/delete', parameter).then(response => {
+        this.retrieve(this.transferId)
+      })
     }
   }
 }
