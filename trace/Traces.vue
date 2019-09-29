@@ -1,5 +1,11 @@
 <template>
   <div class="holder">
+    <div>
+      <div>
+        
+      </div>
+      <button class="btn btn-warning pull-right" style="margin-bottom: 10px;" @click="exportData()"><i class="fas fa-file-export" style="padding-right: 5px;"></i>Export</button>
+    </div>
     <filter-product v-bind:category="category" 
       :activeCategoryIndex="0"
       :activeSortingIndex="0"
@@ -150,6 +156,7 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import axios from 'axios'
 import COMMON from 'src/common.js'
+import { ExportToCsv } from 'export-to-csv'
 export default {
   mounted(){
     this.retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''})
@@ -182,12 +189,12 @@ export default {
           payload: 'batch_number',
           payload_value: 'desc'
         }, {
-          title: 'Updated ascending',
-          payload: 'updated_at',
+          title: 'Manufacturing date ascending',
+          payload: 'manufacturing_date',
           payload_value: 'asc'
         }, {
-          title: 'Updated descending',
-          payload: 'updated_at',
+          title: 'Manufacturing date descending',
+          payload: 'manufacturing_date',
           payload_value: 'desc'
         }]
       }],
@@ -241,6 +248,38 @@ export default {
         case 'list': this.listStyle = 'list'
           break
       }
+    },
+    exportData(){
+      $('#loading').css({'display': 'block'})
+      let options = {
+        fieldSeparator: ',',
+        quoteStrings: '"',
+        decimalSeparator: '.',
+        showLabels: true,
+        showTitle: true,
+        title: 'Trackr',
+        useTextFile: false,
+        useBom: true,
+        useKeysAsHeaders: true
+      }
+      let exportData = []
+      if(this.data !== null){
+        this.data.map((item) => {
+          if(item.status === 'open'){
+            let object = {
+              code: JSON.stringify(item.code),
+              batch_number: item.batch_number,
+              manufacturing_date: item.manufacturing_date,
+              status: item.status,
+              created_at: item.created_at_human
+            }
+            exportData.push(object)
+          }
+        })
+      }
+      let csvExporter = new ExportToCsv(options)
+      csvExporter.generateCsv(exportData)
+      $('#loading').css({'display': 'none'})
     }
   }
 }
