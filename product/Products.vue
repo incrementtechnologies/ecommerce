@@ -208,6 +208,10 @@ export default {
           value: this.currentFilter.value + '%',
           column: this.currentFilter.column,
           clause: 'like'
+        }, {
+          value: this.user.subAccount.merchant.id,
+          column: 'merchant_id',
+          clause: '='
         }],
         sort: this.currentSort,
         account_id: this.user.userID,

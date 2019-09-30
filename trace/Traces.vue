@@ -198,7 +198,8 @@ export default {
           payload_value: 'desc'
         }]
       }],
-      common: COMMON
+      common: COMMON,
+      date: null
     }
   },
   components: {
@@ -224,6 +225,7 @@ export default {
         $('#loading').css({'display': 'none'})
         if(response.data.length > 0){
           this.data = response.data
+          this.date = response.request_timestamp
           if(this.selectedItem !== null){
             this.selectedItem = this.data[this.selectedIndex]
           }
@@ -260,14 +262,15 @@ export default {
         title: 'Trackr',
         useTextFile: false,
         useBom: true,
-        useKeysAsHeaders: true
+        useKeysAsHeaders: true,
+        filename: COMMON.APP_NAME + ' - ' + this.date
       }
       let exportData = []
       if(this.data !== null){
         this.data.map((item) => {
           if(item.status === 'open'){
             let object = {
-              code: JSON.stringify(item.code),
+              trace_code: item.code,
               batch_number: item.batch_number,
               manufacturing_date: item.manufacturing_date,
               status: item.status,
