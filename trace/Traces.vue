@@ -173,6 +173,14 @@ export default {
       category: [{
         title: 'Product Traces',
         sorting: [{
+          title: 'Code ascending',
+          payload: 'code',
+          payload_value: 'asc'
+        }, {
+          title: 'Code descending',
+          payload: 'code',
+          payload_value: 'desc'
+        }, {
           title: 'Created ascending',
           payload: 'created_at',
           payload_value: 'asc'
@@ -268,13 +276,15 @@ export default {
       let exportData = []
       if(this.data !== null){
         this.data.map((item) => {
+          let code = item.code + '<>' + item.batch_number + '<>' + item.manufacturing_date + '<>' + item.created_at_human
           if(item.status === 'open'){
             let object = {
               trace_code: item.code,
               batch_number: item.batch_number,
               manufacturing_date: item.manufacturing_date,
               status: item.status,
-              created_at: item.created_at_human
+              created_at: item.created_at_human,
+              nfc: code
             }
             exportData.push(object)
           }

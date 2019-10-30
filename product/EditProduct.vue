@@ -85,6 +85,10 @@
       <div class="details-holder" v-if="selectedMenu.title === 'Comment'">
         <product-comments :payloadValue="data.id" :payload="'product'" :load="true"></product-comments>
       </div>
+
+      <div class="details-holder" v-if="selectedMenu.title === 'Bundled Products'">
+        <bundled-products :item="data"></bundled-products>
+      </div>
     </div>
     <browse-images-modal></browse-images-modal>
   </div>
@@ -318,6 +322,7 @@ export default {
     'variations': require('components/increment/ecommerce/product/Variations.vue'),
     'inventories': require('components/increment/ecommerce/product/Inventories.vue'),
     'product-trace': require('components/increment/ecommerce/product/ProductTrace.vue'),
+    'bundled-products': require('components/increment/ecommerce/product/BundledProducts.vue'),
     'prices': require('components/increment/ecommerce/product/Prices.vue')
   },
   methods: {

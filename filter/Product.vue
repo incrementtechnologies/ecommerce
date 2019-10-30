@@ -145,7 +145,7 @@ export default {
     selectCategory(){
       this.activeSort = this.category[this.filterValue].sorting
       this.activeCategory = this.category[this.filterValue]
-      this.sortValue = 0
+      this.sortValue = this.filterValue
     },
     changeSort(){
       let object = {}
@@ -162,14 +162,12 @@ export default {
     },
     keypressHandler(event){
       if(event.charCode === 13){
-       // console.log(this.itemTemp)
-        let item = this.itemTemp
         let object = {}
         let filter = {
-          column: item.payload,
+          column: this.activeSort[this.sortValue].payload,
           value: this.searchValue
         }
-        object[item.payload] = item.payloadValue
+        object[this.activeSort[this.sortValue].payload] = this.activeSort[this.sortValue].payload_value
         let parameter = {
           sort: object,
           filter: filter

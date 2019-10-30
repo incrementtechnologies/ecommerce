@@ -11,7 +11,10 @@
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td>{{item.title}}</td>
+          <td>
+            <i class="fas fa-clone text-primary" v-if="item.type === 'bundled'" title="This is a bundled product"></i>
+            {{item.title}}
+          </td>
           <td>{{item.tags}}</td>
           <td @click="redirect('/traces/' + item.code)">
              <button class="btn btn-primary" @click="redirect('/traces/' + item.code)">{{item.qty}}</button>

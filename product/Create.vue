@@ -25,6 +25,12 @@
               <label for="exampleInputEmail1">Description</label>
               <input type="text" class="form-control" placeholder="Type description here..." v-model="description">
             </div>
+            <div class="form-group">
+              <input class="form-check-input" type="checkbox" v-model="option" id="defaultCheck1" style="margin-left: 0px;">
+              <label class="form-check-label" for="defaultCheck1">
+                Create as Bundled Product
+              </label>
+            </div>
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#createProductModal">Cancel</button>
@@ -55,7 +61,8 @@ export default {
       config: CONFIG,
       errorMessage: null,
       title: null,
-      description: null
+      description: null,
+      option: false
     }
   },
   props: ['params'],
@@ -70,7 +77,8 @@ export default {
           title: this.title,
           description: this.description,
           status: 'pending',
-          merchant_id: this.user.subAccount.merchant.id
+          merchant_id: this.user.subAccount.merchant.id,
+          type: this.option === true ? 'bundled' : 'regular'
         }
         this.APIRequest('products/create', parameter).then(response => {
           if(response.data > 0){

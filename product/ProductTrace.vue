@@ -20,6 +20,7 @@
             <td>Trace ID</td>
             <td>Batch ID</td>
             <td>Manufacturing Date</td>
+            <td>Date</td>
           </tr>
         </thead>
         <tbody>
@@ -31,6 +32,9 @@
               {{itemI.batch_number}}
             </td>
             <td>{{itemI.manufacturing_date}}</td>
+            <td>
+              {{item.created_at_human}}
+            </td>
           </tr>
           <tr>
             <td colspan="3" class="text-center">
@@ -79,7 +83,7 @@
 }
 </style>
 <script>
-import ROUTER from '../../../../router'
+import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import axios from 'axios'
