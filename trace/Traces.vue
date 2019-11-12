@@ -276,7 +276,7 @@ export default {
       let exportData = []
       if(this.data !== null){
         this.data.map((item) => {
-          let code = item.code + '<>' + item.batch_number + '<>' + item.manufacturing_date + '<>' + item.created_at_human
+          let code = item.product.title + '<>' + item.product.merchant.name + '<>' + item.batch_number + '<>' + item.manufacturing_date + '<>' + item.code + '<>' + item.product.merchant.website
           if(item.status === 'open'){
             let object = {
               trace_code: item.code,
