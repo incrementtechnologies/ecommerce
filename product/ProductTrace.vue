@@ -1,7 +1,7 @@
 <template>
   <div class="inventories-holder">
     <div class="error text-danger" v-if="errorMessage !== null">{{errorMessage}}</div>
-    <div class="form-group">
+    <div class="form-group" v-if="item.type === 'regular'">
       <label for="exampleInputEmail1" style="font-weight: 600;">Stocks</label>
       <div>
         <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="showModal('create')"> Add</button>

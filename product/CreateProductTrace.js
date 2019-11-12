@@ -31,7 +31,7 @@ export default {
     required: true,
     id: 'manufacturing_date',
     type: 'input',
-    inputType: 'text',
+    inputType: 'date',
     validation: {
       size: 2,
       type: 'text'
