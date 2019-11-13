@@ -4,7 +4,7 @@
     <div class="form-group" v-if="item.type === 'regular'">
       <label for="exampleInputEmail1" style="font-weight: 600;">Stocks</label>
       <div>
-        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="showModal('create')"> Add</button>
+        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="addTraces()"> Add</button>
         <button class="btn btn-warning form-control-custom" style="margin-left: 10px;" @click="create()"> Import</button>
       </div>
     </div>
@@ -45,6 +45,7 @@
       </table>
     </div>
     <create-modal :property="createProductTraceModal"></create-modal>
+    <create-product-traces-modal :params="productId"></create-product-traces-modal>
   </div>
 </template>
 <style scoped>
@@ -102,17 +103,25 @@ export default {
         product_id: this.item.id,
         qty: null
       },
-      createProductTraceModal: ProductTrace
+      createProductTraceModal: ProductTrace,
+      productId: this.item.id
     }
   },
 
   components: {
     'empty': require('components/increment/generic/empty/EmptyDynamicIcon.vue'),
-    'create-modal': require('components/increment/generic/modal/Modal.vue')
+    'create-modal': require('components/increment/generic/modal/Modal.vue'),
+    'create-product-traces-modal': require('./CreateProductTraces.vue')
   },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    addTraces(){
+      this.productId = this.item.id
+      setTimeout(() => {
+        $('#createProductTracesModal').modal('show')
+      }, 100)
     },
     showModal(action, item = null){
       switch(action){
