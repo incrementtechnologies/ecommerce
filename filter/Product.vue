@@ -64,7 +64,6 @@
 .view-option{
     color: $primary;
     font-size: 40px;
-    margin-right: 10px;
     line-height: 20%;
     border: solid 1px #ccc;
     height: 40px;

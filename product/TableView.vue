@@ -21,13 +21,14 @@
           </td>
           <td>
             <button class="btn btn-primary" @click="redirect('/product/edit/' + item.code)">EDIT</button>
-            <button class="btn btn-warning" @click="showModal('create', item)">Add Inventory</button>
+            <button class="btn btn-warning" @click="addProductTraces(item.id)" v-if="item.type === 'regular'">Add Inventory</button>
           </td>
         </tr>
       </tbody>
     </table>
 
     <create-modal :property="createProductTraceModal"></create-modal>
+    <create-product-traces-modal :params="productId"></create-product-traces-modal>
   </div>
 </template>
 <style>
@@ -46,16 +47,24 @@ export default {
     return {
       user: AUTH.user,
       config: CONFIG,
-      createProductTraceModal: ProductTrace
+      createProductTraceModal: ProductTrace,
+      productId: null
     }
   },
   components: {
-    'create-modal': require('components/increment/generic/modal/Modal.vue')
+    'create-modal': require('components/increment/generic/modal/Modal.vue'),
+    'create-product-traces-modal': require('./CreateProductTraces.vue')
   },
   props: ['data'],
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    addProductTraces(id){
+      this.productId = id
+      setTimeout(() => {
+        $('#createProductTracesModal').modal('show')
+      }, 100)
     },
     showModal(action, item){
       switch(action){
