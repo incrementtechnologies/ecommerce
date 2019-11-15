@@ -11,7 +11,7 @@
           {{item.title}}
         </option>
       </select>
-      <input type="text" class="form-control" v-model="searchValue" @keypress="keypressHandler" :placeholder="'Search ' + '...'">
+      <input :type="(activeSort !== null && (activeSort[sortValue].payload === 'created_at' || activeSort[sortValue].payload === 'updated_at')) ? 'date' : 'text'" class="form-control" v-model="searchValue" @keypress="keypressHandler" :placeholder="'Search ' + '...'">
       <div class="view-container">
         <div class="view-option">
           <i :class="`fa fa-${grid[toggleStyle]}`" @click="changeView()" aria-hidden="true"></i>
@@ -99,8 +99,8 @@ export default {
       user: AUTH.user,
       config: CONFIG,
       searchValue: '',
-      filterValue: null,
-      sortValue: null,
+      filterValue: 0,
+      sortValue: 0,
       title: '',
       payload: '',
       payloadValue: '',

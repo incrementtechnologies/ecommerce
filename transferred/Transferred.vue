@@ -168,28 +168,28 @@ export default {
       category: [{
         title: 'Product Traces',
         sorting: [{
-          title: 'Created ascending',
+          title: 'Transferred on ascending',
           payload: 'created_at',
           payload_value: 'asc'
         }, {
-          title: 'Created descending',
+          title: 'Transferred on descending',
           payload: 'created_at',
           payload_value: 'desc'
         }, {
-          title: 'Batch number ascending',
-          payload: 'batch_number',
+          title: 'Transferred by ascending',
+          payload: 'username',
           payload_value: 'asc'
         }, {
-          title: 'Batch number descending',
-          payload: 'batch_number',
+          title: 'Transferred by descending',
+          payload: 'username',
           payload_value: 'desc'
         }, {
-          title: 'Updated ascending',
-          payload: 'updated_at',
+          title: 'Transferred to ascending',
+          payload: 'name',
           payload_value: 'asc'
         }, {
-          title: 'Updated descending',
-          payload: 'updated_at',
+          title: 'Transferred to descending',
+          payload: 'name',
           payload_value: 'desc'
         }]
       }],
@@ -205,13 +205,14 @@ export default {
       ROUTER.push(parameter)
     },
     retrieve(sort, filter){
+      let key = Object.keys(sort)
       let parameter = {
-        condition: [{
-          value: filter.value + '%',
-          column: filter.column,
-          clause: 'like'
-        }],
-        sort: sort
+        column: filter.column,
+        value: filter.value + '%',
+        sort: {
+          value: sort[key[0]],
+          column: key[0]
+        }
       }
       $('#loading').css({'display': 'block'})
       this.APIRequest('transfers/retrieve', parameter).then(response => {
