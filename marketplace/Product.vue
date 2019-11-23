@@ -333,6 +333,7 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import CURRENCY from 'src/services/currency.js'
 import axios from 'axios'
+import COMMON from 'src/common.js'
 export default {
   mounted(){
     this.retrieve()
@@ -393,7 +394,8 @@ export default {
             column: 'code',
             clause: '='
           }],
-          account_id: this.user.userID
+          account_id: this.user.userID,
+          inventory_type: COMMON.ecommerce.inventoryType
         }
       }else{
         parameter = {
@@ -406,7 +408,8 @@ export default {
             column: 'code',
             clause: '='
           }],
-          account_id: this.user.userID
+          account_id: this.user.userID,
+          inventory_type: COMMON.ecommerce.inventoryType
         }
       }
       $('#loading').css({display: 'block'})
