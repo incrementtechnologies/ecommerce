@@ -19,6 +19,7 @@
           <td>Trace ID</td>
           <td>Batch Number</td>
           <td>Manufacture Date</td>
+          <td>Status</td>
           <td>Created At</td>
         </tr>
       </thead>
@@ -27,6 +28,7 @@
           <td>{{item.code}}</td>
           <td>{{item.batch_number}}</td>
           <td>{{item.manufacturing_date}}</td>
+          <td style="text-transform: UPPERCASE">{{item.status}}</td>
           <td>{{item.created_at_human}}</td>
   <!--         <td>
             <label class="text-primary action-link" @click="redirect('/product/edit/' + item.code)">EDIT</label> / 
@@ -203,6 +205,14 @@ export default {
         }, {
           title: 'Manufacturing date descending',
           payload: 'manufacturing_date',
+          payload_value: 'desc'
+        }, {
+          title: 'Status ascending',
+          payload: 'status',
+          payload_value: 'asc'
+        }, {
+          title: 'Status descending',
+          payload: 'status',
           payload_value: 'desc'
         }]
       }],

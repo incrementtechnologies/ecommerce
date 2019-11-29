@@ -27,7 +27,7 @@
       </div>
     </div>
     <table-view :data="data" v-if="listStyle === 'list' && data !== null"></table-view>
-    <empty v-if="data === null" :title="'Looks like you have not added a product!'" :action="'Click the New Product Button to get started.'"></empty>
+    <empty v-if="data === null" :title="empty.title" :action="empty.guide"></empty>
 	</div>
 </template>
 <style>
@@ -183,7 +183,11 @@ export default {
       }],
       common: COMMON,
       currentFilter: null,
-      currentSort: null
+      currentSort: null,
+      empty: {
+        title: null,
+        guide: null
+      }
     }
   },
   components: {
@@ -197,6 +201,13 @@ export default {
       ROUTER.push(parameter)
     },
     retrieve(sort, filter){
+      if(this.user.subAccount.merchant === null){
+        this.empty = {
+          title: 'Empty Merchant!',
+          guide: 'Go to My Profile then Merchant Settings and fill up necessary information.'
+        }
+        return false
+      }
       if(filter !== null){
         this.currentFilter = filter
       }
@@ -229,6 +240,10 @@ export default {
           this.data = null
           this.selectedIndex = null
           this.selectedItem = null
+          this.empty = {
+            title: 'Looks like you have not added a product!',
+            guide: 'Click the New Product Button to get started.'
+          }
         }
       })
     },

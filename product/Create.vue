@@ -71,6 +71,10 @@ export default {
       ROUTER.push(parameter)
     },
     submit(){
+      if(this.user.subAccount.merchant === null){
+        this.errorMessage = 'Empty Merchant! Go to My Profile then Merchant Settings.'
+        return false
+      }
       if(this.validate()){
         let parameter = {
           account_id: this.user.userID,

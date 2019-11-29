@@ -23,7 +23,7 @@
           <td>{{item.account.username}}</td>
           <td>{{item.to_details.name}}</td>
           <td>
-            <button class="btn btn-primary" @click="redirect('/transferred_products/' + item.code)">
+            <button class="btn btn-primary" @click="redirect('/consignment_products/' + item.code)">
               {{item.transferred_products !== null ? item.transferred_products.length : 0}}
             </button>
           </td>
