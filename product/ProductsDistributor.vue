@@ -193,7 +193,6 @@ export default {
       ROUTER.push(parameter)
     },
     retrieve(sort, filter){
-      console.log(this.user)
       if(this.user.subAccount === null || this.user.subAccount.merchant === null || typeof this.user.subAccount.merchant === 'undefined'){
         this.empty = {
           title: 'Empty Merchant!',
