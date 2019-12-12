@@ -280,16 +280,18 @@ export default {
         title: 'Trackr',
         useTextFile: false,
         useBom: true,
-        useKeysAsHeaders: true,
-        filename: COMMON.APP_NAME + ' - ' + this.date
+        // useKeysAsHeaders: true,
+        filename: COMMON.APP_NAME + ' - ' + this.date,
+        headers: ['trace_code', 'batch_number', 'manufacturing_date', 'status', 'created_at', 'nfc']
       }
-      let exportData = []
+      var exportData = []
       if(this.data !== null){
-        this.data.map((item) => {
-          let code = item.product.title + '<>' + item.product.merchant.name + '<>' + item.batch_number + '<>' + item.manufacturing_date + '<>' + item.code + '<>' + item.product.merchant.website
-          // this is an export hehe
-          if(item.status === 'open'){
-            let object = {
+        for (var i = 0; i < this.data.length; i++) {
+          let item = this.data[i]
+          var code = item.product.title + '<>' + item.product.merchant.name + '<>' + item.batch_number + '<>' + item.manufacturing_date + '<>' + item.code + '<>' + item.product.merchant.website
+            // this is an export hehe
+          if(item.status === 'inactive'){
+            var object = {
               trace_code: item.code,
               batch_number: item.batch_number,
               manufacturing_date: item.manufacturing_date,
@@ -299,10 +301,12 @@ export default {
             }
             exportData.push(object)
           }
-        })
+        }
       }
-      let csvExporter = new ExportToCsv(options)
-      csvExporter.generateCsv(exportData)
+      if(exportData.length > 0){
+        var csvExporter = new ExportToCsv(options)
+        csvExporter.generateCsv(exportData)
+      }
       $('#loading').css({'display': 'none'})
     }
   }

@@ -3,23 +3,30 @@
     <table class="table table-bordered">
       <thead>
         <tr>
+          <td v-if="user.type !== 'MANUFACTURER'">Title</td>
           <td>Title</td>
           <td>Tags</td>
           <td>Inventory</td>
-          <td>Action</td>
+          <td v-if="user.type === 'MANUFACTURER'">Action</td>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
+          <td v-if="user.type !== 'MANUFACTURER'">
+            {{item.merchant.name}}
+          </td>
           <td>
             <i class="fas fa-clone text-primary" v-if="item.type === 'bundled'" title="This is a bundled product"></i>
             {{item.title}}
           </td>
           <td>{{item.tags}}</td>
-          <td @click="redirect('/traces/' + item.code)">
+          <td v-if="user.type === 'MANUFACTURER'">
              <button class="btn btn-primary" @click="redirect('/traces/' + item.code)">{{item.qty}}</button>
           </td>
-          <td>
+          <td v-if="user.type !== 'MANUFACTURER'">
+             <button class="btn btn-primary">{{item.qty}}</button>
+          </td>
+          <td v-if="user.type === 'MANUFACTURER'">
             <button class="btn btn-primary" @click="redirect('/product/edit/' + item.code)">EDIT</button>
             <button class="btn btn-warning" @click="addProductTraces(item.id)" v-if="item.type === 'regular'">Add Inventory</button>
           </td>
