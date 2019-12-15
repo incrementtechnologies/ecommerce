@@ -145,6 +145,7 @@ export default {
       this.activeSort = this.category[this.filterValue].sorting
       this.activeCategory = this.category[this.filterValue]
       this.sortValue = this.filterValue
+      this.changeSort()
     },
     changeSort(){
       let object = {}
@@ -155,7 +156,8 @@ export default {
       object[this.activeSort[this.sortValue].payload] = this.activeSort[this.sortValue].payload_value
       let parameter = {
         sort: object,
-        filter: filter
+        filter: filter,
+        filterValue: this.filterValue
       }
       this.$emit('changeSortEvent', parameter)
     },
@@ -169,7 +171,8 @@ export default {
         object[this.activeSort[this.sortValue].payload] = this.activeSort[this.sortValue].payload_value
         let parameter = {
           sort: object,
-          filter: filter
+          filter: filter,
+          filterValue: this.filterValue
         }
         this.$emit('changeSortEvent', parameter)
       }

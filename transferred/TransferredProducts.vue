@@ -171,7 +171,7 @@ export default {
           column: 'code'
         }]
       }
-      this.APIRequest('transfers/retrieve', parameter).then(response => {
+      this.APIRequest('transfers/basic_retrieve', parameter).then(response => {
         if(response.data.length > 0){
           this.transferId = response.data[0].id
           this.retrieve(this.transferId)

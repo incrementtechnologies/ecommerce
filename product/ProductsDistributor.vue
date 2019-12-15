@@ -1,6 +1,5 @@
 <template>
   <div class="holder">
-    <create></create>
     <filter-product v-bind:category="category" 
       :activeCategoryIndex="0"
       :activeSortingIndex="0"
@@ -229,8 +228,8 @@ export default {
           this.selectedIndex = null
           this.selectedItem = null
           this.empty = {
-            title: 'Looks like you have not added a product!',
-            guide: 'Click the New Product Button to get started.'
+            title: 'Empty Consignments!',
+            guide: 'Start asking to transfer item to your account.'
           }
         }
       })

@@ -3,7 +3,7 @@
     <filter-product v-bind:category="category" 
       :activeCategoryIndex="0"
       :activeSortingIndex="0"
-      @changeSortEvent="retrieve($event.sort, $event.filter)"
+      @changeSortEvent="retrieve($event.sort, $event.filter, $event.filterValue)"
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']">
     </filter-product>
@@ -11,8 +11,8 @@
       <thead>
         <tr>
           <td>Transfer Code</td>
-          <td>Transferred by</td>
-          <td>Transferred to</td>
+          <td>User</td>
+          <td>Transferred {{filterValue === 0 ? 'To' : 'From'}}</td>
           <td>Number of Items</td>
           <td>Transffered On</td>
         </tr>
@@ -31,7 +31,7 @@
         </tr>
       </tbody>
     </table>
-    <empty v-if="data === null" :title="'Looks like you have not added a product!'" :action="'Click the New Product Button to get started.'"></empty>
+    <empty v-if="data === null" :title="filterValue === 0 ? 'Empty Consignments In!' : 'Empty Consignments Out!'" :action="filterValue === 0 ? 'Start accepting consignments from other business now!' : 'Start transfering item now by using the mobile app.'"></empty>
   </div>
 </template>
 <style>
@@ -154,7 +154,7 @@ import axios from 'axios'
 import COMMON from 'src/common.js'
 export default {
   mounted(){
-    this.retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''})
+    this.retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 0)
   },
   data(){
     return {
@@ -166,7 +166,34 @@ export default {
       selectedIndex: null,
       listStyle: 'list',
       category: [{
-        title: 'Product Traces',
+        title: 'Consignments in',
+        sorting: [{
+          title: 'Transferred on ascending',
+          payload: 'created_at',
+          payload_value: 'asc'
+        }, {
+          title: 'Transferred on descending',
+          payload: 'created_at',
+          payload_value: 'desc'
+        }, {
+          title: 'Transferred by ascending',
+          payload: 'username',
+          payload_value: 'asc'
+        }, {
+          title: 'Transferred by descending',
+          payload: 'username',
+          payload_value: 'desc'
+        }, {
+          title: 'Transferred to ascending',
+          payload: 'name',
+          payload_value: 'asc'
+        }, {
+          title: 'Transferred to descending',
+          payload: 'name',
+          payload_value: 'desc'
+        }]
+      }, {
+        title: 'Consignments out',
         sorting: [{
           title: 'Transferred on ascending',
           payload: 'created_at',
@@ -193,7 +220,8 @@ export default {
           payload_value: 'desc'
         }]
       }],
-      common: COMMON
+      common: COMMON,
+      filterValue: 0
     }
   },
   components: {
@@ -204,7 +232,11 @@ export default {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    retrieve(sort, filter){
+    retrieve(sort, filter, filterValue){
+      if(this.user.subAccount === null || typeof this.user.subAccount === 'undefined'){
+        return false
+      }
+      this.filterValue = filterValue
       let key = Object.keys(sort)
       let parameter = {
         column: filter.column,
@@ -213,7 +245,8 @@ export default {
           value: sort[key[0]],
           column: key[0]
         },
-        account_id: this.user.userID
+        merchant_id: this.user.subAccount.merchant.id,
+        filter_value: filterValue === 0 ? 'to' : 'from'
       }
       $('#loading').css({'display': 'block'})
       this.APIRequest('transfers/retrieve', parameter).then(response => {

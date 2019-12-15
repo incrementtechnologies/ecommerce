@@ -3,9 +3,9 @@
     <table class="table table-bordered">
       <thead>
         <tr>
-          <td v-if="user.type !== 'MANUFACTURER'">Title</td>
+          <td v-if="user.type !== 'MANUFACTURER'">Manufacturer</td>
           <td>Title</td>
-          <td>Tags</td>
+          <td v-if="user.type === 'MANUFACTURER'">Tags</td>
           <td>Inventory</td>
           <td v-if="user.type === 'MANUFACTURER'">Action</td>
         </tr>
@@ -19,7 +19,7 @@
             <i class="fas fa-clone text-primary" v-if="item.type === 'bundled'" title="This is a bundled product"></i>
             {{item.title}}
           </td>
-          <td>{{item.tags}}</td>
+          <td v-if="user.type === 'MANUFACTURER'">{{item.tags}}</td>
           <td v-if="user.type === 'MANUFACTURER'">
              <button class="btn btn-primary" @click="redirect('/traces/' + item.code)">{{item.qty}}</button>
           </td>
