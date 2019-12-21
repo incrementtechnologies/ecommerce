@@ -12,15 +12,15 @@
         <tr>
           <td>Transfer Code</td>
           <td>User</td>
-          <td>Transferred {{filterValue === 0 ? 'To' : 'From'}}</td>
+          <td>Transferred {{filterValue === 0 ? 'from' : 'to'}}</td>
           <td>Number of Items</td>
-          <td>Transffered On</td>
+          <td>Transfered On</td>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
           <td>{{item.code}}</td>
-          <td>{{item.account.username}}</td>
+          <td>{{(item.account.information.first_name === null || item.account.information.last_name === null) ? item.account.username : item.account.information.first_name + ' ' + item.account.information.last_name}}</td> 
           <td>{{item.to_details.name}}</td>
           <td>
             <button class="btn btn-primary" @click="redirect('/consignment_products/' + item.code)">

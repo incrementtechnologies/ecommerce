@@ -6,7 +6,6 @@
           <td>Product Title</td>
           <td>Batch Number</td>
           <td>Manufactured Date</td>
-          <td>Action</td>
         </tr>
       </thead>
       <tbody>
@@ -14,9 +13,9 @@
           <td>{{item.product_trace_details[0].product.title}}</td>
           <td>{{item.product_trace_details[0].batch_number}}</td>
           <td>{{item.product_trace_details[0].manufacturing_date}}</td>
-          <td>
+<!--           <td>
             <i class="fas fa-trash text-danger" @click="remove(item.id)"></i>
-          </td>
+          </td> -->
         </tr>
       </tbody>
     </table>
