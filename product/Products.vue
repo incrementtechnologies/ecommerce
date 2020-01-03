@@ -1,6 +1,6 @@
 <template>
 	<div class="holder">
-    <create></create>
+    <create :type="this.$route.params.type"></create>
     <filter-product v-bind:category="category" 
       :activeCategoryIndex="0"
       :activeSortingIndex="0"
@@ -26,7 +26,7 @@
         </div>
       </div>
     </div>
-    <table-view :data="data" v-if="listStyle === 'list' && data !== null"></table-view>
+    <table-view :data="data" v-if="listStyle === 'list' && data !== null" :type="'products'"></table-view>
     <empty v-if="data === null" :title="empty.title" :action="empty.guide"></empty>
 	</div>
 </template>

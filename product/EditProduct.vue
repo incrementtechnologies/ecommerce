@@ -86,7 +86,7 @@
         <product-comments :payloadValue="data.id" :payload="'product'" :load="true"></product-comments>
       </div>
 
-      <div class="details-holder" v-if="selectedMenu.title === 'Bundled Products'">
+      <div class="details-holder-bundled" v-if="selectedMenu.title === 'Bundled Products'">
         <bundled-products :item="data"></bundled-products>
       </div>
     </div>
@@ -249,6 +249,15 @@
     overflow-y: hidden;
     margin-top: 25px;
   }
+
+  .product-more-details .details-holder-bundled{
+    width: 100%;
+    float: left;
+    min-height: 10px;
+    overflow-y: hidden;
+    margin-top: 25px;
+  }
+
   .product-menu{
     list-style: none;
     padding: 0px;

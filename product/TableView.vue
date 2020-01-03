@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table class="table table-bordered">
+    <table class="table table-bordered" v-if="type === 'consignments'">
       <thead>
         <tr>
           <td v-if="user.type !== 'MANUFACTURER'">Manufacturer</td>
@@ -27,6 +27,33 @@
              <button class="btn btn-primary">{{item.qty}}</button>
           </td>
           <td v-if="user.type === 'MANUFACTURER'">
+            <button class="btn btn-primary" @click="redirect('/product/edit/' + item.code)">EDIT</button>
+            <button class="btn btn-warning" @click="addProductTraces(item.id)" v-if="item.type === 'regular'">Add Inventory</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table class="table table-bordered" v-if="type === 'products'">
+      <thead>
+        <tr>
+          <td>Title</td>
+          <td>Tags</td>
+          <td>Inventory</td>
+          <td>Action</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item, index) in data" :key="index">
+          <td>
+            <i class="fas fa-clone text-primary" v-if="item.type === 'bundled'" title="This is a bundled product"></i>
+            {{item.title}}
+          </td>
+          <td>{{item.tags}}</td>
+          <td>
+             <button class="btn btn-primary" @click="redirect('/traces/' + item.code)">{{item.qty}}</button>
+          </td>
+          <td>
             <button class="btn btn-primary" @click="redirect('/product/edit/' + item.code)">EDIT</button>
             <button class="btn btn-warning" @click="addProductTraces(item.id)" v-if="item.type === 'regular'">Add Inventory</button>
           </td>
@@ -62,7 +89,7 @@ export default {
     'create-modal': require('components/increment/generic/modal/Modal.vue'),
     'create-product-traces-modal': require('./CreateProductTraces.vue')
   },
-  props: ['data'],
+  props: ['data', 'type'],
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)

@@ -25,10 +25,15 @@
               <label for="exampleInputEmail1">Description</label>
               <input type="text" class="form-control" placeholder="Type description here..." v-model="description">
             </div>
-            <div class="form-group">
+            <div class="form-group" v-if="type !== 'd'">
               <input class="form-check-input" type="checkbox" v-model="option" id="defaultCheck1" style="margin-left: 0px;">
               <label class="form-check-label" for="defaultCheck1">
                 Create as Bundled Product
+              </label>
+            </div>
+            <div class="form-group" v-if="type === 'd'">
+              <label class="form-check" for="defaultCheck1">
+                Automatically create as Bundled Product
               </label>
             </div>
           </div>
@@ -54,6 +59,11 @@ import CONFIG from 'src/config.js'
 import axios from 'axios'
 export default {
   mounted(){
+    if(this.type === 'd'){
+      this.option = true
+    }else{
+      this.option = false
+    }
   },
   data(){
     return {
@@ -65,7 +75,7 @@ export default {
       option: false
     }
   },
-  props: ['params'],
+  props: ['params', 'type'],
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)

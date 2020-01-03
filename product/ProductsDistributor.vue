@@ -25,7 +25,7 @@
         </div>
       </div>
     </div> -->
-    <table-view :data="data" v-if="listStyle === 'list' && data !== null"></table-view>
+    <table-view :data="data" v-if="listStyle === 'list' && data !== null" :type="'consignments'"></table-view>
     <empty v-if="data === null" :title="empty.title" :action="empty.guide"></empty>
   </div>
 </template>
