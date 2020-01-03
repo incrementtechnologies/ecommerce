@@ -4,7 +4,7 @@
       <div class="form-group">
         <label for="exampleInputEmail1" style="font-weight: 600;">Search</label>
         <div>
-          <input type="text" v-model="search" class="form-control form-control-custom" style="width: 50%;" placeholder="Search" @keyup.enter="searchProduct()"/>
+          <input type="text" v-model="search" class="form-control form-control-custom" style="width: 40%; float: left;" placeholder="Search" @keyup.enter="searchProduct()"/>
           <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="searchProduct()">Search</button>
         </div>
       </div>
