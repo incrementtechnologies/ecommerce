@@ -228,7 +228,8 @@ export default {
     },
     deleteItem(item){
       let parameter = {
-        id: item.id
+        id: item.id,
+        bundled: item.bundled
       }
       this.APIRequest('bundled_settings/delete', parameter).then(response => {
         this.$parent.retrieve()

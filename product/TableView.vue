@@ -16,15 +16,17 @@
             {{item.merchant.name}}
           </td>
           <td>
-            <i class="fas fa-clone text-primary" v-if="item.type === 'bundled'" title="This is a bundled product"></i>
+            <i class="fas fa-clone text-primary" v-if="item.type !== 'regular'" title="This is a bundled product"></i>
             {{item.title}}
           </td>
           <td v-if="user.type === 'MANUFACTURER'">{{item.tags}}</td>
           <td v-if="user.type === 'MANUFACTURER'">
-             <button class="btn btn-primary" @click="redirect('/traces/' + item.code)">{{item.qty}}</button>
+             <button class="btn btn-primary" @click="redirect('/traces/' + item.code)" title="Total active trace">>{{item.qty}}</button>
+             <button class="btn btn-warning" title="Total active trace in bundled">{{item.qty_in_bundled}}</button>
           </td>
           <td v-if="user.type !== 'MANUFACTURER'">
-             <button class="btn btn-primary">{{item.qty}}</button>
+             <button class="btn btn-primary" title="Total active trace">{{item.qty}}</button>
+             <button class="btn btn-warning" title="Total active trace in bundled">{{item.qty_in_bundled}}</button>
           </td>
           <td v-if="user.type === 'MANUFACTURER'">
             <button class="btn btn-primary" @click="redirect('/product/edit/' + item.code)">EDIT</button>
@@ -46,12 +48,13 @@
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
           <td>
-            <i class="fas fa-clone text-primary" v-if="item.type === 'bundled'" title="This is a bundled product"></i>
+            <i class="fas fa-clone text-primary" v-if="item.type !== 'regular'" title="This is a bundled product"></i>
             {{item.title}}
           </td>
           <td>{{item.tags}}</td>
           <td>
-             <button class="btn btn-primary" @click="redirect('/traces/' + item.code)">{{item.qty}}</button>
+             <button class="btn btn-primary" @click="redirect('/traces/' + item.code)" title="Total active trace">{{item.qty}}</button>
+             <button class="btn btn-warning" title="Total active trace in bundled">{{item.qty_in_bundled}}</button>
           </td>
           <td>
             <button class="btn btn-primary" @click="redirect('/product/edit/' + item.code)">EDIT</button>

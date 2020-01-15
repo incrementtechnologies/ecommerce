@@ -1,6 +1,6 @@
 <template>
 	<div class="holder">
-    <create :type="this.$route.params.type"></create>
+    <create :type="type"></create>
     <filter-product v-bind:category="category" 
       :activeCategoryIndex="0"
       :activeSortingIndex="0"
@@ -151,6 +151,15 @@ import COMMON from 'src/common.js'
 export default {
   mounted(){
     this.retrieve({'title': 'asc'}, {column: 'title', value: ''})
+    if(this.$route.params.type){
+      this.type = this.$route.params.type
+    }else{
+      if(this.user.type !== 'MANUFACTURER'){
+        this.type = 'd'
+      }else{
+        this.type = 'm'
+      }
+    }
   },
   data(){
     return {
@@ -161,6 +170,7 @@ export default {
       selectedItem: null,
       selectedIndex: null,
       listStyle: 'list',
+      type: null,
       category: [{
         title: 'Product',
         sorting: [{
