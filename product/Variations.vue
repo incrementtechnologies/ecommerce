@@ -4,34 +4,19 @@
     <div class="form-group">
       <label for="exampleInputEmail1" style="font-weight: 600;">Variations</label>
       <div>
-        <select class="form-control form-control-custom" style="width: 45%; float: left;" v-model="newAttribute.payload">
-          <option value="color">Color</option>
-          <option value="size">Size</option>
-        </select>
-        <input type="text" class="form-control form-control-custom" style="float: left; width: 40%; margin-left: 10px;" placeholder="Type attribute value here..." v-model="newAttribute.payload_value" @keyup.enter="create()">
+        <input class="form-control form-control-custom" style="width: 45%; float: left;" v-model="newAttribute.payload" placeholder="Type variation here...">
+        <input type="text" class="form-control form-control-custom" style="float: left; width: 40%; margin-left: 10px;" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup.enter="create()">
         <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="create()"><i class="fa fa-plus"></i></button>
       </div>
     </div>
-    <div class="variations-content" v-if="item.size !== null">
-      <label class="title">Size</label>
-      <div class="attribute-item" v-for="itemSize, indexSize in item.size">
-        <input type="text" class="form-control form-control-custom" style="float: left; width: 80%;" placeholder="Type variation value here..." v-model="itemSize.payload_value" @keyup.enter="update(itemSize)">
-        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="update(itemSize)">
+    <div class="variations-content" v-if="item.variation !== null">
+      <div class="attribute-item" v-for="itemVariation, indexVariation in item.variation">
+        <input class="form-control form-control-custom" style="width: 40%; float: left; margin-right: 10px;" v-model="itemVariation.payload" placeholder="Type variation here...">
+        <input type="text" class="form-control form-control-custom" style="float: left; width: 35%;" placeholder="Type variation value here..." v-model="itemVariation.payload_value" @keyup.enter="update(itemVariation)">
+        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="update(itemVariation)">
           <i class="fa fa-sync"></i>
         </button>
-        <button class="btn btn-danger form-control-custom" style="margin-left: 10px;" @click="deleteItem(itemSize)">
-          <i class="fa fa-trash"></i>
-        </button>
-      </div>
-    </div>
-    <div class="variations-content" v-if="item.color !==  null">
-      <label class="title">Color</label>
-      <div class="attribute-item" v-for="itemColor, indexColor in item.color">
-        <input type="text" class="form-control form-control-custom" style="float: left; width: 80%;" placeholder="Type variation value here..." v-model="itemColor.payload_value" @keyup.enter="update(itemColor)">
-        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="update(itemColor)">
-          <i class="fa fa-sync"></i>
-        </button>
-        <button class="btn btn-danger form-control-custom" style="margin-left: 10px;" @click="deleteItem(itemColor)">
+        <button class="btn btn-danger form-control-custom" style="margin-left: 10px;" @click="deleteItem(itemVariation)">
           <i class="fa fa-trash"></i>
         </button>
       </div>
@@ -74,9 +59,9 @@
 }
 </style>
 <script>
-import ROUTER from '../../../../router'
-import AUTH from '../../../../services/auth'
-import CONFIG from '../../../../config.js'
+import ROUTER from 'src/router'
+import AUTH from 'src/services/auth'
+import CONFIG from 'src/config.js'
 import axios from 'axios'
 export default {
   mounted(){
@@ -89,7 +74,7 @@ export default {
       errorMessage: null,
       newAttribute: {
         product_id: this.item.id,
-        payload: 'color',
+        payload: null,
         payload_value: null
       }
     }
