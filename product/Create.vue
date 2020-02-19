@@ -91,10 +91,16 @@ export default {
           title: this.title,
           description: this.description,
           status: 'pending',
-          merchant_id: this.user.subAccount.merchant.id,
-          type: this.option === true ? 'bundled' : 'regular'
+          merchant_id: this.user.subAccount.merchant.id
         }
+        if(this.type === 'd'){
+          parameter['type'] = 'bundled'
+        }else{
+          parameter['type'] = this.option === true ? 'bundled' : 'regular'
+        }
+        $('#loading').css({display: 'block'})
         this.APIRequest('products/create', parameter).then(response => {
+          $('#loading').css({display: 'none'})
           if(response.data > 0){
             this.title = null
             this.description = null
@@ -105,10 +111,15 @@ export default {
       }
     },
     validate(){
-      if(this.title !== null || this.title !== '' || this.description !== null || this.description !== ''){
-        return true
+      if(this.title === null || this.title === ''){
+        this.errorMessage = 'Title is required.'
+        return false
       }
-      return false
+      if(this.description === '' || this.description === null){
+        this.errorMessage = 'Description is required.'
+        return false
+      }
+      return true
     }
   }
 }

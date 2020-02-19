@@ -1,9 +1,8 @@
 <template>
   <div class="holder">
     <div>
-      <div>
-        
-      </div>
+      <button class="btn btn-primary pull-left" v-if="viewInactive === false" @click="retrieve({'created_at': 'desc'}, {column: 'status', value: 'inactive'}), viewInactive = !viewInactive">Show Inactive</button>
+      <button class="btn btn-primary pull-left" v-if="viewInactive === true" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}), viewInactive = !viewInactive">Show All</button>
       <button class="btn btn-warning pull-right" style="margin-bottom: 10px;" @click="exportData()"><i class="fas fa-file-export" style="padding-right: 5px;"></i>Export</button>
     </div>
     <filter-product v-bind:category="category" 
@@ -217,7 +216,8 @@ export default {
         }]
       }],
       common: COMMON,
-      date: null
+      date: null,
+      viewInactive: false
     }
   },
   components: {

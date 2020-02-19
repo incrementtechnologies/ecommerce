@@ -28,6 +28,36 @@
           <br>
           <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here...">
         </div>
+        <div v-if="common.ecommerce.productUnits !== null">
+          <div v-if="data.variation !== null">
+            <div class="product-item-title" style="width: 79%; margin-right: 1%;">
+              <label>Volume</label>
+              <br>
+              <input type="number" class="form-control form-control-custom" v-model="data.variation[0].payload_value" placeholder="Type volume here...">
+            </div>
+            <div class="product-item-title" style="width: 20%;">
+              <label>Units</label>
+              <br>
+              <select class="form-control form-control-custom" v-model="data.variation[0].payload">
+                <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
+              </select>
+            </div>
+          </div>
+          <div v-else>
+            <div class="product-item-title" style="width: 79%; margin-right: 1%;">
+              <label>Volume</label>
+              <br>
+              <input type="number" class="form-control form-control-custom" v-model="newAttribute.payload_value" placeholder="Type volume here...">
+            </div>
+            <div class="product-item-title" style="width: 20%;">
+              <label>Units</label>
+              <br>
+              <select class="form-control form-control-custom" v-model="newAttribute.payload">
+                <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
         <div class="product-item-title">
           <label>Status</label>
           <br>
@@ -321,7 +351,12 @@ export default {
         status: null
       },
       imageStatus: null,
-      common: COMMON
+      common: COMMON,
+      newAttribute: {
+        product_id: null,
+        payload: null,
+        payload_value: null
+      }
     }
   },
   components: {
@@ -379,8 +414,41 @@ export default {
     },
     updateProduct(){
       this.APIRequest('products/update', this.data).then(response => {
-        this.retrieve()
+        if(this.common.ecommerce.productUnits !== null){
+          if(this.data.variation !== null){
+            this.updateAttribute(this.data.variation[0])
+          }else{
+            this.createAttribute()
+          }
+        }else{
+          this.retrieve()
+        }
       })
+    },
+    createAttribute(){
+      if(this.newAttribute.payload_value !== null && this.newAttribute.payload_value !== '' && parseInt(this.newAttribute.payload_value) > 0){
+        this.newAttribute.product_id = this.data.id
+        this.APIRequest('product_attributes/create', this.newAttribute).then(response => {
+          if(response.data > 0){
+            this.newAttribute.payload_value = null
+            this.errorMessage = null
+            this.retrieve()
+          }
+        })
+      }else{
+        this.retrieve()
+      }
+    },
+    updateAttribute(item){
+      if(item.payload_value !== null && item.payload_value !== '' && parseInt(item.payload_value) > 0){
+        this.APIRequest('product_attributes/update', item).then(response => {
+          if(response.data === true){
+            this.retrieve()
+          }
+        })
+      }else{
+        this.retrieve()
+      }
     },
     showImages(status){
       this.imageStatus = status
