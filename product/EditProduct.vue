@@ -72,7 +72,7 @@
           <button class="btn btn-warning pull-right" @click="redirect('/marketplace/product/' + data.code + '/' + 'preview')" style="margin-right: 10px;">Preview</button>
         </div>
       </div>
-      <div class="product-image">
+      <div class="product-image" style="position: relative;">
         <div class="product-row" style="text-align: left !important;">
           <label style="width: 100%">
             <label style="width: 70%">Featured Image</label>
@@ -82,6 +82,9 @@
         <img :src="config.BACKEND_URL + selectedImage" class="main-image" v-if="selectedImage !== null">
         <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image" v-if="selectedImage === null && data.featured !== null">
         <i class="fa fa-image" v-if="selectedImage === null && data.featured === null"></i>
+        <label class="remove-image text-danger" id="featured-image-remove" @click="removeImage(data.featured[0].id)" v-if="selectedImage === null && data.featured !== null">
+          <i class="fa fa-times"></i>
+        </label>
        <div class="images-holder">
         <div class="product-row" style="text-align: left !important;">
           <label style="width: 100%">
@@ -89,9 +92,12 @@
             <button class="btn btn-primary pull-right" @click="showImages('images')">Select</button>
           </label>
         </div>
-        <div v-for="item, index in data.images" class="image-item" @click="selectImage(item.url)">
+        <div v-for="item, index in data.images" class="image-item" @click="selectImage(item.url)" style="position: relative;">
           <img :src="config.BACKEND_URL + item.url" class="other-image">
           <div class="overlay"></div>
+          <label class="remove-image text-danger" id="other-images-remove" @click="removeImage(item.id)">
+            <i class="fa fa-times"></i>
+          </label>
         </div>
        </div>
       </div>
@@ -321,6 +327,28 @@
   .form-control-custom{
     height: 50px !important;
   }
+
+  .remove-image{
+    position: absolute;
+  }
+
+  #featured-image-remove{
+    top: 50px;
+    right: 5px;
+    z-index: 1000;
+    font-size: 24px;
+  }
+
+  #other-images-remove{
+    top: -20px;
+    right: 0px;
+    z-index: 1000;
+    font-size: 18px;
+  }
+
+  .remove-image:hover{
+    cursor: pointer;
+  }
 </style>
 <script>
 import ROUTER from 'src/router'
@@ -484,6 +512,14 @@ export default {
     },
     manageImageUrl(url){
       this.createPhoto(url)
+    },
+    removeImage(id){
+      let parameter = {
+        id: id
+      }
+      this.APIRequest('product_images/delete', parameter).then(response => {
+        this.retrieve()
+      })
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="filter">
-    <div class="input-group">
+    <div class="input-group" style="positive: relative;">
       <select class="btn btn-primary select-btn dropdown" v-model="filterValue" @change="selectCategory">
         <option class="dropdown-title" v-for="(item, index) in category" :value="index" :key="index">
           {{item.title}}
@@ -12,6 +12,9 @@
         </option>
       </select>
       <input :type="(activeSort !== null && (activeSort[sortValue].payload === 'created_at' || activeSort[sortValue].payload === 'updated_at')) ? 'date' : 'text'" class="form-control" v-model="searchValue" @keypress="keypressHandler" :placeholder="'Search ' + '...'">
+      <label class="search-icon text-primary action-link" @click="changeSort">
+        <i class="fas fa-search"></i>
+      </label>
       <div class="view-container">
         <div class="view-option">
           <i :class="`fa fa-${grid[toggleStyle]}`" @click="changeView()" aria-hidden="true"></i>
@@ -53,6 +56,15 @@
   border-top-right-radius: 0px !important;
   border-bottom-right-radius: 0px !important;
 }
+
+.search-icon{
+  position: absolute;
+  font-size: 24px;
+  right: 50px;
+  top: 0px;
+  z-index: 1000;
+}
+
 @media (max-width: 650px){
   .dropdown {
       width: 20%;
@@ -77,6 +89,10 @@
 @media (max-width: 992px){
   .view-option{
     display: none;
+  }
+
+  .search-icon{
+    right: 5px;
   }
 }
 </style>

@@ -5,7 +5,7 @@
       <label for="exampleInputEmail1" style="font-weight: 600;">Stocks</label>
       <div>
         <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="addTraces()"> Add</button>
-        <button class="btn btn-warning form-control-custom" style="margin-left: 10px;" @click="create()"> Import</button>
+        <!-- <button class="btn btn-warning form-control-custom" style="margin-left: 10px;" @click="create()"> Import</button> -->
       </div>
     </div>
     <div class="form-group">
