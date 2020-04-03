@@ -176,19 +176,13 @@ export default {
         sorting: [{
           title: 'Title ascending',
           payload: 'title',
-          payload_value: 'asc'
+          payload_value: 'asc',
+          type: 'text'
         }, {
           title: 'Title descending',
           payload: 'title',
-          payload_value: 'desc'
-        }, {
-          title: 'Description ascending',
-          payload: 'description',
-          payload_value: 'asc'
-        }, {
-          title: 'Description descending',
-          payload: 'description',
-          payload_value: 'desc'
+          payload_value: 'desc',
+          type: 'text'
         }]
       }],
       common: COMMON,

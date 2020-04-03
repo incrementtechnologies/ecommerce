@@ -20,8 +20,8 @@
               <input type="text" class="form-control" placeholder="Type batch number here..." v-model="newData.batch_number">
             </div>
 
-            <div class="form-group form-group-three margin-right">
-              <label for="exampleInputEmail1">Date (Optional)</label>
+            <!-- <div class="form-group form-group-three margin-right">
+              <label for="exampleInputEmail1">Date <b class="text-danger">*</b></label>
               <select class="form-control" v-model="manufacturing.date">
                 <option v-for="i in 31" :key="i" :value="i">{{i}}</option>
               </select>
@@ -37,6 +37,19 @@
             <div class="form-group form-group-three margin-left">
               <label for="exampleInputEmail1">Year <b class="text-danger">*</b></label>
               <input type="number" class="form-control" placeholder="YYYY" v-model="manufacturing.year">
+            </div> -->
+            <div>
+              <label for="exampleInputEmail1">Manufacture Date <b class="text-danger">*</b></label>
+              <date-picker
+                v-model="newData.manufacturing_date"
+                :type="'date'"
+                :value-type="'YYYY-MM-DD'"
+                :use12h="true"
+                :placeholder="'Search date'"
+                :format="'MMM D, YYYY'"
+                :input-class="'form-control'"
+                :input-attr="{style: 'min-height: 50px !important; width: 100% !important;'}"
+              ></date-picker>
             </div>
 
             <div class="form-group">
@@ -75,6 +88,14 @@
   margin-right: 3%;
 }
 
+.mx-datepicker,
+.mx-input-wrapper {
+  width: unset;
+  position: unset;
+  display: unset;
+}
+
+
 @media (max-width: 991px){
   .form-group-three{
     width: 100% !important;
@@ -93,6 +114,8 @@ import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
+import DatePicker from 'vue2-datepicker'
+import 'vue2-datepicker/index.css'
 export default {
   mounted(){
     var date = new Date()
@@ -156,6 +179,9 @@ export default {
       }
     }
   },
+  components: {
+    DatePicker
+  },
   props: ['params'],
   methods: {
     redirect(parameter){
@@ -163,13 +189,9 @@ export default {
     },
     submit(){
       if(this.validate()){
-        let date = this.manufacturing.date
-        let month = this.manufacturing.month
-        let year = this.manufacturing.year
         this.errorMessage = null
         this.newData.product_id = this.params
         this.newData.account_id = this.user.userID
-        this.newData.manufacturing_date = (date === null || date === '') ? month + '-' + year : date + '-' + month + '-' + year
         this.APIRequest('product_traces/create', this.newData).then(response => {
           if(response.data !== null){
             this.newData = {
@@ -192,6 +214,9 @@ export default {
         return false
       }else if(this.newData.qty <= 0 || this.newData.qty === null || this.newData.qty === ''){
         this.errorMessage = 'Quantity should not be less than or equal to 0'
+        return false
+      }else if(this.newData.manufacturing_date === null || this.newData.manufacturing_date === ''){
+        this.errorMessage = 'Manufacturing date is required.'
         return false
       }
       return true

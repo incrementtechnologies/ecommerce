@@ -176,43 +176,53 @@ export default {
         sorting: [{
           title: 'Code ascending',
           payload: 'code',
-          payload_value: 'asc'
+          payload_value: 'asc',
+          type: 'text'
         }, {
           title: 'Code descending',
           payload: 'code',
-          payload_value: 'desc'
+          payload_value: 'desc',
+          type: 'text'
         }, {
           title: 'Created ascending',
           payload: 'created_at',
-          payload_value: 'asc'
+          payload_value: 'asc',
+          type: 'date'
         }, {
           title: 'Created descending',
           payload: 'created_at',
-          payload_value: 'desc'
+          payload_value: 'desc',
+          type: 'date'
         }, {
           title: 'Batch number ascending',
           payload: 'batch_number',
-          payload_value: 'asc'
+          payload_value: 'asc',
+          type: 'text'
         }, {
           title: 'Batch number descending',
           payload: 'batch_number',
-          payload_value: 'desc'
+          payload_value: 'desc',
+          type: 'text'
         }, {
           title: 'Manufacturing date ascending',
           payload: 'manufacturing_date',
-          payload_value: 'asc'
+          payload_value: 'asc',
+          type: 'date'
         }, {
           title: 'Manufacturing date descending',
           payload: 'manufacturing_date',
-          payload_value: 'desc'
+          payload_value: 'desc',
+          type: 'date'
         }, {
           title: 'Status ascending',
           payload: 'status',
-          payload_value: 'asc'
+          payload_value: 'asc',
+          type: 'text'
         }, {
           title: 'Status descending',
           payload: 'status',
-          payload_value: 'desc'
+          payload_value: 'desc',
+          type: 'text'
         }]
       }],
       common: COMMON,

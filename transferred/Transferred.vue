@@ -170,54 +170,66 @@ export default {
         sorting: [{
           title: 'Transferred on ascending',
           payload: 'created_at',
-          payload_value: 'asc'
+          payload_value: 'asc',
+          type: 'date'
         }, {
           title: 'Transferred on descending',
           payload: 'created_at',
-          payload_value: 'desc'
+          payload_value: 'desc',
+          type: 'date'
         }, {
           title: 'Transferred by ascending',
           payload: 'username',
-          payload_value: 'asc'
+          payload_value: 'asc',
+          type: 'text'
         }, {
           title: 'Transferred by descending',
           payload: 'username',
-          payload_value: 'desc'
+          payload_value: 'desc',
+          type: 'text'
         }, {
           title: 'Transferred to ascending',
           payload: 'name',
-          payload_value: 'asc'
+          payload_value: 'asc',
+          type: 'text'
         }, {
           title: 'Transferred to descending',
           payload: 'name',
-          payload_value: 'desc'
+          payload_value: 'desc',
+          type: 'text'
         }]
       }, {
         title: 'Consignments out',
         sorting: [{
           title: 'Transferred on ascending',
           payload: 'created_at',
-          payload_value: 'asc'
+          payload_value: 'asc',
+          type: 'date'
         }, {
           title: 'Transferred on descending',
           payload: 'created_at',
-          payload_value: 'desc'
+          payload_value: 'desc',
+          type: 'date'
         }, {
           title: 'Transferred by ascending',
           payload: 'username',
-          payload_value: 'asc'
+          payload_value: 'asc',
+          type: 'text'
         }, {
           title: 'Transferred by descending',
           payload: 'username',
-          payload_value: 'desc'
+          payload_value: 'desc',
+          type: 'text'
         }, {
           title: 'Transferred to ascending',
           payload: 'name',
-          payload_value: 'asc'
+          payload_value: 'asc',
+          type: 'text'
         }, {
           title: 'Transferred to descending',
           payload: 'name',
-          payload_value: 'desc'
+          payload_value: 'desc',
+          type: 'text'
         }]
       }],
       common: COMMON,

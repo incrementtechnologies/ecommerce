@@ -11,7 +11,26 @@
           {{item.title}}
         </option>
       </select>
-      <input :type="(activeSort !== null && (activeSort[sortValue].payload === 'created_at' || activeSort[sortValue].payload === 'updated_at')) ? 'date' : 'text'" class="form-control" v-model="searchValue" @keypress="keypressHandler" :placeholder="'Search ' + '...'">
+      <input
+        type="text"
+        class="form-control"
+        v-model="searchValue"
+        @keypress="keypressHandler"
+        :placeholder="'Search ' + '...'" 
+        v-if="(activeSort !== null && activeSort[sortValue].type !== 'date')"
+      >
+       <!-- Date Tag -->
+      <date-picker
+        v-if="(activeSort !== null && activeSort[sortValue].type === 'date')"
+        v-model="searchValue"
+        :type="'date'"
+        :value-type="'YYYY-MM-DD'"
+        :use12h="true"
+        :placeholder="'Search date'"
+        :format="'MMM D, YYYY'"
+        :input-class="'form-control'"
+        :input-attr="{style: 'min-height: 40px !important; width: 100% !important;'}"
+      ></date-picker>
       <label class="search-icon text-primary action-link" @click="changeSort">
         <i class="fas fa-search"></i>
       </label>
@@ -30,9 +49,15 @@
   float: left;
   height: 50px;
 }
+
+.text-primary{
+  color: $primary !important;
+}
 .form-control{
   height: 40px !important;
+  width: 100% !important;
 }
+
 .input-group{
   margin-bottom: 10px !important;
 }
@@ -63,6 +88,13 @@
   right: 50px;
   top: 0px;
   z-index: 1000;
+}
+
+.mx-datepicker,
+.mx-input-wrapper {
+  width: 100%;
+  position: unset;
+  display: unset;
 }
 
 @media (max-width: 650px){
@@ -101,6 +133,8 @@ import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import axios from 'axios'
+import DatePicker from 'vue2-datepicker'
+import 'vue2-datepicker/index.css'
 export default {
   mounted(){
     this.activeCategoryIndex = this.activeCategoryIndex !== null ? this.activeCategoryIndex : 0
@@ -136,6 +170,9 @@ export default {
     }
   },
   props: ['category', 'activeCategoryIndex', 'activeSortingIndex', 'grid'],
+  components: {
+    DatePicker
+  },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)

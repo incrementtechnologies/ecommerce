@@ -30,7 +30,7 @@
           </td>
           <td v-if="user.type === 'MANUFACTURER'">
             <button class="btn btn-primary" @click="redirect('/product/edit/' + item.code)">EDIT</button>
-            <button class="btn btn-warning" @click="addProductTraces(item.id)" v-if="item.type === 'regular'">Add Inventory</button>
+            <button class="btn btn-warning" @click="showModal('create', item)" v-if="item.type === 'regular'">Add Inventory</button>
           </td>
         </tr>
       </tbody>
@@ -58,7 +58,7 @@
           </td>
           <td>
             <button class="btn btn-primary" @click="redirect('/product/edit/' + item.code)">EDIT</button>
-            <button class="btn btn-warning" @click="addProductTraces(item.id)" v-if="item.type === 'regular'">Add Inventory</button>
+            <button class="btn btn-warning" @click="showModal('create', item)" v-if="item.type === 'regular'">Add Inventory</button>
           </td>
         </tr>
       </tbody>
@@ -113,10 +113,10 @@ export default {
           this.createProductTraceModal = {...ProductTrace}
           let inputs = this.createProductTraceModal.inputs
           inputs.map(input => {
-            if(input.variable !== 'status'){
+            if(input.variable !== 'qty'){
               input.value = null
             }else{
-              input.value = 'Normal'
+              input.value = 1
             }
             input.disabled = false
           })

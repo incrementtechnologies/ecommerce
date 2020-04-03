@@ -165,11 +165,13 @@ export default {
         sorting: [{
           title: 'Created at ascending',
           payload: 'created_at',
-          payload_value: 'asc'
+          payload_value: 'asc',
+          type: 'date'
         }, {
           title: 'Created at descending',
           payload: 'created_at',
-          payload_value: 'desc'
+          payload_value: 'desc',
+          type: 'date'
         }]
       }],
       common: COMMON,

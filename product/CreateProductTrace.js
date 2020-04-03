@@ -30,11 +30,10 @@ export default {
     value: null,
     required: true,
     id: 'manufacturing_date',
-    type: 'input',
-    inputType: 'text',
+    type: 'date',
     validation: {
       size: 2,
-      type: 'text'
+      type: 'date'
     }
   }, {
     row: 'full',
@@ -42,7 +41,7 @@ export default {
     variable: 'qty',
     placeholder: 'Enter Quantity',
     disabled: false,
-    value: null,
+    value: 1,
     required: true,
     id: 'qty',
     type: 'input',
