@@ -8,10 +8,13 @@
     </div>
     <div class="product-item-holder">
       <div class="product-item-details">
+        <div v-if="errorMessage !== null">
+          <label class="text-danger">Opps! {{errorMessage}}</label>
+        </div>
         <div class="product-item-title">
           <label>Title <label class="text-danger">*</label></label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.title" placeholder="Type product title here...">
+          <input type="text" class="form-control form-control-custom" v-model="data.title" placeholder="Type product title here..." :disabled="data.status === 'published'">
         </div>
         <div class="product-item-title">
           <label>Description <label class="text-danger">*</label></label>
@@ -67,7 +70,7 @@
           </select>
         </div>
         <div class="product-item-title">
-          <button class="btn btn-danger" @click="deleteProduct(data.id)">Delete</button>
+          <button class="btn btn-danger" @click="deleteProduct(data.id)" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'">Delete</button>
           <button class="btn btn-primary pull-right" @click="updateProduct()">Update</button>
           <button class="btn btn-warning pull-right" @click="redirect('/marketplace/product/' + data.code + '/' + 'preview')" style="margin-right: 10px;">Preview</button>
         </div>
@@ -367,7 +370,6 @@ export default {
       errorMessage: null,
       data: null,
       code: this.$route.params.code,
-      productMenu: COMMON.ecommerce.editProductMenu,
       prevMenuIndex: 0,
       selectedMenu: COMMON.ecommerce.editProductMenu[0],
       selectedImage: null,
@@ -384,6 +386,16 @@ export default {
         product_id: null,
         payload: null,
         payload_value: null
+      }
+    }
+  },
+  computed: {
+    productMenu: function (){
+      if(this.data !== null){
+        return (this.data.type === 'regular') ? [{
+          title: 'Inventory',
+          flag: true
+        }] : COMMON.ecommerce.editProductMenu
       }
     }
   },
@@ -440,7 +452,26 @@ export default {
         ROUTER.push('/products')
       })
     },
+    validate(){
+      this.errorMessage = null
+      if(this.data.title === null || this.data.title === ''){
+        this.errorMessage = 'Title is required.'
+        return false
+      }
+      if(this.data.description === '' || this.data.description === null){
+        this.errorMessage = 'Description is required.'
+        return false
+      }
+      if(typeof this.common.ecommerce.productTitleLimit !== undefined && typeof this.common.ecommerce.productTitleLimit !== 'undefined' && this.data.title.length > this.common.ecommerce.productTitleLimit){
+        this.errorMessage = 'Product title length should not exceed to ' + this.common.ecommerce.productTitleLimit + ' characters.'
+        return false
+      }
+      return true
+    },
     updateProduct(){
+      if(this.validate() === false){
+        return
+      }
       this.APIRequest('products/update', this.data).then(response => {
         if(this.common.ecommerce.productUnits !== null){
           if(this.data.variation !== null){

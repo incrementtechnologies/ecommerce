@@ -30,7 +30,7 @@
           </td>
           <td v-if="user.type === 'MANUFACTURER'">
             <button class="btn btn-primary" @click="redirect('/product/edit/' + item.code)">EDIT</button>
-            <button class="btn btn-warning" @click="showModal('create', item)" v-if="item.type === 'regular'">Add Inventory</button>
+            <button class="btn btn-warning" @click="showModal('create', item)" v-if="item.type === 'regular' && item.status === 'published'">Add Inventory</button>
           </td>
         </tr>
       </tbody>
@@ -58,7 +58,7 @@
           </td>
           <td>
             <button class="btn btn-primary" @click="redirect('/product/edit/' + item.code)">EDIT</button>
-            <button class="btn btn-warning" @click="showModal('create', item)" v-if="item.type === 'regular'">Add Inventory</button>
+            <button class="btn btn-warning" @click="showModal('create', item)" v-if="item.type === 'regular' && item.status === 'published'">Add Inventory</button>
           </td>
         </tr>
       </tbody>

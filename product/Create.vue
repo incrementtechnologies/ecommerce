@@ -57,6 +57,7 @@ import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import axios from 'axios'
+import COMMON from 'src/common.js'
 export default {
   mounted(){
     if(this.type === 'd'){
@@ -72,7 +73,8 @@ export default {
       errorMessage: null,
       title: null,
       description: null,
-      option: false
+      option: false,
+      common: COMMON
     }
   },
   props: ['params', 'type'],
@@ -102,13 +104,29 @@ export default {
         this.APIRequest('products/create', parameter).then(response => {
           $('#loading').css({display: 'none'})
           if(response.data > 0){
-            this.title = null
-            this.description = null
-            $('#createProductModal').modal('hide')
-            this.$parent.retrieve({'title': 'asc'}, {column: 'title', value: ''})
+            this.retrieve(response.data)
           }
         })
       }
+    },
+    retrieve(id){
+      let parameter = {
+        condition: [{
+          value: id,
+          column: 'id',
+          clause: '='
+        }],
+        account_id: this.user.userID,
+        inventory_type: this.common.ecommerce.inventoryType
+      }
+      this.APIRequest('products/retrieve', parameter).then(response => {
+        if(response.data.length > 0){
+          this.title = null
+          this.description = null
+          $('#createProductModal').modal('hide')
+          this.redirect('/product/edit/' + response.data[0].code)
+        }
+      })
     },
     validate(){
       if(this.title === null || this.title === ''){
@@ -117,6 +135,10 @@ export default {
       }
       if(this.description === '' || this.description === null){
         this.errorMessage = 'Description is required.'
+        return false
+      }
+      if(typeof this.common.ecommerce.productTitleLimit !== undefined && typeof this.common.ecommerce.productTitleLimit !== 'undefined' && this.title.length > this.common.ecommerce.productTitleLimit){
+        this.errorMessage = 'Product title length should not exceed to ' + this.common.ecommerce.productTitleLimit + ' characters.'
         return false
       }
       return true
