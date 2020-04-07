@@ -14,11 +14,11 @@
         <i class="fa fa-image" v-else></i>
       </div>
       <div class="products-details">
-        <div class="products-title">
-          <label style="padding-top: 5px;"><b>{{item.title}}</b></label>
-          <label>{{item.description}}</label>
+        <div class="products-title" :style="{width: item.price === null ? '100%' : '50%'}">
+          <label style="padding-top: 5px;"><b>{{item.title.length > (item.price === null ? 32 : 16) ? item.title.substr(0, (item.price === null ? 32 : 16)) + '...' : item.title}}</b></label>
+          <label>{{item.description.length > (item.price === null ? 32 : 16) ? item.description.substr(0, (item.price === null ? 32 : 16)) + '...' : item.description}}</label>
         </div>  
-        <div class="products-price">
+        <div class="products-price" v-if="item.price === null">
           <label v-if="item.price !== null">
             <label v-if="item.price.length === 1">PHP {{item.price[0].price}}</label>
             <label v-if="item.price.length > 1">PHP {{item.price[item.price.length - 1].price + ' - ' + item.price[0].price}}</label>

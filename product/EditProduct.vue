@@ -70,7 +70,7 @@
           </select>
         </div>
         <div class="product-item-title">
-          <button class="btn btn-danger" @click="deleteProduct(data.id)" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'">Delete</button>
+          <button class="btn btn-danger" @click="showConfirmationModal(data.id)" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'">Delete</button>
           <button class="btn btn-primary pull-right" @click="updateProduct()">Update</button>
           <button class="btn btn-warning pull-right" @click="redirect('/marketplace/product/' + data.code + '/' + 'preview')" style="margin-right: 10px;">Preview</button>
         </div>
@@ -130,6 +130,7 @@
       </div>
     </div>
     <browse-images-modal></browse-images-modal>
+    <confirmation ref="confirmationModal" :title="'Confirmation Message'" :message="'Are you sure you want delete this product?'" @onConfirm="deleteProduct($event.id)"></confirmation>
   </div>
 </template>
 <style scoped>
@@ -407,7 +408,8 @@ export default {
     'inventories': require('components/increment/ecommerce/product/Inventories.vue'),
     'product-trace': require('components/increment/ecommerce/product/ProductTrace.vue'),
     'bundled-products': require('components/increment/ecommerce/product/BundledProducts.vue'),
-    'prices': require('components/increment/ecommerce/product/Prices.vue')
+    'prices': require('components/increment/ecommerce/product/Prices.vue'),
+    'confirmation': require('components/increment/generic/modal/Confirmation.vue')
   },
   methods: {
     redirect(parameter){
@@ -420,6 +422,9 @@ export default {
         this.prevMenuIndex = index
         this.selectedMenu = this.productMenu[index]
       }
+    },
+    showConfirmationModal(id){
+      this.$refs.confirmationModal.show(id)
     },
     selectImage(url){
       this.selectedImage = url
