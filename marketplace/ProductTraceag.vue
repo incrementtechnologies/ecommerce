@@ -1,7 +1,7 @@
 <template>
   <div v-if="data !== null">
     <div class="title" v-if="status === 'preview'">
-      <b @click="redirect('/d/products')">
+      <b @click="redirect('/product/edit/' + data.code)">
         <label class="text-primary action-link">Back</label>
       </b>
     </div>

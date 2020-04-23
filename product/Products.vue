@@ -15,8 +15,8 @@
       </div>
       <div class="products-details">
         <div class="products-title" :style="{width: item.price === null ? '100%' : '50%'}">
-          <label style="padding-top: 5px;"><b>{{item.title.length > (item.price === null ? 32 : 16) ? item.title.substr(0, (item.price === null ? 32 : 16)) + '...' : item.title}}</b></label>
-          <label>{{item.description.length > (item.price === null ? 32 : 16) ? item.description.substr(0, (item.price === null ? 32 : 16)) + '...' : item.description}}</label>
+          <label style="padding-top: 5px;"><b>{{item.title}}</b></label>
+          <label>{{item.description}}</label>
         </div>  
         <div class="products-price" v-if="item.price === null">
           <label v-if="item.price !== null">
@@ -94,11 +94,14 @@
     height: 50px;
   }
   .products-title label{
-    width: 100%;
+    width: 96%;
     float: left;
     font-size: 12px;
     margin: 0px !important;
     padding-left: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; 
   }
   .products-price{
     width: 50%;

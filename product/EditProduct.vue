@@ -98,7 +98,7 @@
         <div v-for="item, index in data.images" class="image-item" @click="selectImage(item.url)" style="position: relative;">
           <img :src="config.BACKEND_URL + item.url" class="other-image">
           <div class="overlay"></div>
-          <label class="remove-image text-danger" id="other-images-remove" @click="removeImage(item.id)">
+          <label class="remove-image text-danger" id="other-images-remove" @click="removeImage(item.id)" v-if="item.status !== 'featured'">
             <i class="fa fa-times"></i>
           </label>
         </div>
@@ -555,6 +555,7 @@ export default {
       }
       this.APIRequest('product_images/delete', parameter).then(response => {
         this.retrieve()
+        this.selectedImage = null
       })
     }
   }
