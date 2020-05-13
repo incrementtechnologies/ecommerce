@@ -104,6 +104,10 @@
   .dropdown-title {
     font-size: 10px;
   }
+
+  .search-icon{
+    right: 50px;
+  }
 }
 .view-option{
     color: $primary;
@@ -119,12 +123,8 @@
   }
 }
 @media (max-width: 992px){
-  .view-option{
-    display: none;
-  }
-
   .search-icon{
-    right: 5px;
+    right: 50px;
   }
 }
 </style>

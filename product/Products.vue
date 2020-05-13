@@ -144,6 +144,13 @@
     display: block;
   }
 
+  @media (max-width: 992px){
+    .products-holder{
+      width: 98%;
+      margin-left: 1%;
+      margin-right: 1%;
+    }
+  }
 </style>
 <script>
 import ROUTER from 'src/router'

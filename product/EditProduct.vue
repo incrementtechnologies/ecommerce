@@ -353,6 +353,12 @@
   .remove-image:hover{
     cursor: pointer;
   }
+
+  @media (max-width: 992px){
+    .product-item-details, .product-image, .product-more-details .details-holder, .product-menu{
+      width: 100%;
+    }
+  }
 </style>
 <script>
 import ROUTER from 'src/router'

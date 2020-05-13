@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table class="table table-bordered" v-if="type === 'consignments'">
+    <table class="table table-bordered table-responsive" v-if="type === 'consignments'">
       <thead>
         <tr>
           <td v-if="user.type !== 'MANUFACTURER'">Manufacturer</td>
@@ -36,7 +36,7 @@
       </tbody>
     </table>
 
-    <table class="table table-bordered" v-if="type === 'products'">
+    <table class="table table-bordered table-responsive" v-if="type === 'products'">
       <thead>
         <tr>
           <td>Title</td>
