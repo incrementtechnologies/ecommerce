@@ -70,9 +70,9 @@
           </select>
         </div>
         <div class="product-item-title">
-          <button class="btn btn-danger" @click="showConfirmationModal(data.id)" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'">Delete</button>
-          <button class="btn btn-primary pull-right" @click="updateProduct()">Update</button>
-          <button class="btn btn-warning pull-right" @click="redirect('/marketplace/product/' + data.code + '/' + 'preview')" style="margin-right: 10px;">Preview</button>
+          <button class="btn btn-danger" @click="showConfirmationModal(data.id)" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'" style="margin-top: 5px;">Delete</button>
+          <button class="btn btn-primary pull-right" @click="updateProduct()" style="margin-right: 2px; margin-top: 5px;">Update</button>
+          <button class="btn btn-warning pull-right" @click="redirect('/marketplace/product/' + data.code + '/' + 'preview')" style="margin-right: 10px; margin-top: 5px;">Preview</button>
         </div>
       </div>
       <div class="product-image" style="position: relative;">
@@ -493,6 +493,7 @@ export default {
         }else{
           this.retrieve()
         }
+        ROUTER.push(AUTH.redirectRoute(this.user.type))
       })
     },
     createAttribute(){
