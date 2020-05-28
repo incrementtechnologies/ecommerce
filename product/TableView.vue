@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div v-if="user.type === 'DISTRIBUTOR'" style="margin-bottom: 10px;">
+      <button class="btn btn-primary" @click="filterBy('bundled')" :class="{'btn-warning': activePage === 'bundled'}">Bundled</button>
+      <button class="btn btn-primary" @click="filterBy('regular')" :class="{'btn-warning': activePage === 'regular'}">Regular</button>
+      <button class="btn btn-primary" @click="filterBy('all')" :class="{'btn-warning': activePage === 'all'}">All</button>
+    </div>
     <table class="table table-bordered table-responsive" v-if="type === 'consignments'">
       <thead>
         <tr>
@@ -11,7 +16,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in data" :key="index">
+        <tr v-for="(item, index) in sorted" :key="index">
           <td v-if="user.type !== 'MANUFACTURER'">
             {{item.merchant.name}}
           </td>
@@ -46,7 +51,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in data" :key="index">
+        <tr v-for="(item, index) in sorted" :key="index">
           <td>
             <i class="fas fa-clone text-primary" v-if="item.type !== 'regular'" title="This is a bundled product"></i>
             {{item.title}}
@@ -73,6 +78,10 @@
   cursor: pointer;
   text-decoration: underline;
 }
+
+.btn-warning:hover{
+  color: #fff !important;
+}
 </style>
 <script>
 import ROUTER from 'src/router'
@@ -83,13 +92,16 @@ import ProductTrace from './CreateProductTrace.js'
 import COMMON from 'src/common.js'
 export default {
   mounted(){
+    this.filterBy('bundled')
   },
   data(){
     return {
       user: AUTH.user,
       config: CONFIG,
       createProductTraceModal: ProductTrace,
-      productId: null
+      productId: null,
+      sorted: [],
+      activePage: 'bundled'
     }
   },
   components: {
@@ -136,6 +148,18 @@ export default {
           break
       }
       $('#createProductTraceModal').modal('show')
+    },
+    filterBy(type){
+      this.activePage = type
+      if(type === 'all'){
+        this.sorted = this.data
+      }else{
+        this.sorted = this.data.filter((item) => {
+          if(item.type === type){
+            return item
+          }
+        })
+      }
     },
     retrieve(sort){
       this.$parent.retrieve(null, null)

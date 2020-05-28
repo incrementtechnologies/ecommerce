@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#createProductModal" style="margin-bottom: 25px;"><i class="fa fa-plus"></i> New Product
+    <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#createProductModal" style="margin-bottom: 25px;" v-if="user.subAccount !== null && user.subAccount.merchant !== null && user.subAccount.merchant.status === 'verified'"><i class="fa fa-plus"></i> New Product
     </button>
     <div class="modal fade" id="createProductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-md" role="document">
