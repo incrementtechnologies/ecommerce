@@ -8,7 +8,8 @@
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']">
     </filter-product>
-    <div class="products-holder" v-for="item, index in data" @click="redirect('/product/edit/' + item.code)" v-if="listStyle === 'columns'">
+    <image-view v-if="listStyle === 'columns'" :data="data"></image-view>
+    <!-- <div class="products-holder" v-for="item, index in data" @click="redirect('/product/edit/' + item.code)" v-if="listStyle === 'columns'">
       <div class="products-image">
         <img :src="config.BACKEND_URL + item.featured[0].url" v-if="item.featured !== null">
         <i class="fa fa-image" v-else></i>
@@ -25,7 +26,7 @@
           </label>
         </div>
       </div>
-    </div>
+    </div> -->
     <table-view :data="data" v-if="listStyle === 'list' && data !== null" :type="'products'"></table-view>
     <empty v-if="data === null" :title="empty.title" :action="empty.guide"></empty>
 	</div>
@@ -208,7 +209,8 @@ export default {
     'create': require('components/increment/ecommerce/product/Create.vue'),
     'table-view': require('components/increment/ecommerce/product/TableView.vue'),
     'empty': require('components/increment/generic/empty/Empty.vue'),
-    'filter-product': require('components/increment/ecommerce/filter/Product.vue')
+    'filter-product': require('components/increment/ecommerce/filter/Product.vue'),
+    'image-view': require('components/increment/ecommerce/product/ImageView.vue')
   },
   methods: {
     redirect(parameter){
