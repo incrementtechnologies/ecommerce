@@ -1,6 +1,12 @@
 <template>
   <div>
-    <div class="products-holder" v-for="item, index in data" @click="redirect('/product/edit/' + item.code)">
+    <div style="margin-bottom: 10px;">
+      <button class="btn btn-primary" @click="filterBy('bundled')" :class="{'btn-warning': activePage === 'bundled'}">Bundled</button>
+      <button class="btn btn-primary" @click="filterBy('regular')" :class="{'btn-warning': activePage === 'regular'}">Regular</button>
+      <button class="btn btn-primary" @click="filterBy('all')" :class="{'btn-warning': activePage === 'all'}">All</button>
+    </div>
+
+    <div class="products-holder" v-for="item, index in sorted" @click="redirect('/product/edit/' + item.code)">
       <div class="products-image">
         <img :src="config.BACKEND_URL + item.featured[0].url" v-if="item.featured !== null">
         <i class="fa fa-image" v-else></i>
@@ -133,13 +139,15 @@ import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
 export default {
   mounted(){
-    this.retrieve({'title': 'asc'}, {column: 'title', value: ''})
+    this.filterBy('bundled')
   },
   data(){
     return {
       user: AUTH.user,
       config: CONFIG,
-      common: COMMON
+      common: COMMON,
+      activePage: 'bundled',
+      sorted: []
     }
   },
   props: ['data', 'flag'],
@@ -147,6 +155,18 @@ export default {
     redirect(parameter){
       if(this.user.type === 'MANUFACTURER' || this.flag === true){
         ROUTER.push(parameter)
+      }
+    },
+    filterBy(type){
+      this.activePage = type
+      if(type === 'all'){
+        this.sorted = this.data
+      }else{
+        this.sorted = this.data.filter((item) => {
+          if(item.type === type){
+            return item
+          }
+        })
       }
     }
   }
