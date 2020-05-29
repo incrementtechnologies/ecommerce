@@ -7,7 +7,7 @@
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']">
     </filter-product>
-    <image-view :data="data" v-if="listStyle === 'columns'"></image-view>
+    <image-view :data="data" :flag="false" v-if="listStyle === 'columns'"></image-view>
     <table-view :data="data" v-if="listStyle === 'list' && data !== null" :type="'consignments'"></table-view>
     <empty v-if="data === null" :title="empty.title" :action="empty.guide"></empty>
   </div>

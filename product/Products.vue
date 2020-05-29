@@ -8,7 +8,7 @@
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']">
     </filter-product>
-    <image-view v-if="listStyle === 'columns'" :data="data"></image-view>
+    <image-view v-if="listStyle === 'columns'" :data="data" :flag="true"></image-view>
     <!-- <div class="products-holder" v-for="item, index in data" @click="redirect('/product/edit/' + item.code)" v-if="listStyle === 'columns'">
       <div class="products-image">
         <img :src="config.BACKEND_URL + item.featured[0].url" v-if="item.featured !== null">

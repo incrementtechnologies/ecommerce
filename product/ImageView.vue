@@ -142,10 +142,12 @@ export default {
       common: COMMON
     }
   },
-  props: ['data'],
+  props: ['data', 'flag'],
   methods: {
     redirect(parameter){
-      ROUTER.push(parameter)
+      if(this.user.type === 'MANUFACTURER' || this.flag === true){
+        ROUTER.push(parameter)
+      }
     }
   }
 }
