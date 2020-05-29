@@ -5,7 +5,7 @@
       :activeSortingIndex="0"
       @changeSortEvent="retrieve($event.sort, $event.filter, $event.filterValue)"
       @changeStyle="manageGrid($event)"
-      :grid="['list', 'th-large']">
+      :grid="['list']">
     </filter-product>
     <table class="table table-bordered" v-if="data !== null">
       <thead>

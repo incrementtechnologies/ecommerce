@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="margin-bottom: 10px;">
+    <div style="margin-bottom: 10px; width: 100%; float: left;">
       <button class="btn btn-primary" @click="filterBy('bundled')" :class="{'btn-warning': activePage === 'bundled'}">Bundled</button>
       <button class="btn btn-primary" @click="filterBy('regular')" :class="{'btn-warning': activePage === 'regular'}">Regular</button>
       <button class="btn btn-primary" @click="filterBy('all')" :class="{'btn-warning': activePage === 'all'}">All</button>
