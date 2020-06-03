@@ -207,12 +207,12 @@ export default {
           title: 'Manufacturing date ascending',
           payload: 'manufacturing_date',
           payload_value: 'asc',
-          type: 'date'
+          type: 'custom-date'
         }, {
           title: 'Manufacturing date descending',
           payload: 'manufacturing_date',
           payload_value: 'desc',
-          type: 'date'
+          type: 'custom-date'
         }, {
           title: 'Status ascending',
           payload: 'status',

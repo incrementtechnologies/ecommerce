@@ -17,26 +17,14 @@
         v-model="searchValue"
         @keypress="keypressHandler"
         :placeholder="'Search ' + '...'" 
-        v-if="(activeSort !== null && activeSort[sortValue].type !== 'date' && activeSort[sortValue].type !== 'custom-date')"
+        v-if="(activeSort !== null && activeSort[sortValue].type !== 'date')"
       >
        <!-- Date Tag -->
-      <date-picker
-        v-if="(activeSort !== null && activeSort[sortValue].type === 'date')"
-        v-model="searchValue"
-        :type="'date'"
-        :value-type="'YYYY-MM-DD'"
-        :use12h="true"
-        :placeholder="'Search date'"
-        :format="'MMM D, YYYY'"
-        :input-class="'form-control'"
-        :input-attr="{style: 'min-height: 40px !important; width: 100% !important;'}"
-      ></date-picker>
-
-      <!-- Date Tag -->
-      <div v-if="(activeSort !== null && activeSort[sortValue].type === 'custom-date')" style="width: 100%;" class="form-control">
-        
-        <div class="form-group form-group-three margin-left">
-          <input type="number" class="form-control-custom form-control" placeholder="YYYY" v-model="manufacturing.year">
+      <div v-if="(activeSort !== null && activeSort[sortValue].type === 'date')" style="width: 100%;" class="form-control">
+        <div class="form-group form-group-three margin-right">
+          <select class="form-control-custom  form-control" v-model="manufacturing.date">
+            <option v-for="i in 31" :key="i" :value="i">{{i}}</option>
+          </select>
         </div>
 
         <div class="form-group form-group-three margin-right">
@@ -45,15 +33,10 @@
           </select>
         </div>
 
-        <div class="form-group form-group-three margin-right">
-          <select class="form-control-custom  form-control" v-model="manufacturing.date">
-            <option value="">Select date</option>
-            <option v-for="i in 31" :key="i" :value="i">{{i}}</option>
-          </select>
+        <div class="form-group form-group-three margin-left">
+          <input type="number" class="form-control-custom form-control" placeholder="YYYY" v-model="manufacturing.year">
         </div>
-
       </div>
-
       <label class="search-icon text-primary action-link" @click="changeSort">
         <i class="fas fa-search"></i>
       </label>
@@ -133,7 +116,6 @@
   height: 35px !important;
   margin-top: 1px !important;
 }
-
 @media (max-width: 650px){
   .dropdown {
       width: 20%;
@@ -187,7 +169,7 @@ export default {
   data(){
     return {
       manufacturing: {
-        date: '',
+        date: null,
         month: null,
         year: null
       },
@@ -285,7 +267,7 @@ export default {
     changeSort(){
       let object = {}
       let filter = null
-      if(this.activeSort[this.sortValue].type === 'custom-date'){
+      if(this.activeSort[this.sortValue].type === 'date'){
         filter = {
           column: this.activeSort[this.sortValue].payload,
           value: this.manufacturing.year + '-' + this.manufacturing.month + ((this.manufacturing.date === null || this.manufacturing.date === '') ? '' : '-' + this.manufacturing.date)
