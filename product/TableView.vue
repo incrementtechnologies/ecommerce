@@ -1,6 +1,7 @@
+  
 <template>
   <div>
-    <div style="margin-bottom: 10px;width: 100%; float: left;">
+    <div style="margin-bottom: 10px;width: 100%; float: left;" v-if="this.$route.path !== '/products/d'">
       <button class="btn btn-primary" @click="filterBy('bundled')" :class="{'btn-warning': activePage === 'bundled'}">Bundled</button>
       <button class="btn btn-primary" @click="filterBy('regular')" :class="{'btn-warning': activePage === 'regular'}">Regular</button>
       <button class="btn btn-primary" @click="filterBy('all')" :class="{'btn-warning': activePage === 'all'}">All</button>
@@ -78,7 +79,6 @@
   cursor: pointer;
   text-decoration: underline;
 }
-
 .btn-warning:hover{
   color: #fff !important;
 }

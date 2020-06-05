@@ -199,7 +199,8 @@ export default {
         merchant_id: this.user.subAccount.merchant.id,
         sort: this.currentSort,
         account_id: this.user.userID,
-        inventory_type: this.common.ecommerce.inventoryType
+        inventory_type: this.common.ecommerce.inventoryType,
+        type: this.user.type
       }
       $('#loading').css({'display': 'block'})
       this.APIRequest('transfers/retrieve_consignments', parameter).then(response => {

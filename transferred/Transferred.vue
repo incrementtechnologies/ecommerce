@@ -24,7 +24,7 @@
           <td>{{item.to_details.name}}</td>
           <td>
             <button class="btn btn-primary" @click="redirect('/consignment_products/' + item.code)">
-              {{item.transferred_products !== null ? item.transferred_products.length : 0}}
+              {{item.transferred_products}}
             </button>
           </td>
           <td>{{item.created_at_human}}</td>
