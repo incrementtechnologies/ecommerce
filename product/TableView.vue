@@ -6,7 +6,7 @@
       <button class="btn btn-primary" @click="filterBy('regular')" :class="{'btn-warning': activePage === 'regular'}">Regular</button>
       <button class="btn btn-primary" @click="filterBy('all')" :class="{'btn-warning': activePage === 'all'}">All</button>
     </div>
-    <table class="table table-bordered table-responsive" v-if="type === 'consignments'">
+    <table class="table table-bordered table-responsive" v-if="type === 'consignments' && sorted.length > 0">
       <thead>
         <tr>
           <td v-if="user.type !== 'MANUFACTURER'">Manufacturer</td>
@@ -42,7 +42,7 @@
       </tbody>
     </table>
 
-    <table class="table table-bordered table-responsive" v-if="type === 'products'">
+    <table class="table table-bordered table-responsive" v-if="type === 'products' && sorted.length > 0">
       <thead>
         <tr>
           <td>Title</td>
@@ -70,6 +70,8 @@
       </tbody>
     </table>
 
+    <empty v-if="sorted.length === 0" :title="title" :action="guide"></empty>
+
     <create-modal :property="createProductTraceModal"></create-modal>
     <create-product-traces-modal :params="productId"></create-product-traces-modal>
   </div>
@@ -92,7 +94,7 @@ import ProductTrace from './CreateProductTrace.js'
 import COMMON from 'src/common.js'
 export default {
   mounted(){
-    this.filterBy('bundled')
+    this.filterBy('all')
   },
   data(){
     return {
@@ -101,11 +103,14 @@ export default {
       createProductTraceModal: ProductTrace,
       productId: null,
       sorted: [],
-      activePage: 'bundled'
+      activePage: 'all',
+      title: 'Empty Products!',
+      guide: 'No activity at the moment.'
     }
   },
   components: {
     'create-modal': require('components/increment/generic/modal/Modal.vue'),
+    'empty': require('components/increment/generic/empty/Empty.vue'),
     'create-product-traces-modal': require('./CreateProductTraces.vue')
   },
   props: ['data', 'type'],
