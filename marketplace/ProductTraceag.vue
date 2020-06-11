@@ -1,15 +1,9 @@
 <template>
   <div v-if="data !== null">
-    <div class="title" v-if="status === 'preview'">
-      <b @click="redirect('/product/edit/' + data.code)">
+    <div class="title">
+      <b @click="redirectBack()">
         <label class="text-primary action-link">Back</label>
       </b>
-    </div>
-    <div class="title" v-if="status !== 'preview'">
-      <b @click="redirect('/marketplace')">
-        <label class="text-primary action-link">Marketplace</label>
-      </b>
-      <label class="text-primary">/ {{data.title}}</label>
     </div>
     <div class="product-item-holder">
       <div class="product-image">
@@ -32,7 +26,7 @@
             {{errorMessage}}
           </span>
         </div>
-        <div class="product-row" v-if="data.price !== null && data.price.length > 1 && priceFlag === true">
+<!--         <div class="product-row" v-if="data.price !== null && data.price.length > 1 && priceFlag === true">
           <table class="table table-bordered">
             <thead>
               <tr>
@@ -49,7 +43,7 @@
               </tr>
             </tbody>
           </table>
-        </div>
+        </div> -->
         <div class="product-row" v-if="data.variation !== null">
           <span>{{data.variation[0].payload_value}} {{data.variation[0].payload}}</span>
         </div>
@@ -340,6 +334,9 @@ export default {
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    redirectBack(){
+      ROUTER.go(-1)
     },
     selectMenu(index){
       if(this.prevMenuIndex !== index){
