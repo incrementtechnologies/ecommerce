@@ -1,8 +1,8 @@
 <template>
   <div class="holder">
     <div>
-      <button class="btn btn-primary pull-left" v-if="viewInactive === false" @click="retrieve({'created_at': 'desc'}, {column: 'status', value: 'inactive'}), viewInactive = !viewInactive">Show Inactive</button>
-      <button class="btn btn-primary pull-left" v-if="viewInactive === true" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}), viewInactive = !viewInactive">Show All</button>
+      <button class="btn btn-primary pull-left" v-if="viewInactive === false" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'inactive'), viewInactive = !viewInactive">Show Inactive</button>
+      <button class="btn btn-primary pull-left" v-if="viewInactive === true" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'active'), viewInactive = !viewInactive">Show Active</button>
       <button class="btn btn-warning pull-right" style="margin-bottom: 10px;" @click="exportData()"><i class="fas fa-file-export" style="padding-right: 5px;"></i>Export</button>
     </div>
     <filter-product v-bind:category="category" 
@@ -160,7 +160,7 @@ import COMMON from 'src/common.js'
 import { ExportToCsv } from 'export-to-csv'
 export default {
   mounted(){
-    this.retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''})
+    this.retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'active')
   },
   data(){
     return {
@@ -238,12 +238,16 @@ export default {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    retrieve(sort, filter){
+    retrieve(sort, filter, status){
       let parameter = {
         condition: [{
           value: filter.value + '%',
           column: filter.column,
           clause: 'like'
+        }, {
+          value: status,
+          clause: '=',
+          column: 'status'
         }],
         code: this.$route.params.code,
         sort: sort
