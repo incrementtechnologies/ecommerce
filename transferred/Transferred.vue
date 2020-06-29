@@ -14,14 +14,14 @@
           <td>User</td>
           <td>Transferred {{filterValue === 0 ? 'from' : 'to'}}</td>
           <td>Number of Items</td>
-          <td>Transfered On</td>
+          <td>Transferred On</td>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
           <td>{{item.code}}</td>
           <td>{{(item.account.information.first_name === null || item.account.information.last_name === null) ? item.account.username : item.account.information.first_name + ' ' + item.account.information.last_name}}</td> 
-          <td>{{item.to_details.name}}</td>
+          <td>{{filterValue === 0 ? item.from_details.name : item.to_details.name}}</td>
           <td>
             <button class="btn btn-primary" @click="redirect('/consignment_products/' + item.code)">
               {{item.transferred_products}}
@@ -245,6 +245,7 @@ export default {
       ROUTER.push(parameter)
     },
     retrieve(sort, filter, filterValue){
+      this.data = null
       if(this.user.subAccount === null || typeof this.user.subAccount === 'undefined'){
         return false
       }
