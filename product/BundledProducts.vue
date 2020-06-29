@@ -1,6 +1,6 @@
 <template>
   <div class="inventories-holder">
-    <div class="inventories-content" v-if="user.type === 'MANUFACTURER'">
+    <div class="inventories-content" v-if="user.type === 'MANUFACTURER' && data === null">
       <div class="form-group">
         <label for="exampleInputEmail1" style="font-weight: 600;">Search</label>
         <div>
@@ -22,9 +22,9 @@
       </div>
     </div>
     
-    <div class="form-group" v-if="item.bundled_settings !== null">
+    <div class="form-group" v-if="data !== null">
       <label for="exampleInputEmail1" style="font-weight: 600;">Allowed products</label>
-      <div v-for="(setting, index) in item.bundled_settings" :key="index" style="width: 100%; float: left;">
+      <div v-for="(setting, index) in data" :key="index" style="width: 100%; float: left;">
         <label class="alert alert-success" style="float: left; paddingTop: 15px; paddingLeft: 15px; width: 40%">{{setting.product.title}}</label>
         <input type="text" class="form-control form-control-custom" style="float: left; width: 9%; margin-left: 1%;" placeholder="Qty" v-model="setting.qty" @keyup.enter="update(setting)">
         <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="update(setting)"><i class="fa fa-sync"></i></button>
@@ -115,6 +115,7 @@ import COMMON from 'src/common.js'
 export default {
   mounted(){
     this.searchProduct()
+    this.retrieve()
   },
   props: ['item'],
   data(){
@@ -127,7 +128,8 @@ export default {
       productSelected: null,
       search: null,
       common: COMMON,
-      errorMessage: null
+      errorMessage: null,
+      data: null
     }
   },
 
@@ -138,8 +140,29 @@ export default {
     redirect(parameter){
       ROUTER.push(parameter)
     },
+    retrieve(){
+      this.productSearch = []
+      let parameter = {
+        condition: [{
+          value: this.item.id,
+          column: 'bundled',
+          clause: '='
+        }]
+      }
+      this.APIRequest('bundled_settings/retrieve', parameter).then(response => {
+        if(response.data.length > 0){
+          this.data = response.data
+        }else{
+          this.data = null
+        }
+      })
+    },
     create(product){
       this.errorMessage = null
+      if(this.user.type === 'MANUFACTURER' && (this.data !== null && this.data.length === 1)){
+        this.errorMessage = 'Only 1 product is allowed per bundled.'
+        return
+      }
       if(product.qtyI > 0){
         let parameter = {
           bundled: this.item.id,
@@ -150,7 +173,7 @@ export default {
         if(product.qtyI > 0){
           this.APIRequest('bundled_settings/create', parameter).then(response => {
             if(response.data !== null){
-              this.$parent.retrieve()
+              this.retrieve()
             }else{
               this.errorMessage = response.error
             }
@@ -220,7 +243,7 @@ export default {
           qty: item.qty
         }
         this.APIRequest('bundled_settings/update', parameter).then(response => {
-          this.$parent.retrieve()
+          this.retrieve()
         })
       }else{
         this.errorMessage = 'Quantity should be greater than 0.'
@@ -232,7 +255,7 @@ export default {
         bundled: item.bundled
       }
       this.APIRequest('bundled_settings/delete', parameter).then(response => {
-        this.$parent.retrieve()
+        this.retrieve()
       })
     }
   }
