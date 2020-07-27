@@ -10,7 +10,10 @@
     <table class="table table-bordered" v-if="data !== null">
       <thead>
         <tr>
-          <td>Transfer Code</td>
+          <td>Transfer Code
+            <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayCode('desc')" v-if="activeSortCode === 'asc'"></i>
+            <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayCode('asc')" v-if="activeSortCode === 'desc'"></i>
+          </td>
           <td>User</td>
           <td>Transferred {{filterValue === 0 ? 'from' : 'to'}}</td>
           <td>Number of Items</td>
@@ -233,7 +236,8 @@ export default {
         }]
       }],
       common: COMMON,
-      filterValue: 0
+      filterValue: 0,
+      activeSortCode: 'asc'
     }
   },
   components: {
@@ -241,6 +245,18 @@ export default {
     'filter-product': require('components/increment/ecommerce/filter/Product.vue')
   },
   methods: {
+    sortArrayCode(sort){
+      this.activeSortCode = sort
+      if(sort === 'desc'){
+        this.data = this.data.sort((a, b) => {
+          return a.code < b.code ? -1 : 1
+        })
+      }else{
+        this.data = this.data.sort((a, b) => {
+          return a.code > b.code ? -1 : 1
+        })
+      }
+    },
     redirect(parameter){
       ROUTER.push(parameter)
     },
