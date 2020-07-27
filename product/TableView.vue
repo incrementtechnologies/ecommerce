@@ -1,4 +1,3 @@
-  
 <template>
   <div>
     <div style="margin-bottom: 10px;width: 100%; float: left;" v-if="this.$route.path !== '/products/d'">
@@ -10,9 +9,15 @@
       <thead>
         <tr>
           <td v-if="user.type !== 'MANUFACTURER'">Manufacturer</td>
-          <td>Title</td>
+          <td>Title
+            <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayTitle('desc')" v-if="activeSortTitle === 'asc'"></i>
+            <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayTitle('asc')" v-if="activeSortTitle === 'desc'"></i>
+          </td>
           <td v-if="user.type === 'MANUFACTURER'">Tags</td>
-          <td>Inventory</td>
+          <td>Inventory
+            <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayInventory('desc')" v-if="activeSortInventory === 'asc'"></i>
+            <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayInventory('asc')" v-if="activeSortInventory === 'desc'"></i>
+          </td>
           <td v-if="user.type === 'MANUFACTURER'">Action</td>
         </tr>
       </thead>
@@ -45,9 +50,15 @@
     <table class="table table-bordered table-responsive" v-if="type === 'products' && sorted.length > 0">
       <thead>
         <tr>
-          <td>Title</td>
+          <td>Title
+            <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayTitle('desc')" v-if="activeSortTitle === 'asc'"></i>
+            <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayTitle('asc')" v-if="activeSortTitle === 'desc'"></i>
+          </td>
           <td>Tags</td>
-          <td>Inventory</td>
+          <td>Inventory
+            <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayInventory('desc')" v-if="activeSortInventory === 'asc'"></i>
+            <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayInventory('asc')" v-if="activeSortInventory === 'desc'"></i>
+          </td>
           <td>Action</td>
         </tr>
       </thead>
@@ -105,7 +116,9 @@ export default {
       sorted: [],
       activePage: 'all',
       title: 'Empty Products!',
-      guide: 'No activity at the moment.'
+      guide: 'No activity at the moment.',
+      activeSortTitle: 'asc',
+      activeSortInventory: 'asc'
     }
   },
   components: {
@@ -115,6 +128,30 @@ export default {
   },
   props: ['data', 'type'],
   methods: {
+    sortArrayTitle(sort){
+      this.activeSortTitle = sort
+      if(sort === 'desc'){
+        this.data = this.data.sort((a, b) => {
+          return a.title < b.title ? -1 : 1
+        })
+      }else{
+        this.data = this.data.sort((a, b) => {
+          return a.title > b.title ? -1 : 1
+        })
+      }
+    },
+    sortArrayInventory(sort){
+      this.activeSortInventory = sort
+      if(sort === 'desc'){
+        this.data = this.data.sort((a, b) => {
+          return a.qty < b.qty ? -1 : 1
+        })
+      }else{
+        this.data = this.data.sort((a, b) => {
+          return a.qty > b.qty ? -1 : 1
+        })
+      }
+    },
     redirect(parameter){
       ROUTER.push(parameter)
     },

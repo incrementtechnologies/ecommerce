@@ -16,8 +16,14 @@
       <thead>
         <tr>
           <td>Trace ID</td>
-          <td>Batch Number</td>
-          <td>Manufacture Date</td>
+          <td>Batch Number
+            <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayBatch('desc')" v-if="activeSortBatch === 'asc'"></i>
+            <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayBatch('asc')" v-if="activeSortBatch === 'desc'"></i>
+          </td>
+          <td>Manufacture Date
+            <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayDate('desc')" v-if="activeSortDate === 'asc'"></i>
+            <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayDate('asc')" v-if="activeSortDate === 'desc'"></i>
+          </td>
           <td>Status</td>
           <td>Created At</td>
         </tr>
@@ -227,7 +233,9 @@ export default {
       }],
       common: COMMON,
       date: null,
-      viewInactive: false
+      viewInactive: false,
+      activeSortBatch: 'asc',
+      activeSortDate: 'asc'
     }
   },
   components: {
@@ -235,6 +243,30 @@ export default {
     'filter-product': require('components/increment/ecommerce/filter/Product.vue')
   },
   methods: {
+    sortArrayBatch(sort){
+      this.activeSortBatch = sort
+      if(sort === 'desc'){
+        this.data = this.data.sort((a, b) => {
+          return a.batch_number < b.batch_number ? -1 : 1
+        })
+      }else{
+        this.data = this.data.sort((a, b) => {
+          return a.batch_number > b.batch_number ? -1 : 1
+        })
+      }
+    },
+    sortArrayDate(sort){
+      this.activeSortDate = sort
+      if(sort === 'desc'){
+        this.data = this.data.sort((a, b) => {
+          return a.manufacturing_date < b.manufacturing_date ? -1 : 1
+        })
+      }else{
+        this.data = this.data.sort((a, b) => {
+          return a.manufacturing_date > b.manufacturing_date ? -1 : 1
+        })
+      }
+    },
     redirect(parameter){
       ROUTER.push(parameter)
     },
