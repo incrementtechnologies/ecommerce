@@ -10,9 +10,9 @@
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td>{{item.product_trace_details[0].product.title}}</td>
-          <td>{{item.product_trace_details[0].batch_number}}</td>
-          <td>{{item.product_trace_details[0].manufacturing_date}}</td>
+          <td>{{item.title}}</td>
+          <td>{{item.batch_number}}</td>
+          <td>{{item.manufacturing_date}}</td>
 <!--           <td>
             <i class="fas fa-trash text-danger" @click="remove(item.id)"></i>
           </td> -->
@@ -142,7 +142,7 @@ import axios from 'axios'
 import COMMON from 'src/common.js'
 export default {
   mounted(){
-    this.retrieveTransfer()
+    this.retrieve()
   },
   data(){
     return {
@@ -161,33 +161,15 @@ export default {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    retrieveTransfer(){
-      $('#loading').css({'display': 'block'})
+    retrieve(){
       let parameter = {
         condition: [{
           value: this.$route.params.code,
-          clause: '=',
-          column: 'code'
-        }]
-      }
-      this.APIRequest('transfers/basic_retrieve', parameter).then(response => {
-        if(response.data.length > 0){
-          this.transferId = response.data[0].id
-          this.retrieve(this.transferId)
-        }else{
-          $('#loading').css({'display': 'none'})
-        }
-      })
-    },
-    retrieve(id){
-      let parameter = {
-        condition: [{
-          value: id,
-          column: 'transfer_id',
+          column: 'code',
           clause: '='
         }]
       }
-      this.APIRequest('transferred_products/retrieve', parameter).then(response => {
+      this.APIRequest('transfers/retrieve_transferred_items', parameter).then(response => {
         $('#loading').css({'display': 'none'})
         if(response.data.length > 0){
           this.data = response.data

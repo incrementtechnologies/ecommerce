@@ -23,17 +23,23 @@
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
           <td>{{item.code}}</td>
-          <td>{{(item.account.information.first_name === null || item.account.information.last_name === null) ? item.account.username : item.account.information.first_name + ' ' + item.account.information.last_name}}</td> 
-          <td>{{filterValue === 0 ? item.from_details.name : item.to_details.name}}</td>
+          <td>{{item.name}}</td> 
+          <td>{{filterValue === 0 ? item.from : item.to}}</td>
           <td>
             <button class="btn btn-primary" @click="redirect('/consignment_products/' + item.code)">
-              {{item.transferred_products}}
+              {{item.number_of_items}}
             </button>
           </td>
-          <td>{{item.created_at_human}}</td>
+          <td>{{item.trasferred_on}}</td>
         </tr>
       </tbody>
     </table>
+    <Pager
+      :pages="numPages"
+      :active="activePage"
+      :limit="limit"
+      v-if="data !== null"
+    />
     <empty v-if="data === null" :title="filterValue === 0 ? 'Empty Consignments In!' : 'Empty Consignments Out!'" :action="filterValue === 0 ? 'Start accepting consignments from other business now!' : 'Start transfering item now by using the mobile app.'"></empty>
   </div>
 </template>
@@ -155,6 +161,7 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import axios from 'axios'
 import COMMON from 'src/common.js'
+import Pager from 'components/increment/generic/pager/Pager.vue'
 export default {
   mounted(){
     this.retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 0)
@@ -168,6 +175,9 @@ export default {
       selectedItem: null,
       selectedIndex: null,
       listStyle: 'list',
+      numPages: null,
+      activePage: 1,
+      limit: 5,
       category: [{
         title: 'Consignments in',
         sorting: [{
@@ -237,11 +247,14 @@ export default {
       }],
       common: COMMON,
       filterValue: 0,
-      activeSortCode: 'asc'
+      activeSortCode: 'asc',
+      filter: null,
+      sort: null
     }
   },
   components: {
     'empty': require('components/increment/generic/empty/Empty.vue'),
+    Pager,
     'filter-product': require('components/increment/ecommerce/filter/Product.vue')
   },
   methods: {
@@ -260,28 +273,39 @@ export default {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    retrieve(sort, filter, filterValue){
+    retrieve(sort = null, filter = null, filterValue = null){
+      if(sort !== null){
+        this.sort = sort
+      }
+      if(filter !== null){
+        this.filter = filter
+      }
+      if(this.filterValue !== null){
+        this.filterValue = filterValue
+      }
       this.data = null
       if(this.user.subAccount === null || typeof this.user.subAccount === 'undefined'){
         return false
       }
-      this.filterValue = filterValue
-      let key = Object.keys(sort)
+      let key = Object.keys(this.sort)
       let parameter = {
-        column: filter.column,
-        value: filter.value + '%',
+        column: this.filter.column,
+        value: this.filter.value + '%',
         sort: {
-          value: sort[key[0]],
+          value: this.sort[key[0]],
           column: key[0]
         },
         merchant_id: this.user.subAccount.merchant.id,
-        filter_value: filterValue === 0 ? 'to' : 'from'
+        filter_value: this.filterValue === 0 ? 'to' : 'from',
+        limit: this.limit,
+        offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
       }
       $('#loading').css({'display': 'block'})
-      this.APIRequest('transfers/retrieve', parameter).then(response => {
+      this.APIRequest('transfers/retrieve_allowed_only', parameter).then(response => {
         $('#loading').css({'display': 'none'})
         if(response.data.length > 0){
           this.data = response.data
+          this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
           if(this.selectedItem !== null){
             this.selectedItem = this.data[this.selectedIndex]
           }
@@ -289,6 +313,7 @@ export default {
           this.data = null
           this.selectedIndex = null
           this.selectedItem = null
+          this.numPages = null
         }
       })
     },
