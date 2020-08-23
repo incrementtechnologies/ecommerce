@@ -28,6 +28,12 @@
       </div>
     </div> -->
     <table-view :data="data" v-if="listStyle === 'list' && data !== null" :type="'products'"></table-view>
+    <Pager
+      :pages="numPages"
+      :active="activePage"
+      :limit="limit"
+      v-if="data !== null"
+    />
     <empty v-if="data === null" :title="empty.title" :action="empty.guide"></empty>
 	</div>
 </template>
@@ -159,6 +165,7 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import axios from 'axios'
 import COMMON from 'src/common.js'
+import Pager from 'src/components/increment/generic/pager/Pager.vue'
 export default {
   mounted(){
     this.retrieve({'title': 'asc'}, {column: 'title', value: ''})
@@ -199,6 +206,9 @@ export default {
       common: COMMON,
       currentFilter: null,
       currentSort: null,
+      numPages: null,
+      activePage: 1,
+      limit: 5,
       empty: {
         title: null,
         guide: null
@@ -210,7 +220,8 @@ export default {
     'table-view': require('components/increment/ecommerce/product/TableView.vue'),
     'empty': require('components/increment/generic/empty/Empty.vue'),
     'filter-product': require('components/increment/ecommerce/filter/Product.vue'),
-    'image-view': require('components/increment/ecommerce/product/ImageView.vue')
+    'image-view': require('components/increment/ecommerce/product/ImageView.vue'),
+    Pager
   },
   methods: {
     redirect(parameter){
@@ -242,13 +253,16 @@ export default {
         }],
         sort: this.currentSort,
         account_id: this.user.userID,
-        inventory_type: this.common.ecommerce.inventoryType
+        inventory_type: this.common.ecommerce.inventoryType,
+        limit: this.limit,
+        offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
       }
       $('#loading').css({'display': 'block'})
       this.APIRequest('products/retrieve_basic', parameter).then(response => {
         $('#loading').css({'display': 'none'})
         if(response.data.length > 0){
           this.data = response.data
+          this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
           if(this.selectedItem !== null){
             this.selectedItem = this.data[this.selectedIndex]
           }
@@ -256,6 +270,7 @@ export default {
           this.data = null
           this.selectedIndex = null
           this.selectedItem = null
+          this.numPages = null
           this.empty = {
             title: 'Looks like you have not added a product!',
             guide: 'Click the New Product Button to get started.'
