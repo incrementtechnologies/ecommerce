@@ -1,17 +1,17 @@
 <template>
   <div v-if="data !== null">
     <div class="title">
-      <b @click="redirectBack()">
+      <!-- <b @click="redirectBack()">
         <label class="text-primary action-link">Back</label>
-      </b>
-    </div>
+      </b> -->
+    </div><br>
     <div class="product-item-holder">
       <div class="product-image">
         <img :src="config.BACKEND_URL + selectedImage" class="main-image" v-if="selectedImage !== null">
         <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image" v-if="selectedImage === null && data.featured !== null">
         <i class="fa fa-image" v-if="selectedImage === null && data.featured === null"></i>
        <div class="images-holder" v-if="data.images !== null">
-        <div v-for="(item, index) in data.images" :key="index" class="image-item" @click="selectImage(item.url)">
+        <div v-for="(item, index) in data.images" :key="index" class="image-item" @click="selectImage(item.url)" style="margin-left:5px">
           <img :src="config.BACKEND_URL + item.url" class="other-image">
           <div class="overlay"></div>
         </div>
@@ -44,25 +44,25 @@
             </tbody>
           </table>
         </div> -->
-        <div class="product-row" v-if="data.variation !== null">
+        <!-- <div class="product-row" v-if="data.variation !== null">
           <span>{{data.variation[0].payload_value}} {{data.variation[0].payload}}</span>
-        </div>
+        </div> -->
         <div class="product-row" v-if="data.sku !== null && data.sku !== ''">
-          <label>Sku</label>
-          <label class="text-danger"><i>{{data.sku}}</i></label>
+          <label>Sku: </label>
+          <label class="text-danger"><i>&nbsp;{{data.sku}}</i></label>
         </div>
         <div class="product-row-tags" v-if="data.tags !== null && data.tag_array !== null">
-          <label>Tags</label>
+          <label>Tags:&nbsp;&nbsp;</label>
           <label class="tag-label" v-for="(item, index) in data.tag_array" :key="index">{{item.title}}</label>
         </div>
         <div class="product-row" v-if="data.merchant !== null">
-          <span>{{data.merchant.name}}</span>
+          <label>Merchant:&nbsp;&nbsp;{{data.merchant.name}}</label>
         </div>
         <div class="product-row" v-if="data.merchant !== null">
-          <span>{{data.merchant.website}}</span>
+          <span>Website:&nbsp;&nbsp;<a :href="data.merchant.website" target="__blank">{{data.merchant.website}}</a></span>
         </div>
       </div>
-    </div>
+    </div><br>
     <div class="product-more-details">
       <div class="pagination-holder">
         <ul class="product-menu"> <!--  do dis --> 
@@ -140,8 +140,8 @@
   }
   .product-details{
     min-height: 50px;
-    width: 58%;
-    margin-left: 2%;
+    width: 50%;
+    margin-left: 10%;
     float: left;
     overflow-y: hidden;
   }
@@ -178,7 +178,7 @@
   }
   .product-row label{
     float: left;
-    width: 15%;
+    width: 5%;
     margin-top: 0px;
     margin-bottom: 0px;
   }
@@ -237,6 +237,7 @@
     min-height: 50px;
     overflow-y: hidden;
     border-top: solid 1px #ffaa81;
+    margin-top: 1rem;
   }
   .product-more-details .details-holder{
     width: 60%;
@@ -279,9 +280,7 @@
     .product-details, .product-image{
       width: 100%;
     }
-    .product-row label{
-      width: 25%;
-    }
+    
     .product-menu, .product-more-details .details-holder{
       width: 100%;
     }
