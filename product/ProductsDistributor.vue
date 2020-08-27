@@ -1,15 +1,21 @@
 <template>
   <div class="holder">
-    <filter-product v-bind:category="category" 
+    <!-- <filter-product v-bind:category="category" 
       :activeCategoryIndex="0"
       :activeSortingIndex="0"
       @changeSortEvent="retrieve($event.sort, $event.filter)"
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']">
-    </filter-product>
+    </filter-product> -->
     <image-view :data="data" :flag="false" v-if="listStyle === 'columns'"></image-view>
     <table-view :data="data" v-if="listStyle === 'list' && data !== null" :type="'consignments'"></table-view>
     <empty v-if="data === null" :title="empty.title" :action="empty.guide"></empty>
+    <Pager
+      :pages="numPages"
+      :active="activePage"
+      :limit="limit"
+      v-if="data !== null"
+    />
   </div>
 </template>
 <style>
@@ -130,6 +136,7 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import axios from 'axios'
 import COMMON from 'src/common.js'
+import Pager from 'components/increment/generic/pager/Pager.vue'
 export default {
   mounted(){
     this.retrieve({'title': 'asc'}, {column: 'title', value: ''})
@@ -163,7 +170,10 @@ export default {
       empty: {
         title: null,
         guide: null
-      }
+      },
+      numPages: null,
+      activePage: 1,
+      limit: 5
     }
   },
   components: {
@@ -171,7 +181,8 @@ export default {
     'table-view': require('components/increment/ecommerce/product/TableView.vue'),
     'empty': require('components/increment/generic/empty/Empty.vue'),
     'filter-product': require('components/increment/ecommerce/filter/Product.vue'),
-    'image-view': require('components/increment/ecommerce/product/ImageView.vue')
+    'image-view': require('components/increment/ecommerce/product/ImageView.vue'),
+    'Pager': require('components/increment/generic/pager/Pager.vue')
   },
   methods: {
     redirect(parameter){
@@ -200,19 +211,23 @@ export default {
         sort: this.currentSort,
         account_id: this.user.userID,
         inventory_type: this.common.ecommerce.inventoryType,
-        type: this.user.type
+        type: this.user.type,
+        limit: this.limit,
+        offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
       }
       $('#loading').css({'display': 'block'})
       this.APIRequest('transfers/retrieve_consignments', parameter).then(response => {
         $('#loading').css({'display': 'none'})
         if(response.data.length > 0){
           this.data = response.data
+          this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
           if(this.selectedItem !== null){
             this.selectedItem = this.data[this.selectedIndex]
           }
         }else{
           this.data = null
           this.selectedIndex = null
+          this.numPages = null
           this.selectedItem = null
           this.empty = {
             title: 'Empty Consignments!',
