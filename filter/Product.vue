@@ -60,11 +60,11 @@
       <label class="search-icon text-primary action-link" @click="changeSort">
         <i class="fas fa-search"></i>
       </label>
-      <div class="view-container">
+      <!-- <div class="view-container">
         <div class="view-option">
           <i :class="`fa fa-${grid[toggleStyle]}`" @click="changeView()" aria-hidden="true"></i>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
