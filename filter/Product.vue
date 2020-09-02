@@ -32,7 +32,7 @@
         :placeholder="'Search date'"
         :format="'MMM D, YYYY'"
         :input-class="'form-control'"
-        :input-attr="{style: 'min-height: 40px !important; width: 100% !important;'}"
+        :input-attr="{style: 'min-height: 40px !important; width: 100% !important; border-right-style: none;'}"
       ></date-picker>
 
       <!-- Date Tag -->
@@ -57,12 +57,17 @@
 
       </div>
 
-      <label class="search-icon text-primary action-link" @click="changeSort">
+      <label class="search-icon text-primary action-link" @click="changeSort" v-if="category[0].title === 'Product'">
         <i class="fas fa-search"></i>
       </label>
-      <div class="view-container" v-if="category.length === 1">
+      <div class="view-container" v-if="category[0].title === 'Product'">
         <div class="view-option">
           <i :class="`fa fa-${grid[toggleStyle]}`" @click="changeView()" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div class="view-container" v-if="category[0].title !== 'Product'">
+        <div class="search view-option text-primary action-link">
+            <i class="fas fa-search" @click="changeSort"></i>
         </div>
       </div>
     </div>
@@ -161,6 +166,9 @@
     cursor: pointer;
     color: $secondary;
   }
+}
+.search{
+  border-left-style: none;
 }
 @media (max-width: 992px){
   .search-icon{
