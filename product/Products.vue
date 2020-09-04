@@ -8,7 +8,29 @@
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']">
     </filter-product>
-    <image-view v-if="listStyle === 'columns'" :data="data" :flag="true"></image-view>
+    <div style="margin-bottom: 10px;width: 100%; float: left;" v-if="data !== null">
+      <button class="btn btn-primary" @click="filterBy('bundled')" :class="{'btn-warning': activePage === 'bundled'}">Bundled</button>
+      <button class="btn btn-primary" @click="filterBy('regular')" :class="{'btn-warning': activePage === 'regular'}">Regular</button>
+      <button class="btn btn-primary" @click="filterBy('all')" :class="{'btn-warning': activePage === 'all'}">All</button>
+    </div>
+    <div class="products-holder" v-for="item, index in data" @click="redirect('/product/edit/' + item.code)" v-if="listStyle === 'columns' && data !== null">
+      <div class="products-image">
+        <img :src="config.BACKEND_URL + item.featured[0].url" v-if="item.featured !== null">
+        <i class="fa fa-image" v-else></i>
+      </div>
+      <div class="products-details">
+        <div class="products-title" :style="{width: item.price === null ? '100%' : '50%'}">
+          <label style="padding-top: 5px;"><b>{{item.title}}</b></label>
+          <label>{{item.description}}</label>
+        </div>  
+        <div class="products-price" v-if="item.price === null">
+          <label v-if="item.price !== null">
+            <label v-if="item.price.length === 1">PHP {{item.price[0].price}}</label>
+            <label v-if="item.price.length > 1">PHP {{item.price[item.price.length - 1].price + ' - ' + item.price[0].price}}</label>
+          </label>
+        </div>
+      </div>
+    </div>
     <!-- <div class="products-holder" v-for="item, index in data" @click="redirect('/product/edit/' + item.code)" v-if="listStyle === 'columns'">
       <div class="products-image">
         <img :src="config.BACKEND_URL + item.featured[0].url" v-if="item.featured !== null">
@@ -27,7 +49,39 @@
         </div>
       </div>
     </div> -->
-    <table-view :data="data" v-if="listStyle === 'list' && data !== null" :type="'products'"></table-view>
+    <table class="table table-bordered table-responsive" v-if="data !== null && listStyle === 'list'">
+      <thead>
+        <tr>
+          <td>Title
+            <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayTitle('desc')" v-if="activeSortTitle === 'asc'"></i>
+            <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayTitle('asc')" v-if="activeSortTitle === 'desc'"></i>
+          </td>
+          <td>Tags</td>
+          <td>Inventory
+            <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayInventory('desc')" v-if="activeSortInventory === 'asc'"></i>
+            <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayInventory('asc')" v-if="activeSortInventory === 'desc'"></i>
+          </td>
+          <td>Action</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(item, index) in data" :key="index">
+          <td>
+            <i class="fas fa-clone text-primary" v-if="item.type !== 'regular'" title="This is a bundled product"></i>
+            {{item.title}}
+          </td>
+          <td>{{item.tags}}</td>
+          <td>
+             <button class="btn btn-primary" @click="redirect('/traces/' + item.code)" title="Total active trace">{{user.type === 'USER' ? parseFloat(item.qty).toFixed(2) : parseInt(item.qty)}}</button>
+             <button class="btn btn-warning" title="Total active trace in bundled">{{item.qty_in_bundled}}</button>
+          </td>
+          <td>
+            <button class="btn btn-primary" @click="redirect('/product/edit/' + item.code)">EDIT</button>
+            <button class="btn btn-warning" @click="addProductTraces(item.id)" v-if="item.type === 'regular' && item.status === 'published'">Add Inventory</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
     <Pager
       :pages="numPages"
       :active="activePage"
@@ -212,7 +266,9 @@ export default {
       empty: {
         title: null,
         guide: null
-      }
+      },
+      activeSortTitle: 'asc',
+      activeSortInventory: 'asc'
     }
   },
   components: {
@@ -224,8 +280,38 @@ export default {
     Pager
   },
   methods: {
+    sortArrayTitle(sort){
+      this.activeSortTitle = sort
+      if(sort === 'desc'){
+        this.data = this.data.sort((a, b) => {
+          return a.title < b.title ? -1 : 1
+        })
+      }else{
+        this.data = this.data.sort((a, b) => {
+          return a.title > b.title ? -1 : 1
+        })
+      }
+    },
+    sortArrayInventory(sort){
+      this.activeSortInventory = sort
+      if(sort === 'desc'){
+        this.data = this.data.sort((a, b) => {
+          return a.qty < b.qty ? -1 : 1
+        })
+      }else{
+        this.data = this.data.sort((a, b) => {
+          return a.qty > b.qty ? -1 : 1
+        })
+      }
+    },
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    addProductTraces(id){
+      this.productId = id
+      setTimeout(() => {
+        $('#createProductTracesModal').modal('show')
+      }, 100)
     },
     retrieve(sort, filter){
       if(this.user.subAccount.merchant === null){
@@ -293,6 +379,18 @@ export default {
           break
         case 'list': this.listStyle = 'list'
           break
+      }
+    },
+    filterBy(type){
+      this.activePage = type
+      if(type === 'all'){
+        this.sorted = this.data
+      }else{
+        this.sorted = this.data.filter((item) => {
+          if(item.type === type){
+            return item
+          }
+        })
       }
     }
   }
