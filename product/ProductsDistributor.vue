@@ -216,7 +216,7 @@ export default {
         offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
       }
       $('#loading').css({'display': 'block'})
-      this.APIRequest('transfers/retrieve_consignments', parameter).then(response => {
+      this.APIRequest('transfers/retrieve_by_consignment_pagination', parameter).then(response => {
         $('#loading').css({'display': 'none'})
         if(response.data.length > 0){
           this.data = response.data
