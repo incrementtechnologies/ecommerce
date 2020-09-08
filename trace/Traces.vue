@@ -1,9 +1,9 @@
 <template>
   <div class="holder">
     <div>
-      <button class="btn btn-primary pull-left" v-if="viewInactive === false" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'inactive'), viewInactive = !viewInactive">Show Inactive</button>
+      <button class="btn btn-primary pull-left" style="margin-bottom: 10px;" v-if="viewInactive === false" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'inactive'), viewInactive = !viewInactive">Show Inactive</button>
       <button class="btn btn-primary pull-left" v-if="viewInactive === true" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'active'), viewInactive = !viewInactive">Show Active</button>
-      <button class="btn btn-warning pull-right" style="margin-bottom: 10px;" @click="exportData()"><i class="fas fa-file-export" style="padding-right: 5px;"></i>Export</button>
+      <button class="btn btn-warning pull-right" v-if="viewInactive === true" style="margin-bottom: 10px;" @click="exportData()"><i class="fas fa-file-export" style="padding-right: 5px;"></i>Export</button>
     </div>
     <filter-product v-bind:category="category" 
       :activeCategoryIndex="0"
@@ -271,6 +271,9 @@ export default {
       ROUTER.push(parameter)
     },
     retrieve(sort, filter, status){
+      if(status === undefined || status === null) {
+        status = this.viewInactive ? 'inactive' : 'active'
+      }
       let parameter = {
         condition: [{
           value: filter.value + '%',
