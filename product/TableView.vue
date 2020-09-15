@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div style="margin-bottom: 10px;width: 100%; float: left;" v-if="this.$route.path !== '/products/d'">
+<!--     <div style="margin-bottom: 10px;width: 100%; float: left;" v-if="this.$route.path !== '/products/d'">
       <button class="btn btn-primary" @click="filterBy('bundled')" :class="{'btn-warning': activePage === 'bundled'}">Bundled</button>
       <button class="btn btn-primary" @click="filterBy('regular')" :class="{'btn-warning': activePage === 'regular'}">Regular</button>
       <button class="btn btn-primary" @click="filterBy('all')" :class="{'btn-warning': activePage === 'all'}">All</button>
-    </div>
+    </div> -->
     <table class="table table-bordered table-responsive" v-if="type === 'consignments' && sorted.length > 0">
       <thead>
         <tr>
@@ -127,6 +127,11 @@ export default {
     'create-product-traces-modal': require('./CreateProductTraces.vue')
   },
   props: ['data', 'type'],
+  watch: {
+    data (to, from){
+      this.filterBy('all')
+    }
+  },
   methods: {
     sortArrayTitle(sort){
       this.activeSortTitle = sort

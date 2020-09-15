@@ -243,10 +243,6 @@ export default {
       }
       let parameter = {
         condition: [{
-          value: this.currentFilter.value + '%',
-          column: this.currentFilter.column,
-          clause: 'like'
-        }, {
           value: this.user.subAccount.merchant.id,
           column: 'merchant_id',
           clause: '='
