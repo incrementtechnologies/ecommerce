@@ -59,7 +59,6 @@
   .item:hover{
     cursor: pointer;
   }
-
   .products-holder{
     width: 24%;
     float: left;
@@ -76,7 +75,6 @@
     background: #ffaa81;
     color: #fff;
   }
-
   .products-image{
     width: 100%;
     float: left;
@@ -84,7 +82,6 @@
     height: 250px;
     text-align: center;
   }
-
   .products-image img{
     height: 250px;
     float: left;
@@ -93,7 +90,6 @@
   .products-image .fa-image{
     font-size: 150px;
     line-height: 250px;
-
   }
   .products-details{
     height: 50px;
@@ -122,7 +118,6 @@
     text-align: right;
     padding-right: 5px;
   }
-
   .products-wishlist{
     height: 50px;
     text-align: center;
@@ -133,11 +128,9 @@
     z-index: 10;
     display: none;
   }
-
   .products-wishlist:hover, .products-wishlist i:hover, .products-wishlist label:hover{
     cursor: pointer;
   }
-
   .products-wishlist label{
     line-height: 50px;
     float: left;
@@ -149,11 +142,9 @@
     font-size: 32px;
     line-height: 50px;
   }
-
   .products-holder:hover .products-wishlist{
     display: block;
   }
-
 </style>
 <script>
 import ROUTER from 'src/router'
