@@ -9,9 +9,9 @@
       :grid="['list', 'th-large']">
     </filter-product>
     <div style="margin-bottom: 10px;width: 100%; float: left;" v-if="data !== null">
-      <button class="btn btn-primary" @click="filterBy('bundled')" :class="{'btn-warning': activePage === 'bundled'}">Bundled</button>
-      <button class="btn btn-primary" @click="filterBy('regular')" :class="{'btn-warning': activePage === 'regular'}">Regular</button>
-      <button class="btn btn-primary" @click="filterBy('all')" :class="{'btn-warning': activePage === 'all'}">All</button>
+      <button class="btn btn-primary" @click="filterBy('bundled')" :class="{'btn-warning': activePageNow === 'bundled'}">Bundled</button>
+      <button class="btn btn-primary" @click="filterBy('regular')" :class="{'btn-warning': activePageNow === 'regular'}">Regular</button>
+      <button class="btn btn-primary" @click="filterBy('all')" :class="{'btn-warning': activePageNow === 'all'}">All</button>
     </div>
     <div class="products-holder" v-for="item, index in data" @click="redirect('/product/edit/' + item.code)" v-if="listStyle === 'columns' && data !== null">
       <div class="products-image">
@@ -239,10 +239,13 @@ export default {
       config: CONFIG,
       errorMessage: null,
       data: null,
+      sorted: [],
       selectedItem: null,
       selectedIndex: null,
       listStyle: 'list',
       type: null,
+      currentType: 'all',
+      activePageNow: null,
       category: [{
         title: 'Product',
         sorting: [{
@@ -343,11 +346,21 @@ export default {
         limit: this.limit,
         offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
       }
+      if(this.currentType !== 'all') {
+        parameter.condition.push({
+          value: this.currentType,
+          column: 'type',
+          clause: '='
+        })
+      } else {
+        parameter.condition.splice(2)
+      }
       $('#loading').css({'display': 'block'})
       this.APIRequest('products/retrieve_basic', parameter).then(response => {
         $('#loading').css({'display': 'none'})
         if(response.data.length > 0){
           this.data = response.data
+          console.log(this.activePage)
           this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
           if(this.selectedItem !== null){
             this.selectedItem = this.data[this.selectedIndex]
@@ -382,13 +395,50 @@ export default {
       }
     },
     filterBy(type){
-      this.activePage = type
-      if(type === 'all'){
-        this.sorted = this.data
-      }else{
-        this.sorted = this.data.filter((item) => {
-          if(item.type === type){
-            return item
+      this.activePageNow = type
+      this.currentType = type
+      this.activePage = 1
+      if(type === 'all') {
+        this.retrieve({'title': 'asc'}, {column: 'title', value: ''})
+      } else {
+        let parameter = {
+          condition: [{
+            value: this.currentFilter.value + '%',
+            column: this.currentFilter.column,
+            clause: 'like'
+          }, {
+            value: type,
+            column: 'type',
+            clause: '='
+          }, {
+            value: this.user.subAccount.merchant.id,
+            column: 'merchant_id',
+            clause: '='
+          }],
+          sort: this.currentSort,
+          account_id: this.user.userID,
+          inventory_type: this.common.ecommerce.inventoryType,
+          limit: this.limit,
+          offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
+        }
+        $('#loading').css({'display': 'block'})
+        this.APIRequest('products/retrieve_basic', parameter).then(response => {
+          $('#loading').css({'display': 'none'})
+          if(response.data.length > 0){
+            this.data = response.data
+            this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
+            if(this.selectedItem !== null){
+              this.selectedItem = this.data[this.selectedIndex]
+            }
+          }else{
+            this.data = null
+            this.selectedIndex = null
+            this.selectedItem = null
+            this.numPages = null
+            this.empty = {
+              title: 'Looks like you have not added a product!',
+              guide: 'Click the New Product Button to get started.'
+            }
           }
         })
       }
