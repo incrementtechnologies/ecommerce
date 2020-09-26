@@ -10,7 +10,7 @@
     <table class="table table-bordered" v-if="data !== null">
       <thead>
         <tr>
-          <td>Transfer Code
+          <td>Order #
             <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayCode('desc')" v-if="activeSortCode === 'asc'"></i>
             <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayCode('asc')" v-if="activeSortCode === 'desc'"></i>
           </td>
@@ -22,7 +22,7 @@
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td>{{item.code}}</td>
+          <td>{{item.order_requests ? item.order_requests.order_number : ''}}</td>
           <td>{{item.name}}</td> 
           <td>{{filterValue === 0 ? item.from : item.to}}</td>
           <td>
