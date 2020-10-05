@@ -1,12 +1,17 @@
 <template>
   <div class="holder">
-    <!-- <filter-product v-bind:category="category" 
+     <filter-product v-bind:category="category" 
       :activeCategoryIndex="0"
       :activeSortingIndex="0"
-      @changeSortEvent="retrieve($event.sort, $event.filter)"
+      @changeSortEvent="retrieve($event.sort, $event.filter, $event.level)"
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']">
-    </filter-product> -->
+    </filter-product>
+    <div style="margin-bottom: 10px;width: 100%; float: left;" v-if="data !== null">
+      <button class="btn btn-primary" @click="filterBy('bundled')" :class="{'btn-warning': activePageNow === 'bundled'}">Bundled</button>
+      <button class="btn btn-primary" @click="filterBy('regular')" :class="{'btn-warning': activePageNow === 'regular'}">Regular</button>
+      <button class="btn btn-primary" @click="filterBy('all')" :class="{'btn-warning': activePageNow === 'all'}">All</button>
+    </div>
     <image-view :data="data" :flag="false" v-if="listStyle === 'columns'"></image-view>
     <table-view :data="data" v-if="listStyle === 'list' && data !== null" :type="'consignments'"></table-view>
     <empty v-if="data === null" :title="empty.title" :action="empty.guide"></empty>
@@ -139,7 +144,7 @@ import COMMON from 'src/common.js'
 import Pager from 'components/increment/generic/pager/Pager.vue'
 export default {
   mounted(){
-    this.retrieve({'title': 'asc'}, {column: 'title', value: ''})
+    this.retrieve({'title': 'asc'}, {column: 'title', value: ''}, true)
   },
   data(){
     return {
@@ -150,18 +155,36 @@ export default {
       selectedItem: null,
       selectedIndex: null,
       listStyle: 'list',
+      currentType: 'all',
+      activePageNow: null,
+      currentLevel: null,
       category: [{
         title: 'Product',
+        level: true,
         sorting: [{
-          title: 'Created at ascending',
-          payload: 'created_at',
+          title: 'Title at ascending',
+          payload: 'title',
           payload_value: 'asc',
-          type: 'date'
+          type: 'text'
         }, {
-          title: 'Created at descending',
-          payload: 'created_at',
+          title: 'Title at descending',
+          payload: 'title',
           payload_value: 'desc',
-          type: 'date'
+          type: 'text'
+        }]
+      }, {
+        title: 'Manufacturer',
+        level: false,
+        sorting: [{
+          title: 'Name at ascending',
+          payload: 'name',
+          payload_value: 'asc',
+          type: 'text'
+        }, {
+          title: 'Name at descending',
+          payload: 'name',
+          payload_value: 'desc',
+          type: 'text'
         }]
       }],
       common: COMMON,
@@ -180,7 +203,7 @@ export default {
     'create': require('components/increment/ecommerce/product/Create.vue'),
     'table-view': require('components/increment/ecommerce/product/TableView.vue'),
     'empty': require('components/increment/generic/empty/Empty.vue'),
-    'filter-product': require('components/increment/ecommerce/filter/Product.vue'),
+    'filter-product': require('components/increment/ecommerce/filter/FilterWithSort.vue'),
     'image-view': require('components/increment/ecommerce/product/ImageView.vue'),
     'Pager': require('components/increment/generic/pager/Pager.vue')
   },
@@ -188,7 +211,7 @@ export default {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    retrieve(sort, filter){
+    retrieve(sort, filter, level){
       if(this.user.subAccount === null || this.user.subAccount.merchant === null || typeof this.user.subAccount.merchant === 'undefined'){
         this.empty = {
           title: 'Empty Merchant!',
@@ -202,9 +225,20 @@ export default {
       if(sort !== null){
         this.currentSort = sort
       }
+      if(level === true){
+        console.log('first')
+        this.currentLevel = level
+        this.retrieveFirstLevel(sort, filter, level)
+      }else{
+        this.currentLevel = level
+        console.log('second')
+        this.retrieveSecondLevel(sort, filter, level)
+      }
+    },
+    retrieveFirstLevel(sort, filter, level){
       let parameter = {
         condition: {
-          value: this.currentFilter.value + '%',
+          value: '%' + this.currentFilter.value + '%',
           column: this.currentFilter.column
         },
         merchant_id: this.user.subAccount.merchant.id,
@@ -212,11 +246,12 @@ export default {
         account_id: this.user.userID,
         inventory_type: this.common.ecommerce.inventoryType,
         type: this.user.type,
+        productType: this.currentType,
         limit: this.limit,
         offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
       }
       $('#loading').css({'display': 'block'})
-      this.APIRequest('transfers/retrieve_by_consignment_pagination', parameter).then(response => {
+      this.APIRequest('transfers/retrieve_products_first_level', parameter).then(response => {
         $('#loading').css({'display': 'none'})
         if(response.data.length > 0){
           this.data = response.data
@@ -235,6 +270,89 @@ export default {
           }
         }
       })
+    },
+    retrieveSecondLevel(sort, filter, level){
+      let parameter = {
+        condition: {
+          value: '%' + this.currentFilter.value + '%',
+          column: this.currentFilter.column
+        },
+        merchant_id: this.user.subAccount.merchant.id,
+        sort: this.currentSort,
+        account_id: this.user.userID,
+        inventory_type: this.common.ecommerce.inventoryType,
+        type: this.user.type,
+        productType: this.currentType,
+        limit: this.limit,
+        offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
+      }
+      $('#loading').css({'display': 'block'})
+      this.APIRequest('transfers/retrieve_products_second_level', parameter).then(response => {
+        $('#loading').css({'display': 'none'})
+        if(response.data.length > 0){
+          this.data = response.data
+          this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
+          if(this.selectedItem !== null){
+            this.selectedItem = this.data[this.selectedIndex]
+          }
+        }else{
+          this.data = null
+          this.selectedIndex = null
+          this.numPages = null
+          this.selectedItem = null
+          this.empty = {
+            title: 'Empty Consignments!',
+            guide: 'Start asking to transfer item to your account.'
+          }
+        }
+      })
+    },
+    filterBy(type){
+      this.activePageNow = type
+      this.currentType = type
+      this.activePage = 1
+      if(type === 'all'){
+        if(this.currentLevel === true){
+          this.retrieveFirstLevel({'title': 'asc'}, {column: 'title', value: ''}, true)
+        }else{
+          this.retrieveSecondLevel({'title': 'asc'}, {column: 'title', value: ''}, false)
+        }
+      }else{
+        let parameter = {
+          condition: {
+            value: '%' + this.currentFilter.value + '%',
+            column: this.currentFilter.column
+          },
+          merchant_id: this.user.subAccount.merchant.id,
+          sort: this.currentSort,
+          account_id: this.user.userID,
+          inventory_type: this.common.ecommerce.inventoryType,
+          type: this.user.type,
+          productType: type,
+          limit: this.limit,
+          offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
+        }
+        $('#loading').css({'display': 'block'})
+        this.APIRequest('transfers/retrieve_products_first_level', parameter).then(response => {
+          $('#loading').css({'display': 'none'})
+          if(response.data.length > 0){
+            this.data = response.data
+            this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
+            if(this.selectedItem !== null){
+              this.selectedItem = this.data[this.selectedIndex]
+            }
+          }else{
+            this.data = null
+            this.selectedIndex = null
+            this.numPages = null
+            this.selectedItem = null
+            this.empty = {
+              title: 'Empty Consignments!',
+              guide: 'Start asking to transfer item to your account.'
+            }
+          }
+        })
+      }
     },
     editModal(item, index){
       for (var i = 0; i < this.$children.length; i++) {
