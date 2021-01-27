@@ -82,6 +82,7 @@
         </tr>
       </tbody>
     </table>
+    <create-product-traces/>
     <Pager
       :pages="numPages"
       :active="activePage"
@@ -280,6 +281,7 @@ export default {
     'empty': require('components/increment/generic/empty/Empty.vue'),
     'filter-product': require('components/increment/ecommerce/filter/Product.vue'),
     'image-view': require('components/increment/ecommerce/product/ImageView.vue'),
+    'create-product-traces': require('components/increment/ecommerce/product/CreateProductTraces.vue'),
     Pager
   },
   methods: {
