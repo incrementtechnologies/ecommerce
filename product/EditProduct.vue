@@ -483,6 +483,7 @@ export default {
       if(this.validate() === false){
         return
       }
+      this.data.details = JSON.stringify(this.data.details)
       this.APIRequest('products/update', this.data).then(response => {
         if(this.common.ecommerce.productUnits !== null){
           if(this.data.variation !== null){
