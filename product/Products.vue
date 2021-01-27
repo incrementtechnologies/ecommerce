@@ -82,6 +82,7 @@
         </tr>
       </tbody>
     </table>
+    <create-product-traces :params="productId"/>
     <Pager
       :pages="numPages"
       :active="activePage"
@@ -238,6 +239,7 @@ export default {
       user: AUTH.user,
       config: CONFIG,
       errorMessage: null,
+      productId: null,
       data: null,
       sorted: [],
       selectedItem: null,
@@ -280,6 +282,7 @@ export default {
     'empty': require('components/increment/generic/empty/Empty.vue'),
     'filter-product': require('components/increment/ecommerce/filter/Product.vue'),
     'image-view': require('components/increment/ecommerce/product/ImageView.vue'),
+    'create-product-traces': require('components/increment/ecommerce/product/CreateProductTraces.vue'),
     Pager
   },
   methods: {
@@ -358,6 +361,7 @@ export default {
       $('#loading').css({'display': 'block'})
       this.APIRequest('products/retrieve_basic', parameter).then(response => {
         $('#loading').css({'display': 'none'})
+        $('#createProductTracesModal').modal('hide')
         if(response.data.length > 0){
           this.data = response.data
           console.log(this.activePage)

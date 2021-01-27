@@ -36,7 +36,10 @@
 
             <div class="form-group form-group-three margin-left">
               <label for="exampleInputEmail1">Year <b class="text-danger">*</b></label>
-              <input type="number" class="form-control" placeholder="YYYY" v-model="manufacturing.year">
+              <!-- <input type="number" class="form-control" placeholder="YYYY" v-model="manufacturing.year"> -->
+               <select class="form-control" v-model="manufacturing.year">
+                <option v-for="(item, index) in years" :key="index" :value="item">{{item}}</option>
+              </select>
             </div>
            <!--  <div>
               <label for="exampleInputEmail1">Manufacture Date <b class="text-danger">*</b></label>
@@ -121,6 +124,7 @@ export default {
     var date = new Date()
     this.manufacturing.year = date.getFullYear()
     this.manufacturing.month = (parseInt(date.getMonth()) + 1)
+    this.getYearList()
   },
   data(){
     return {
@@ -169,6 +173,7 @@ export default {
         title: 'December',
         code: 12
       }],
+      years: [],
       newData: {
         batch_number: null,
         manufacturing_date: null,
@@ -193,28 +198,32 @@ export default {
         this.newData.product_id = this.params
         this.newData.account_id = this.user.userID
         this.newData.manufacturing_date = this.manufacturing.year + '-' + this.manufacturing.month + ((this.manufacturing.date === null || this.manufacturing.date === '') ? '' : '-' + this.manufacturing.date)
+        $('#loading').css({'display': 'block'})
         this.APIRequest('product_traces/create', this.newData).then(response => {
-          if(response.data !== null){
-            this.newData = {
-              batch_number: null,
-              manufacturing_date: null,
-              qty: 1,
-              product_id: null,
-              account_id: null,
-              inventory_type: COMMON.ecommerce.inventoryType
-            }
-            this.manufacturing = {
-              date: null,
-              year: null,
-              month: null
-            }
-            $('#createProductTracesModal').modal('hide')
-            this.$parent.retrieve({column: 'created_at', value: 'desc'})
+          $('#loading').css({'display': 'none'})
+          this.newData = {
+            batch_number: null,
+            manufacturing_date: null,
+            qty: 1,
+            product_id: null,
+            account_id: null,
+            inventory_type: COMMON.ecommerce.inventoryType
           }
+          this.manufacturing = {
+            date: null,
+            year: null,
+            month: null
+          }
+          $('#createProductTracesModal').modal('hide')
+          this.$parent.retrieve({'title': 'asc'}, {column: 'title', value: ''})
         })
       }
     },
     validate(){
+      if(this.newData.batch_number === null || this.manufacturing.date === null || this.manufacturing.month === null || this.manufacturing.year === null || this.newData.qty <= 0){
+        this.errorMessage = 'All fields are required'
+        return false
+      }
       if(this.newData.batch_number === '' || this.newData.batch_number === null){
         this.errorMessage = 'Batch number is required'
         return false
@@ -223,6 +232,14 @@ export default {
         return false
       }
       return true
+    },
+    getYearList(){
+      var max = new Date().getFullYear()
+      var min = max - 100
+
+      for (var i = max; i >= min; i--) {
+        this.years.push(i)
+      }
     }
   }
 }
