@@ -360,6 +360,7 @@ export default {
       $('#loading').css({'display': 'block'})
       this.APIRequest('products/retrieve_basic', parameter).then(response => {
         $('#loading').css({'display': 'none'})
+        $('#createProductTracesModal').modal('hide')
         if(response.data.length > 0){
           this.data = response.data
           console.log(this.activePage)
