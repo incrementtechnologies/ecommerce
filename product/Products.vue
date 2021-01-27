@@ -82,7 +82,7 @@
         </tr>
       </tbody>
     </table>
-    <create-product-traces/>
+    <create-product-traces :params="productId"/>
     <Pager
       :pages="numPages"
       :active="activePage"
@@ -239,6 +239,7 @@ export default {
       user: AUTH.user,
       config: CONFIG,
       errorMessage: null,
+      productId: null,
       data: null,
       sorted: [],
       selectedItem: null,
