@@ -48,18 +48,19 @@
           <span>{{data.variation[0].payload_value}} {{data.variation[0].payload}}</span>
         </div> -->
         <div class="product-row" v-if="data.sku !== null && data.sku !== ''">
-          <label>Sku: </label>
-          <label class="text-danger"><i>&nbsp;{{data.sku}}</i></label>
+          <label class="product-row-labels">Sku:</label>
+          <label class="text-danger"><i> &nbsp;{{data.sku}}</i></label>
         </div>
-        <div class="product-row-tags" v-if="data.tags !== null && data.tag_array !== null">
-          <label>Tags:&nbsp;&nbsp;</label>
-          <label class="tag-label" v-for="(item, index) in data.tag_array" :key="index">{{item.title}}</label>
+        <div class="product-row" v-if="data.tags !== null && data.tag_array !== ''">
+          <label class="product-row-labels">Tags:</label>
+          <label class="tag-label" v-for="(item, index) in data.tag_array" :key="index">&nbsp;&nbsp;{{item.title}}</label>
+        </div>
+        <div class="product-row-merchant" v-if="data.merchant !== null">
+        <label class="product-row-labels">Merchant:</label>
+        <label>&nbsp;&nbsp;{{data.merchant.name}}</label>
         </div>
         <div class="product-row" v-if="data.merchant !== null">
-          <label>Merchant:&nbsp;&nbsp;{{data.merchant.name}}</label>
-        </div>
-        <div class="product-row" v-if="data.merchant !== null">
-          <span>Website:&nbsp;&nbsp;<a :href="data.merchant.website" target="__blank">{{data.merchant.website}}</a></span>
+          <span class="product-row-labels">Website: &nbsp;&nbsp;<a :href="data.merchant.website" target="__blank">{{data.merchant.website}}</a></span>
         </div>
       </div>
     </div><br>
@@ -138,6 +139,9 @@
     min-height: 60px;
     overflow-y: hidden;
   }
+  .product-row-labels{
+    font-weight: 600;
+  }
   .product-details{
     min-height: 50px;
     width: 50%;
@@ -156,17 +160,23 @@
     float: left;
     min-height: 40px;
     overflow-y: hidden;
-    font-weight: 600;
     font-size: 16px;
-    line-height: 40px;
+    line-height: 50px;
   }
-  .product-row-tags{
-    width: 100%;
+
+    .product-row-merchant{
     float: left;
     min-height: 40px;
     overflow-y: hidden;
-    font-weight: 600;
-    line-height: 40px;
+    font-size: 16px;
+    line-height: 50px;
+  }
+  .product-row-tags{
+    float: left;
+    min-height: 40px;
+    overflow-y: hidden;
+    font-size: 16px;
+    line-height: 50px;
   }
   .product-row-rating{
     width: 100%;
@@ -177,7 +187,6 @@
     line-height: 40px;
   }
   .product-row label{
-    float: left;
     width: 5%;
     margin-top: 0px;
     margin-bottom: 0px;
@@ -205,6 +214,7 @@
     margin-right: 5px;
     border-radius: 5px;
     margin-top: 2px;
+    font-weight: 100;
   }
   .attribute{
     width: 50px;
