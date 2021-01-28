@@ -45,7 +45,7 @@
       </table>
     </div>
     <create-modal :property="createProductTraceModal"></create-modal>
-    <create-product-traces-modal :params="productId"></create-product-traces-modal>
+    <create-product-traces-modal ref="addTrace" :params="productId"></create-product-traces-modal>
   </div>
 </template>
 <style scoped>
@@ -118,6 +118,7 @@ export default {
       ROUTER.push(parameter)
     },
     addTraces(){
+      this.$refs.addTrace.errorMessage = null
       this.productId = this.item.id
       setTimeout(() => {
         $('#createProductTracesModal').modal('show')

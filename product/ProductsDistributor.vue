@@ -7,11 +7,11 @@
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']">
     </filter-product>
-    <div style="margin-bottom: 10px;width: 100%; float: left;" v-if="data !== null">
+    <!-- <div style="margin-bottom: 10px;width: 100%; float: left;" v-if="data !== null">
       <button class="btn btn-primary" @click="filterBy('bundled')" :class="{'btn-warning': activePageNow === 'bundled'}">Bundled</button>
       <button class="btn btn-primary" @click="filterBy('regular')" :class="{'btn-warning': activePageNow === 'regular'}">Regular</button>
       <button class="btn btn-primary" @click="filterBy('all')" :class="{'btn-warning': activePageNow === 'all'}">All</button>
-    </div>
+    </div> -->
     <image-view :data="data" :flag="false" v-if="listStyle === 'columns'"></image-view>
     <table-view :data="data" v-if="listStyle === 'list' && data !== null" :type="'consignments'"></table-view>
     <empty v-if="data === null" :title="empty.title" :action="empty.guide"></empty>
