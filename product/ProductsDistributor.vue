@@ -144,7 +144,7 @@ import COMMON from 'src/common.js'
 import Pager from 'components/increment/generic/pager/Pager.vue'
 export default {
   mounted(){
-    this.retrieve({'title': 'asc'}, {column: 'title', value: ''}, true)
+    this.retrieve({'title': 'asc'}, {column: 'title', value: ''}, false)
   },
   data(){
     return {

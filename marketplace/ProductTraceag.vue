@@ -49,15 +49,15 @@
         </div> -->
         <div class="product-row" v-if="data.sku !== null && data.sku !== ''">
           <label class="product-row-labels">Sku:</label>
-          <label class="text-danger"><i> &nbsp;{{data.sku}}</i></label>
+          <label class="text-danger"><i>&nbsp;&nbsp;{{data.sku}}</i></label>
         </div>
-        <div class="product-row" v-if="data.tags !== null && data.tag_array !== ''">
+        <div class="product-row" v-if="data.tags !== null">
           <label class="product-row-labels">Tags:</label>
-          <label class="tag-label" v-for="(item, index) in data.tag_array" :key="index">&nbsp;&nbsp;{{item.title}}</label>
+          <label>&nbsp;&nbsp;&nbsp;{{data.tags}}</label>
         </div>
         <div class="product-row-merchant" v-if="data.merchant !== null">
-        <label class="product-row-labels">Merchant:</label>
-        <label>&nbsp;&nbsp;{{data.merchant.name}}</label>
+          <label class="product-row-labels">Merchant:</label>
+          <label>&nbsp;&nbsp;{{data.merchant.name}}</label>
         </div>
         <div class="product-row" v-if="data.merchant !== null">
           <span class="product-row-labels">Website: &nbsp;&nbsp;<a :href="data.merchant.website" target="__blank">{{data.merchant.website}}</a></span>
