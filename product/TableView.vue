@@ -28,7 +28,7 @@
           </td>
           <td>
             <i class="fas fa-clone text-primary" v-if="item.type !== 'regular'" title="This is a bundled product"></i>
-            <label class="underline-on-hover" @click="redirect('/marketplace/product/' + item.code )">{{item.title}}</label>
+            <label class="underline-on-hover" @click="redirect('/marketplace/product/' + (item.product_code ? product_code : item.code) )">{{item.title}}</label>
           </td>
           <td v-if="user.type === 'MANUFACTURER'">{{item.tags}}</td>
           <td v-if="user.type === 'MANUFACTURER'">

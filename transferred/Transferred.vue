@@ -287,7 +287,7 @@ export default {
           column: key[0]
         },
         merchant_id: this.user.subAccount.merchant.id,
-        filter_value: this.filterValue === 0 ? 'from' : 'to',
+        filter_value: this.filterValue === 1 ? 'from' : 'to',
         limit: this.limit,
         offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
       }
