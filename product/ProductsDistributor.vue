@@ -173,7 +173,7 @@ export default {
           type: 'text'
         }]
       }, {
-        title: 'Manufacturer',
+        title: 'Merchant',
         level: false,
         sorting: [{
           title: 'Name at ascending',

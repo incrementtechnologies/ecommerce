@@ -8,7 +8,7 @@
     <table class="table table-bordered table-responsive" v-if="type === 'consignments' && sorted.length > 0">
       <thead>
         <tr>
-          <td v-if="user.type !== 'MANUFACTURER'">Manufacturer</td>
+          <td v-if="user.type !== 'MANUFACTURER'">Merchant</td>
           <td>Title
             <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayTitle('desc')" v-if="activeSortTitle === 'asc'"></i>
             <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayTitle('asc')" v-if="activeSortTitle === 'desc'"></i>
