@@ -173,7 +173,7 @@ export default {
           type: 'text'
         }]
       }, {
-        title: 'Manufacturer',
+        title: 'Merchant',
         level: false,
         sorting: [{
           title: 'Name at ascending',
@@ -196,7 +196,8 @@ export default {
       },
       numPages: null,
       activePage: 1,
-      limit: 5
+      limit: 5,
+      level: false
     }
   },
   components: {
@@ -212,6 +213,9 @@ export default {
       ROUTER.push(parameter)
     },
     retrieve(sort, filter, level){
+      if(level !== undefined) {
+        this.level = level
+      }
       if(this.user.subAccount === null || this.user.subAccount.merchant === null || typeof this.user.subAccount.merchant === 'undefined'){
         this.empty = {
           title: 'Empty Merchant!',
@@ -225,12 +229,13 @@ export default {
       if(sort !== null){
         this.currentSort = sort
       }
-      if(level === true){
+      console.log(this.level)
+      if(this.level === true){
         console.log('first')
-        this.currentLevel = level
+        this.currentLevel = this.level
         this.retrieveFirstLevel(sort, filter, level)
       }else{
-        this.currentLevel = level
+        this.currentLevel = this.level
         console.log('second')
         this.retrieveSecondLevel(sort, filter, level)
       }
