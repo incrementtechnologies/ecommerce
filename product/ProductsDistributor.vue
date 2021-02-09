@@ -253,7 +253,7 @@ export default {
         type: this.user.type,
         productType: this.currentType,
         limit: this.limit,
-        tags: 'herbicide',
+        // tags: 'herbicide',
         offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
       }
       $('#loading').css({'display': 'block'})
