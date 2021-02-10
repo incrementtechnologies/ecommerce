@@ -24,7 +24,7 @@
       <tbody>
         <tr v-for="(item, index) in sorted" :key="index">
           <td v-if="user.type !== 'MANUFACTURER'">
-            {{item.merchant.name}}
+            {{item.merchant_from}}
           </td>
           <td>
             <i class="fas fa-clone text-primary" v-if="item.type !== 'regular'" title="This is a bundled product"></i>
