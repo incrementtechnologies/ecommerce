@@ -4,8 +4,7 @@
       :activeCategoryIndex="0"
       :activeSortingIndex="0"
       @changeSortEvent="retrieve($event.sort, $event.filter, $event.level)"
-      @changeStyle="manageGrid($event)"
-      :grid="['list', 'th-large']">
+      :grid="['list']">
     </filter-product>
     <!-- <div style="margin-bottom: 10px;width: 100%; float: left;" v-if="data !== null">
       <button class="btn btn-primary" @click="filterBy('bundled')" :class="{'btn-warning': activePageNow === 'bundled'}">Bundled</button>
@@ -19,6 +18,7 @@
       :pages="numPages"
       :active="activePage"
       :limit="limit"
+      :level="currentLevel"
       v-if="data !== null"
     />
   </div>
@@ -206,7 +206,7 @@ export default {
     'empty': require('components/increment/generic/empty/Empty.vue'),
     'filter-product': require('components/increment/ecommerce/filter/FilterWithSort.vue'),
     'image-view': require('components/increment/ecommerce/product/ImageView.vue'),
-    'Pager': require('components/increment/generic/pager/Pager.vue')
+    'Pager': require('components/increment/generic/pager/PagerWithLevel.vue')
   },
   methods: {
     redirect(parameter){
@@ -229,16 +229,17 @@ export default {
       if(sort !== null){
         this.currentSort = sort
       }
-      console.log(this.level)
-      if(this.level === true){
+      // if(level !== undefined){
+      if(level === true){
         console.log('first')
-        this.currentLevel = this.level
-        this.retrieveFirstLevel(sort, filter, level)
+        this.currentLevel = level
+        this.retrieveFirstLevel(sort, filter, this.currentLevel)
       }else{
         this.currentLevel = this.level
         console.log('second')
-        this.retrieveSecondLevel(sort, filter, level)
+        this.retrieveSecondLevel(sort, filter, this.currentLevel)
       }
+      // }
     },
     retrieveFirstLevel(sort, filter, level){
       let parameter = {
