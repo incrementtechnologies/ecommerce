@@ -24,32 +24,24 @@
           </div>
            <!-- <div class="row"> -->
              <div class="scrolling-wrapper d-flex">
-               <div style="height:100px !important;width:100px !important;">
+               <div style="height:100px !important;width:100px !important;" @click="addImage()">
                  <i class="fa fa-plus plusIcon" style="font-size:100px;padding:10px"></i>
+                 <input type="file" id="Image" :accept="type ? type : 'image/*'" @change="setUpFileUpload($event)">
                  <!-- <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfTMy2AHYJpPh-4Eojkm_s5QX6_emLxwfZeg&usqp=CAU" style="width:100px;height:100px;border:2px solid black"> -->
                </div>
               <div  v-for="item in images" :key="item.id" @click="selectImage(item.url)" style="height:100px;width:100px" class="imageContainer p-10">
-                  <!-- <i class="fa fa-times-circle text"></i> -->
+                  <!-- <i class="fa fa-times class text"></i> -->
                   <img :src="config.BACKEND_URL + item.url" class="image">
-                  <i class="fa fa-times-circle  text"></i>
-                  <label class="middle"  @click="removeImage(item.id)">
+                  <label class="middle"  @click="removeImage(item.id)" v-if="item.status !== 'featured'">
+                    <i class="fa fa-times-circle text" ></i>
                   </label>
               </div>
              <!-- </div> -->
            </div>
-           <div style="float:right;">
-              <button class="btn btn-danger">Cancel</button>
-              <button class="btn btn-primary">Apply</button>
+           <div style="float:right">
+            <button class="btn btn-danger">Cancel</button>
+            <button class="btn btn-primary">Apply</button>
            </div>
-          <!-- <div class="imageList" style="overflow-x: scroll; width:90%;white-space: nowrap;">
-          <div v-for="item in images" :key="item.id" class="image-item" @click="selectImage(item.url)" style="position: relative;">
-            <img :src="config.BACKEND_URL + item.url" class="other-image">
-            <div class="overlay"></div>
-            <label class="remove-image text-danger" id="other-images-remove" @click="removeImage(item.id)" v-if="item.status !== 'featured'">
-              <i class="fa fa-times"></i>
-            </label>
-          </div>
-          </div> -->
         </div>
        </div>
       </div>
@@ -60,21 +52,45 @@ import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
+import Image from '../../generic/modal/Image.vue'
+import axios from 'axios'
 export default {
+  components: { Image },
   props: ['data'],
   data: () => ({
     user: AUTH.user,
     config: CONFIG,
     common: COMMON,
     selectedImage: null,
-    images: []
+    images: [],
+    errorMessage: null,
+    idImage: null,
+    file: null
   }),
   mounted(){
     this.retrieveImage()
   },
   methods: {
+    addImage(){
+      $('#Image')[0].click()
+    },
     selectImage(url){
       this.selectedImage = url
+    },
+    setUpFileUpload(event){
+      let files = event.target.files || event.dataTransfer.files
+      if(!files.length){
+        return false
+      }else{
+        this.file = files[0]
+        let filename = this.file.name.toLowerCase()
+        if(filename.substring(filename.lastIndexOf('.')) === '.png' || filename.substring(filename.lastIndexOf('.')) === '.jpg' || filename.substring(filename.lastIndexOf('.')) === '.jpeg' || filename.substring(filename.lastIndexOf('.')) === '.gif' || filename.substring(filename.lastIndexOf('.')) === '.tif' || filename.substring(filename.lastIndexOf('.')) === '.bmp'){
+          this.createFile(files[0])
+        }else{
+          this.errorMessage = 'Upload images only!'
+          this.file = null
+        }
+      }
     },
     removeImage(id){
       let parameter = {
@@ -84,6 +100,18 @@ export default {
         // this.retrieve()
         this.selectedImage = null
       })
+    },
+    deleteImage(id){
+      let params = {
+        id: id
+      }
+      axios.post(this.config.BACKEND_URL + '/images/delete?token=' + AUTH.tokenData.token, params).then(response => {
+        this.retrieve()
+      })
+      this.prevIndex = null
+      setTimeout(() => {
+        $('#browseImagesModal').modal('show')
+      }, 800)
     },
     retrieveImage(){
       const parameter = {
@@ -130,6 +158,7 @@ export default {
       overflow-x: scroll;
       overflow-y: scroll;
       white-space: nowrap;
+      position: relative;
 
       .demo {
         display: inline-block;
@@ -168,6 +197,7 @@ export default {
     .imageContainer:hover .image {
       opacity: 0.3;
       background: #ffaa81;
+      display: block;
     }
 
     .imageContainer:hover .middle {
@@ -176,21 +206,24 @@ export default {
 
     .text {
       color: red;
-      font-size: 16px;
-      padding: 16px 32px;
+      cursor: pointer;
+      // display: none;
       font-size: 20px;
-      margin-left: 40px;
-      margin-bottom: 40px;
-
+      padding: 16px 32px;
     }
+
+    
+    .imageContainer:hover .middle:hover .text{
+      color: blue !important;
+    }
+
 
     .middle {
       transition: .5s ease;
       opacity: 0;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      // top: 40%;
+      // left: 50%;
+      transform: translate(45%, -220%);
       -ms-transform: translate(-50%, -50%);
       text-align: center;
     }
@@ -224,6 +257,13 @@ export default {
       float: left;
       background: rgba(0, 0, 0, 0);
     }
+
+    #Image{
+      display: none;
+      height: 200px;
+      width: 200px;
+    }
+
   .images-holder{
     width: 100%;
     float: left;

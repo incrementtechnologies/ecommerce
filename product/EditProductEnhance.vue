@@ -72,40 +72,89 @@
         <div class="product-item-title">
           <label>Activity Group</label>
           <br>
-          <select class="form-control form-control-custom" v-model="data.status">
+          <select class="form-control form-control-custom" v-model="data.group">
             <option value="pending">Pending</option>
             <option value="published">Published</option>
           </select>
         </div>
-        <div class="product-item-title" style="width: 79%; margin-right: 1%;">
+        <div class="product-item-title" style="width: 58%; margin-right: 1%;">
               <label>Actives</label>
               <br>
               <input type="number" class="form-control form-control-custom" v-model="newAttribute.payload_value" placeholder="Type volume here...">
             </div>
-            <div class="product-item-title" style="width: 20%;">
-              <label>Units</label>
+            <div class="product-item-title" style="width: 20%; margin-right: 1%; margin-top: 2.5%;">
+              <label></label>
+              <br>
+              <input type="number" class="form-control form-control-custom" v-model="newAttribute.payload_value" placeholder="Type volume here...">
+            </div>
+            <div class="product-item-title" style="width: 20%; margin-top: 2.5%;">
+              <label></label>
               <br>
               <select class="form-control form-control-custom" v-model="newAttribute.payload">
                 <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
               </select>
             </div>
         <div class="product-item-title">
+          {{data.details}}
           <label>Solvent (if applicable)</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here...">
+          <input type="text" class="form-control form-control-custom" v-model="data.solvent" placeholder="Type product sku here...">
         </div>
          <div class="product-item-title">
           <label>Other scheduled ingredients</label>
           <br>
           <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here...">
         </div>
+         <div class="product-item-title">
+          <label>Mixing Order</label>
+          <br>
+          <input type="text" class="form-control form-control-custom" v-model="data.mixing_order" placeholder="Type product sku here...">
+        </div>
         <div class="product-item-title">
           <label>Formulation</label>
           <br>
-          <select class="form-control form-control-custom" v-model="data.status">
+          <select class="form-control form-control-custom" v-model="data.formulation">
             <option value="pending">Pending</option>
             <option value="published">Published</option>
           </select>
+        </div>
+        <div class="product-item-title">
+          <label>Available Safety Equipment</label>
+          <br>
+          <div class="form-check">
+            <label class="form-check-label">
+              <input type="checkbox" class="form-check-input" value="">Equipment 1
+            </label>
+          </div>
+          <div class="form-check">
+            <label class="form-check-label">
+              <input type="checkbox" class="form-check-input" value="">Equipment 2
+            </label>
+          </div>
+          <div class="form-check">
+            <label class="form-check-label">
+              <input type="checkbox" class="form-check-input" value="">Equipment 3
+            </label>
+          </div>
+        </div>
+        <div class="product-item-title" style="width: 79%; margin-right: 1%;">
+          <label>Shelf Life</label>
+          <br>
+          <input type="number" class="form-control form-control-custom" v-model="newAttribute.payload_value" placeholder="Type volume here...">
+        </div>
+        <div class="product-item-title" style="width: 20%; margin-top:2.3%">
+          <br>
+          <input type="text" class="form-control form-control-custom" placeholder="Months" disabled>
+        </div>
+         <div class="product-item-title">
+          <label>APVMA Approval number</label>
+          <br>
+          <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here...">
+        </div>
+         <div class="product-item-title">
+          <label>APVMA Approval date</label>
+          <br>
+          <input type="date" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here...">
         </div>
         <div class="product-item-title">
           <button class="btn btn-danger" @click="showConfirmationModal(data.id)" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'" style="margin-top: 5px;">Delete</button>
@@ -172,6 +221,225 @@
     <confirmation ref="confirmationModal" :title="'Confirmation Message'" :message="'Are you sure you want delete this product?'" @onConfirm="deleteProduct($event.id)"></confirmation>
   </div>
 </template>
+<script>
+import ROUTER from 'src/router'
+import AUTH from 'src/services/auth'
+import CONFIG from 'src/config.js'
+import COMMON from 'src/common.js'
+import axios from 'axios'
+export default {
+  mounted(){
+    this.retrieve()
+  },
+  data(){
+    return {
+      user: AUTH.user,
+      config: CONFIG,
+      errorMessage: null,
+      data: null,
+      code: this.$route.params.code,
+      prevMenuIndex: 0,
+      selectedMenu: COMMON.ecommerce.editProductMenu[0],
+      selectedImage: null,
+      qty: 1,
+      priceFlag: false,
+      newImage: {
+        product_id: null,
+        url: null,
+        status: null
+      },
+      imageStatus: null,
+      common: COMMON,
+      newAttribute: {
+        product_id: null,
+        payload: null,
+        payload_value: null
+      },
+      details: {
+        group: null,
+        solvent: null,
+        safety: null,
+        formulation: null,
+        active: [],
+        safety_equipment: [],
+        mixing_order: []
+      }
+    }
+  },
+  computed: {
+    productMenu: function (){
+      if(this.data !== null){
+        return (this.data.type === 'regular') ? [{
+          title: 'Inventory',
+          flag: true
+        }] : COMMON.ecommerce.editProductMenu
+      }
+    }
+  },
+  components: {
+    'ratings': require('components/increment/generic/rating/Ratings.vue'),
+    'product-comments': require('components/increment/generic/comment/Comments.vue'),
+    'browse-images-modal': require('components/increment/generic/image/BrowseModal.vue'),
+    'variations': require('components/increment/ecommerce/product/Variations.vue'),
+    'inventories': require('components/increment/ecommerce/product/Inventories.vue'),
+    'product-trace': require('components/increment/ecommerce/product/ProductTrace.vue'),
+    'bundled-products': require('components/increment/ecommerce/product/BundledProducts.vue'),
+    'prices': require('components/increment/ecommerce/product/Prices.vue'),
+    'confirmation': require('components/increment/generic/modal/Confirmation.vue'),
+    'images': require('components/increment/ecommerce/product/Images.vue')
+  },
+  methods: {
+    redirect(parameter){
+      ROUTER.push(parameter)
+    },
+    selectMenu(index){
+      if(this.prevMenuIndex !== index){
+        this.productMenu[this.prevMenuIndex].flag = false
+        this.productMenu[index].flag = true
+        this.prevMenuIndex = index
+        this.selectedMenu = this.productMenu[index]
+      }
+    },
+    showConfirmationModal(id){
+      this.$refs.confirmationModal.show(id)
+    },
+    selectImage(url){
+      this.selectedImage = url
+    },
+    retrieve(){
+      let parameter = {
+        condition: [{
+          value: this.code,
+          column: 'code',
+          clause: '='
+        }],
+        account_id: this.user.userID,
+        inventory_type: this.common.ecommerce.inventoryType
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('products/retrieve', parameter).then(response => {
+        $('#loading').css({display: 'none'})
+        if(response.data.length > 0){
+          this.data = response.data[0]
+        }
+      })
+    },
+    deleteProduct(id){
+      let parameter = {
+        id: id
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('products/delete', parameter).then(response => {
+        $('#loading').css({display: 'none'})
+        ROUTER.push('/products')
+      })
+    },
+    validate(){
+      this.errorMessage = null
+      if(this.data.title === null || this.data.title === ''){
+        this.errorMessage = 'Title is required.'
+        return false
+      }
+      if(this.data.description === '' || this.data.description === null){
+        this.errorMessage = 'Description is required.'
+        return false
+      }
+      if(typeof this.common.ecommerce.productTitleLimit !== undefined && typeof this.common.ecommerce.productTitleLimit !== 'undefined' && this.data.title.length > this.common.ecommerce.productTitleLimit){
+        this.errorMessage = 'Product title length should not exceed to ' + this.common.ecommerce.productTitleLimit + ' characters.'
+        return false
+      }
+      return true
+    },
+    updateProduct(){
+      if(this.validate() === false){
+        return
+      }
+      this.data.details = JSON.stringify(this.data.details)
+      this.APIRequest('products/update', this.data).then(response => {
+        if(this.common.ecommerce.productUnits !== null){
+          if(this.data.variation !== null){
+            this.updateAttribute(this.data.variation[0])
+          }else{
+            this.createAttribute()
+          }
+        }else{
+          this.retrieve()
+        }
+        ROUTER.push(AUTH.redirectRoute(this.user.type))
+      })
+    },
+    createAttribute(){
+      if(this.newAttribute.payload_value !== null && this.newAttribute.payload_value !== '' && parseInt(this.newAttribute.payload_value) > 0){
+        this.newAttribute.product_id = this.data.id
+        this.APIRequest('product_attributes/create', this.newAttribute).then(response => {
+          if(response.data > 0){
+            this.newAttribute.payload_value = null
+            this.errorMessage = null
+            this.retrieve()
+          }
+        })
+      }else{
+        this.retrieve()
+      }
+    },
+    updateAttribute(item){
+      if(item.payload_value !== null && item.payload_value !== '' && parseInt(item.payload_value) > 0){
+        this.APIRequest('product_attributes/update', item).then(response => {
+          if(response.data === true){
+            this.retrieve()
+          }
+        })
+      }else{
+        this.retrieve()
+      }
+    },
+    showImages(status){
+      this.imageStatus = status
+      $('#browseImagesModal').modal('show')
+    },
+    createPhoto(url){
+      if(this.imageStatus === 'featured'){
+        this.newImage.status = 'featured'
+        if(this.data.featured === null){
+          this.newImage.product_id = this.data.id
+          this.newImage.url = url
+          this.createRequest(this.newImage)
+        }else{
+          this.data.featured[0].url = url
+          this.updateRequest(this.data.featured[0])
+        }
+      }else if(this.imageStatus === 'images'){
+        this.newImage.status = 'others'
+        this.newImage.product_id = this.data.id
+        this.newImage.url = url
+        this.createRequest(this.newImage)
+      }
+    },
+    createRequest(parameter){
+      this.APIRequest('product_images/create', parameter).then(response => {
+        this.retrieve()
+      })
+    },
+    updateRequest(parameter){
+      this.APIRequest('product_images/update', parameter).then(response => {
+        this.retrieve()
+      })
+    },
+    manageImageUrl(url){
+      this.createPhoto(url)
+    },
+    removeImage(id){
+      let parameter = {
+        id: id
+      }
+      this.APIRequest('product_images/delete', parameter).then(response => {
+        this.retrieve()
+        this.selectedImage = null
+      })
+    }
+  }
+}
+</script>
 <style scoped>
   .title{
     width: 95%;
@@ -399,213 +667,3 @@
     }
   }
 </style>
-<script>
-import ROUTER from 'src/router'
-import AUTH from 'src/services/auth'
-import CONFIG from 'src/config.js'
-import COMMON from 'src/common.js'
-import axios from 'axios'
-export default {
-  mounted(){
-    this.retrieve()
-  },
-  data(){
-    return {
-      user: AUTH.user,
-      config: CONFIG,
-      errorMessage: null,
-      data: null,
-      code: this.$route.params.code,
-      prevMenuIndex: 0,
-      selectedMenu: COMMON.ecommerce.editProductMenu[0],
-      selectedImage: null,
-      qty: 1,
-      priceFlag: false,
-      newImage: {
-        product_id: null,
-        url: null,
-        status: null
-      },
-      imageStatus: null,
-      common: COMMON,
-      newAttribute: {
-        product_id: null,
-        payload: null,
-        payload_value: null
-      }
-    }
-  },
-  computed: {
-    productMenu: function (){
-      if(this.data !== null){
-        return (this.data.type === 'regular') ? [{
-          title: 'Inventory',
-          flag: true
-        }] : COMMON.ecommerce.editProductMenu
-      }
-    }
-  },
-  components: {
-    'ratings': require('components/increment/generic/rating/Ratings.vue'),
-    'product-comments': require('components/increment/generic/comment/Comments.vue'),
-    'browse-images-modal': require('components/increment/generic/image/BrowseModal.vue'),
-    'variations': require('components/increment/ecommerce/product/Variations.vue'),
-    'inventories': require('components/increment/ecommerce/product/Inventories.vue'),
-    'product-trace': require('components/increment/ecommerce/product/ProductTrace.vue'),
-    'bundled-products': require('components/increment/ecommerce/product/BundledProducts.vue'),
-    'prices': require('components/increment/ecommerce/product/Prices.vue'),
-    'confirmation': require('components/increment/generic/modal/Confirmation.vue'),
-    'images': require('components/increment/ecommerce/product/Images.vue')
-  },
-  methods: {
-    redirect(parameter){
-      ROUTER.push(parameter)
-    },
-    selectMenu(index){
-      if(this.prevMenuIndex !== index){
-        this.productMenu[this.prevMenuIndex].flag = false
-        this.productMenu[index].flag = true
-        this.prevMenuIndex = index
-        this.selectedMenu = this.productMenu[index]
-      }
-    },
-    showConfirmationModal(id){
-      this.$refs.confirmationModal.show(id)
-    },
-    selectImage(url){
-      this.selectedImage = url
-    },
-    retrieve(){
-      let parameter = {
-        condition: [{
-          value: this.code,
-          column: 'code',
-          clause: '='
-        }],
-        account_id: this.user.userID,
-        inventory_type: this.common.ecommerce.inventoryType
-      }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('products/retrieve', parameter).then(response => {
-        $('#loading').css({display: 'none'})
-        if(response.data.length > 0){
-          this.data = response.data[0]
-        }
-      })
-    },
-    deleteProduct(id){
-      let parameter = {
-        id: id
-      }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('products/delete', parameter).then(response => {
-        $('#loading').css({display: 'none'})
-        ROUTER.push('/products')
-      })
-    },
-    validate(){
-      this.errorMessage = null
-      if(this.data.title === null || this.data.title === ''){
-        this.errorMessage = 'Title is required.'
-        return false
-      }
-      if(this.data.description === '' || this.data.description === null){
-        this.errorMessage = 'Description is required.'
-        return false
-      }
-      if(typeof this.common.ecommerce.productTitleLimit !== undefined && typeof this.common.ecommerce.productTitleLimit !== 'undefined' && this.data.title.length > this.common.ecommerce.productTitleLimit){
-        this.errorMessage = 'Product title length should not exceed to ' + this.common.ecommerce.productTitleLimit + ' characters.'
-        return false
-      }
-      return true
-    },
-    updateProduct(){
-      if(this.validate() === false){
-        return
-      }
-      this.data.details = JSON.stringify(this.data.details)
-      this.APIRequest('products/update', this.data).then(response => {
-        if(this.common.ecommerce.productUnits !== null){
-          if(this.data.variation !== null){
-            this.updateAttribute(this.data.variation[0])
-          }else{
-            this.createAttribute()
-          }
-        }else{
-          this.retrieve()
-        }
-        ROUTER.push(AUTH.redirectRoute(this.user.type))
-      })
-    },
-    createAttribute(){
-      if(this.newAttribute.payload_value !== null && this.newAttribute.payload_value !== '' && parseInt(this.newAttribute.payload_value) > 0){
-        this.newAttribute.product_id = this.data.id
-        this.APIRequest('product_attributes/create', this.newAttribute).then(response => {
-          if(response.data > 0){
-            this.newAttribute.payload_value = null
-            this.errorMessage = null
-            this.retrieve()
-          }
-        })
-      }else{
-        this.retrieve()
-      }
-    },
-    updateAttribute(item){
-      if(item.payload_value !== null && item.payload_value !== '' && parseInt(item.payload_value) > 0){
-        this.APIRequest('product_attributes/update', item).then(response => {
-          if(response.data === true){
-            this.retrieve()
-          }
-        })
-      }else{
-        this.retrieve()
-      }
-    },
-    showImages(status){
-      this.imageStatus = status
-      $('#browseImagesModal').modal('show')
-    },
-    createPhoto(url){
-      if(this.imageStatus === 'featured'){
-        this.newImage.status = 'featured'
-        if(this.data.featured === null){
-          this.newImage.product_id = this.data.id
-          this.newImage.url = url
-          this.createRequest(this.newImage)
-        }else{
-          this.data.featured[0].url = url
-          this.updateRequest(this.data.featured[0])
-        }
-      }else if(this.imageStatus === 'images'){
-        this.newImage.status = 'others'
-        this.newImage.product_id = this.data.id
-        this.newImage.url = url
-        this.createRequest(this.newImage)
-      }
-    },
-    createRequest(parameter){
-      this.APIRequest('product_images/create', parameter).then(response => {
-        this.retrieve()
-      })
-    },
-    updateRequest(parameter){
-      this.APIRequest('product_images/update', parameter).then(response => {
-        this.retrieve()
-      })
-    },
-    manageImageUrl(url){
-      this.createPhoto(url)
-    },
-    removeImage(id){
-      let parameter = {
-        id: id
-      }
-      this.APIRequest('product_images/delete', parameter).then(response => {
-        this.retrieve()
-        this.selectedImage = null
-      })
-    }
-  }
-}
-</script>
