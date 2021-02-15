@@ -73,19 +73,21 @@
           <label>Activity Group</label>
           <br>
           <select class="form-control form-control-custom" v-model="data.group">
-            <option value="pending">Pending</option>
-            <option value="published">Published</option>
+            <option value="group1">Group 1</option>
+            <option value="group2">Group 2</option>
+            <option value="group3">Group 3</option>
+            <option value="group4">Group 4</option>
           </select>
         </div>
         <div class="product-item-title" style="width: 58%; margin-right: 1%;">
               <label>Actives</label>
               <br>
-              <input type="number" class="form-control form-control-custom" v-model="newAttribute.payload_value" placeholder="Type volume here...">
+              <input type="number" class="form-control form-control-custom" v-model="data.details.active.active_name" placeholder="Type volume here...">
             </div>
             <div class="product-item-title" style="width: 20%; margin-right: 1%; margin-top: 2.5%;">
               <label></label>
               <br>
-              <input type="number" class="form-control form-control-custom" v-model="newAttribute.payload_value" placeholder="Type volume here...">
+              <input type="number" class="form-control form-control-custom" v-model="data.details.active.value" placeholder="Type volume here...">
             </div>
             <div class="product-item-title" style="width: 20%; margin-top: 2.5%;">
               <label></label>
@@ -95,7 +97,6 @@
               </select>
             </div>
         <div class="product-item-title">
-          {{data.details}}
           <label>Solvent (if applicable)</label>
           <br>
           <input type="text" class="form-control form-control-custom" v-model="data.solvent" placeholder="Type product sku here...">
@@ -103,7 +104,7 @@
          <div class="product-item-title">
           <label>Other scheduled ingredients</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here...">
+          <input type="text" class="form-control form-control-custom" v-model="data.other_ingredient" placeholder="Type product sku here...">
         </div>
          <div class="product-item-title">
           <label>Mixing Order</label>
@@ -114,8 +115,9 @@
           <label>Formulation</label>
           <br>
           <select class="form-control form-control-custom" v-model="data.formulation">
-            <option value="pending">Pending</option>
-            <option value="published">Published</option>
+            <option value="formulation1">Formulation 1</option>
+            <option value="formulation2">Formulation 2</option>
+            <option value="formulation3">Formulation 3</option>
           </select>
         </div>
         <div class="product-item-title">
@@ -123,24 +125,24 @@
           <br>
           <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" value="">Equipment 1
+              <input type="checkbox" class="form-check-input" v-model="data.safety_equipment" value="equipment1">Equipment 1
             </label>
           </div>
           <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" value="">Equipment 2
+              <input type="checkbox" class="form-check-input" v-model="data.safety_equipment" value="equipment1">Equipment 2
             </label>
           </div>
           <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" value="">Equipment 3
+              <input type="checkbox" class="form-check-input" v-model="data.safety_equipment" value="equipment1">Equipment 3
             </label>
           </div>
         </div>
         <div class="product-item-title" style="width: 79%; margin-right: 1%;">
           <label>Shelf Life</label>
           <br>
-          <input type="number" class="form-control form-control-custom" v-model="newAttribute.payload_value" placeholder="Type volume here...">
+          <input type="number" class="form-control form-control-custom" v-model="data.shelf_life" placeholder="Type shelf life">
         </div>
         <div class="product-item-title" style="width: 20%; margin-top:2.3%">
           <br>
@@ -149,12 +151,12 @@
          <div class="product-item-title">
           <label>APVMA Approval number</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here...">
+          <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Approval number">
         </div>
          <div class="product-item-title">
           <label>APVMA Approval date</label>
           <br>
-          <input type="date" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here...">
+          <input type="date" class="form-control form-control-custom" v-model="data.sku" placeholder="Approval date">
         </div>
         <div class="product-item-title">
           <button class="btn btn-danger" @click="showConfirmationModal(data.id)" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'" style="margin-top: 5px;">Delete</button>
