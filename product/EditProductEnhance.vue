@@ -213,8 +213,12 @@
         <product-comments :payloadValue="data.id" :payload="'product'" :load="true"></product-comments>
       </div>
 
-      <div class="details-holder-bundled" v-if="selectedMenu.title === 'Bundled Products'">
+      <div class="details-holder" v-if="selectedMenu.title === 'Bundled Products'">
         <bundled-products :item="data"></bundled-products>
+      </div>
+
+      <div class="details-holder" v-if="selectedMenu.title === 'Other Details'">
+        <other-details :item="data"></other-details>
       </div>
     </div>
     <browse-images-modal></browse-images-modal>
@@ -272,7 +276,8 @@ export default {
         return (this.data.type === 'regular') ? [{
           title: 'Inventory',
           flag: true
-        }] : COMMON.ecommerce.editProductMenu
+        }, {title: 'Other Details',
+          flag: false}] : COMMON.ecommerce.editProductMenu
       }
     }
   },
@@ -286,7 +291,8 @@ export default {
     'bundled-products': require('components/increment/ecommerce/product/BundledProducts.vue'),
     'prices': require('components/increment/ecommerce/product/Prices.vue'),
     'confirmation': require('components/increment/generic/modal/Confirmation.vue'),
-    'images': require('components/increment/ecommerce/product/Images.vue')
+    'images': require('components/increment/ecommerce/product/Images.vue'),
+    'other-details': require('components/increment/ecommerce/product/OtherDetails.vue')
   },
   methods: {
     redirect(parameter){
