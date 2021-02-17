@@ -72,7 +72,7 @@
         <div class="product-item-title">
           <label>Activity Group</label>
           <br>
-          <select class="form-control form-control-custom" v-model="data.group">
+          <select class="form-control form-control-custom" v-model="data.details.group">
             <option value="group1">Group 1</option>
             <option value="group2">Group 2</option>
             <option value="group3">Group 3</option>
@@ -82,12 +82,12 @@
         <div class="product-item-title" style="width: 58%; margin-right: 1%;">
               <label>Actives</label>
               <br>
-              <input type="number" class="form-control form-control-custom" v-model="data.details.active.active_name" placeholder="Type volume here...">
+              <input type="text" class="form-control form-control-custom" v-model="data.details.active.active_name" placeholder="Active constituents">
             </div>
             <div class="product-item-title" style="width: 20%; margin-right: 1%; margin-top: 2.5%;">
               <label></label>
               <br>
-              <input type="number" class="form-control form-control-custom" v-model="data.details.active.value" placeholder="Type volume here...">
+              <input type="number" class="form-control form-control-custom" v-model="data.details.active.value" placeholder="value">
             </div>
             <div class="product-item-title" style="width: 20%; margin-top: 2.5%;">
               <label></label>
@@ -99,22 +99,22 @@
         <div class="product-item-title">
           <label>Solvent (if applicable)</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.solvent" placeholder="Type product sku here...">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.solvent" placeholder="Type product sku here...">
         </div>
          <div class="product-item-title">
           <label>Other scheduled ingredients</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.other_ingredient" placeholder="Type product sku here...">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.other_ingredient" placeholder="Type product sku here...">
         </div>
          <div class="product-item-title">
           <label>Mixing Order</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.mixing_order" placeholder="Type product sku here...">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.mixing_order" placeholder="Type product sku here...">
         </div>
         <div class="product-item-title">
           <label>Formulation</label>
           <br>
-          <select class="form-control form-control-custom" v-model="data.formulation">
+          <select class="form-control form-control-custom" v-model="data.details.formulation">
             <option value="formulation1">Formulation 1</option>
             <option value="formulation2">Formulation 2</option>
             <option value="formulation3">Formulation 3</option>
@@ -124,25 +124,26 @@
           <label>Available Safety Equipment</label>
           <br>
           <div class="form-check">
+            
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.safety_equipment" value="equipment1">Equipment 1
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment1" value="equipment1">Equipment 1
             </label>
           </div>
           <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.safety_equipment" value="equipment1">Equipment 2
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment2" value="equipment2">Equipment 2
             </label>
           </div>
           <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.safety_equipment" value="equipment1">Equipment 3
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="equipment3">Equipment 3
             </label>
           </div>
         </div>
         <div class="product-item-title" style="width: 79%; margin-right: 1%;">
           <label>Shelf Life</label>
           <br>
-          <input type="number" class="form-control form-control-custom" v-model="data.shelf_life" placeholder="Type shelf life">
+          <input type="number" class="form-control form-control-custom" v-model="data.details.shelf_life" placeholder="Type shelf life">
         </div>
         <div class="product-item-title" style="width: 20%; margin-top:2.3%">
           <br>
@@ -151,12 +152,12 @@
          <div class="product-item-title">
           <label>APVMA Approval number</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Approval number">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.approval_number" placeholder="Approval number">
         </div>
          <div class="product-item-title">
           <label>APVMA Approval date</label>
           <br>
-          <input type="date" class="form-control form-control-custom" v-model="data.sku" placeholder="Approval date">
+          <input type="date" class="form-control form-control-custom" v-model="data.details.approval_date" placeholder="Approval date">
         </div>
         <div class="product-item-title">
           <button class="btn btn-danger" @click="showConfirmationModal(data.id)" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'" style="margin-top: 5px;">Delete</button>
@@ -241,6 +242,7 @@ export default {
     return {
       user: AUTH.user,
       config: CONFIG,
+      sample: [],
       errorMessage: null,
       data: null,
       code: this.$route.params.code,
@@ -362,6 +364,7 @@ export default {
       if(this.validate() === false){
         return
       }
+      console.log(this.data.details)
       this.data.details = JSON.stringify(this.data.details)
       this.APIRequest('products/update', this.data).then(response => {
         if(this.common.ecommerce.productUnits !== null){

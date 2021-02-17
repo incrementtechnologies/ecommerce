@@ -40,7 +40,7 @@
                       name="upload" 
                       type="file" 
                       accept="application/pdf,application/vnd.ms-excel" 
-                      v-on:change="uploadFile1($e)" />
+                      @change="uploadFile1($event)" />
                   </div>
                 </div>
               </div>
@@ -55,19 +55,19 @@
                     ref="upload" 
                     name="upload" 
                     type="file"
-                    v-on:change="uploadFile1($e)"
+                    v-on:change="uploadFile1"
                   />
               </div>
             </div>
           </b-col>
           <b-col>
-            <div v-if="isEditLabel">
-              <div v-if="!file1Null">
+            <div>
+              <div>
               {{ this.file_title }}
             </div>
             </div>
             <div v-if="isCancelLabel">
-              <b-form-input v-model="file_title" class="w-100" value="this.file_title"></b-form-input>
+              <!-- <b-form-input v-model="file_title" class="w-100" :value="this.file_title"></b-form-input> -->
             </div> 
           </b-col>
           <b-col>
@@ -129,10 +129,10 @@
                     <label for="file-input">
                       <i
                         class="far fa-file-alt fa-2x"
-                        style="color: red; cursor: pointer"
+                        style="color: red;"
                       ></i>
                     </label>
-                    <input id="file-input" ref="file1" type="file" v-on:change="uploadFile2($e)" />
+                    <!-- <input id="file-input" ref="file2" type="file" v-on:change="uploadFile2($event)" /> -->
                   </div>
                 </div>
               </div>
@@ -144,8 +144,8 @@
                   <label for="file-input">
                     <i class="far fa-file-alt fa-2x" style="color: green;cursor: pointer;"></i>
                   </label>
-                  <input id="file-input" type="file"/>
-              </div>
+                  <!-- <input id="file-input" type="file"/> -->
+              </div>  
             </div>
             <!-- <div v-if="file2Null">
               <div class="image-upload">
@@ -196,134 +196,6 @@
       </b-container>
     </div>
     <hr />
-    <br />
-    <div>
-      <label for="documentation" style="font-weight: 600"
-        >Product Variations</label
-      >
-      <table class="table table-bordered table-hover">
-        <thead>
-          <tr>
-            <th v-for="(header, index) in headers" :key="index">
-              {{ header }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in items" :key="index">
-            <td>
-              {{ item.Product_Name }}
-            </td>
-            <td>
-              {{ item.Size }}
-            </td>
-            <td>
-              {{ item.Availabel }}
-            </td>
-            <td>
-              <button class="btn btn-warning" v-on:click="navBatchPagePending()">View Batches</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <center>
-        <button class="btn btn-primary" v-on:click="isOpen = !isOpen">
-          Create New Product Variation
-        </button>
-      </center>
-    </div>
-    <br /><br />
-    <div v-show="isOpen">
-      <label for="newproductvariation" style="font-weight: 600"
-        >New Product Variation</label
-      >
-      <br />
-      <label for="name" style="font-weight: 400"
-        >Name: {{ this.items[0].Product_Name }}</label
-      >
-      <br />
-      <div class="wrapper">
-        <label class="pull-right" style="font-weight: 400; font-size: 25px"
-          >L</label
-        >
-        <b-form-input
-          v-model="productVariationNew"
-          type="text"
-          id="textbox"
-          class="form-control"
-          v-on:keyup.enter="addNewProductVariation()"
-        />
-      </div>
-      <br />
-    </div>
-    <br />
-    <div>
-      <label for="bundledtransportconfigurations" style="font-weight: 600"
-        >Bundled Transport Configurations</label
-      >
-      <br />
-      <label for="name" style="font-weight: 400"
-        >Name: {{ this.items[0].Product_Name }}</label
-      >
-      <table class="table table-bordered table-hover">
-        <thead>
-          <tr>
-            <th>Bundle name</th>
-            <!-- <th></th> -->
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in items" :key="index">
-            <td>
-              {{ item.Product_Name }}
-            </td>
-            <!-- <td>
-              <button class="btn btn-warning">View Batches</button>
-            </td> -->
-          </tr>
-        </tbody>
-      </table>
-      <center>
-        <button class="btn btn-primary" v-on:click="open = !open">
-          Create New Bundle Configuration
-        </button>
-      </center>
-      <br /><br />
-      <div v-show="open">
-        <label for="newproductvariation" style="font-weight: 600"
-          >New Bundle Configuration</label
-        >
-        <br />
-        <label for="name" style="font-weight: 400"
-          >Name: {{ this.items[0].Product_Name }}</label
-        >
-        <br />
-        <b-row>
-          <b-col>
-            <b-form-select
-              v-model="selectedOption"
-              :options="options"
-              class="w-75"
-              value-field="item"
-              text-field="name"
-            ></b-form-select>
-          </b-col>
-          <b-col>
-            <b-form-group
-              label="Quantity"
-              label-for="nested-quantity"
-              label-cols-sm="3"
-            >
-              <b-form-input
-                v-model="quantity"
-                class="w-100"
-                id="nested-quantity"
-              ></b-form-input>
-            </b-form-group>
-          </b-col>
-        </b-row>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -350,6 +222,8 @@ export default {
       isSuccessSds: false,
       file1Null: true,
       file1: '',
+      file1Name: null,
+      file2Name: null,
       quantity: '',
       file2Null: true,
       productVariationNew: '',
@@ -363,7 +237,7 @@ export default {
       myUrl: '#',
       myFilename: this.image,
       documentLabel: ['Label', 'Safety Data Sheet (SSDS)'],
-      file_title: 'Temporary Title',
+      file_title: 'No File',
       headers: ['Product Name', 'Size', 'Availabel', ' '],
       items: [
         { Product_Name: 'Thrillogy', Size: '110L', Availabel: '12' },
@@ -376,11 +250,18 @@ export default {
     downloadFile1: function () {
       console.log('try')
     },
-    uploadFile1: function (e) {
-      e.preventDefault()
-      this.file1 = this.$refs.file1.files[0]
-      console.log('niagi')
-      this.file1Null = !this.file1Null
+    uploadFile1: function (event) {
+      this.file1 = event.target.files
+      this.file_title = this.file1[0].name
+      console.log(this.file_title)
+      // this.file1Null = !this.file1Null
+      this.successLabel()
+    },
+
+    uploadFile2: function (event) {
+      console.log('diri')
+      this.file2 = event.target.files
+      // this.file1Null = !this.file1Null
       this.successLabel()
     },
 
