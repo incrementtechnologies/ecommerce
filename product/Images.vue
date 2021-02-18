@@ -26,21 +26,21 @@
              <div class="scrolling-wrapper d-flex">
                <div style="height:100px !important;width:100px !important;" @click="addImage()">
                  <i class="fa fa-plus plusIcon" style="font-size:100px;padding:10px"></i>
-                 <input type="file" id="Image" :accept="type ? type : 'image/*'" @change="setUpFileUpload($event)">
+                 <input type="file" id="Image" accept="image/*" @change="setUpFileUpload($event)">
                  <!-- <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfTMy2AHYJpPh-4Eojkm_s5QX6_emLxwfZeg&usqp=CAU" style="width:100px;height:100px;border:2px solid black"> -->
                </div>
-              <div  v-for="item in images" :key="item.id" @click="selectImage(item.url)" style="height:100px;width:100px" class="imageContainer p-10">
+              <div  v-for="item in images" :key="item.id" style="height:100px;width:100px" class="imageContainer p-10">
                   <!-- <i class="fa fa-times class text"></i> -->
-                  <img :src="config.BACKEND_URL + item.url" class="image">
-                  <label class="middle"  @click="removeImage(item.id)" v-if="item.status !== 'featured'">
+                  <img :src="config.BACKEND_URL + item.url" class="image" @click="selectImage(item.url)">
+                  <label class="middle"  @click="deleteImage(item.id)" v-if="item.status !== 'featured'">
                     <i class="fa fa-times-circle text" ></i>
                   </label>
               </div>
              <!-- </div> -->
            </div>
            <div style="float:right">
-            <button class="btn btn-danger">Cancel</button>
-            <button class="btn btn-primary">Apply</button>
+            <button class="btn btn-danger" @click="reset()">Cancel</button>
+            <button class="btn btn-primary" @click="apply()">Apply</button>
            </div>
         </div>
        </div>
@@ -77,6 +77,14 @@ export default {
     selectImage(url){
       this.selectedImage = url
     },
+    apply(){
+      console.log(this.selectedImage)
+      this.$parent.manageImageUrl(this.selectedImage, 'featured')
+    },
+    reset(){
+      this.$parent.retrieve()
+      this.retrieveImage()
+    },
     setUpFileUpload(event){
       let files = event.target.files || event.dataTransfer.files
       if(!files.length){
@@ -102,16 +110,16 @@ export default {
       })
     },
     deleteImage(id){
+      console.log(id)
       let params = {
         id: id
       }
+      $('#loading').css({display: 'block'})
       axios.post(this.config.BACKEND_URL + '/images/delete?token=' + AUTH.tokenData.token, params).then(response => {
-        this.retrieve()
+        $('#loading').css({display: 'none'})
+        this.$parent.retrieve()
+        this.retrieveImage()
       })
-      this.prevIndex = null
-      setTimeout(() => {
-        $('#browseImagesModal').modal('show')
-      }, 800)
     },
     retrieveImage(){
       const parameter = {
@@ -125,7 +133,9 @@ export default {
         }
       }
       this.loadingFlag = true
+      $('#loading').css({display: 'block'})
       this.APIRequest('images/retrieve', parameter).done(response => {
+        $('#loading').css({display: 'none'})
         this.loadingFlag = false
         if(response.data.length > 0){
           // console.log(response.data)
@@ -156,7 +166,7 @@ export default {
 
     .scrolling-wrapper {
       overflow-x: scroll;
-      overflow-y: scroll;
+      overflow-y: hidden;
       white-space: nowrap;
       position: relative;
 
