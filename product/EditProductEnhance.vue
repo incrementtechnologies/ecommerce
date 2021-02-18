@@ -423,20 +423,26 @@ export default {
         this.newImage.status = 'others'
         this.newImage.product_id = this.data.id
         this.newImage.url = url
+        console.log(this.newImage)
         this.createRequest(this.newImage)
       }
     },
     createRequest(parameter){
+      $('#loading').css({display: 'block'})
       this.APIRequest('product_images/create', parameter).then(response => {
+        $('#loading').css({display: 'none'})
         this.retrieve()
       })
     },
     updateRequest(parameter){
+      $('#loading').css({display: 'block'})
       this.APIRequest('product_images/update', parameter).then(response => {
+        $('#loading').css({display: 'none'})
         this.retrieve()
       })
     },
-    manageImageUrl(url){
+    manageImageUrl(url, status){
+      this.imageStatus = status
       this.createPhoto(url)
     },
     removeImage(id){
