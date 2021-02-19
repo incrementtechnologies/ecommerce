@@ -216,7 +216,7 @@
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Other Details'">
-        <other-details @files="samples($event)" :item="data"></other-details>
+        <other-details @files="getFiles($event)" :item="data"></other-details>
       </div>
     </div>
     <browse-images-modal></browse-images-modal>
@@ -294,7 +294,7 @@ export default {
     'prices': require('components/increment/ecommerce/product/Prices.vue'),
     'confirmation': require('components/increment/generic/modal/Confirmation.vue'),
     'images': require('components/increment/ecommerce/product/Images.vue'),
-    'other-details': require('components/increment/ecommerce/product/OtherDetails.vue')
+    'other-details': require('components/increment/ecommerce/product/OtherDetailsEnhance.vue')
   },
   methods: {
     redirect(parameter){
@@ -316,6 +316,9 @@ export default {
     },
     samples(data){
       console.log(data)
+    },
+    getFiles(data){
+      console.log(this.data.details)
     },
     retrieve(){
       let parameter = {
@@ -371,6 +374,21 @@ export default {
       if(typeof this.common.ecommerce.productTitleLimit !== undefined && typeof this.common.ecommerce.productTitleLimit !== 'undefined' && this.data.title.length > this.common.ecommerce.productTitleLimit){
         this.errorMessage = 'Product title length should not exceed to ' + this.common.ecommerce.productTitleLimit + ' characters.'
         return false
+      }
+      if(parseInt(this.data.details.active.value) <= 0 || parseInt(this.data.details.shelf_life) <= 0){
+        this.errorMessage = 'Fields should be greater than 0'
+        return false
+      }
+      if(this.data.variation !== null){
+        if(this.data.variation[0].payload === '' || this.data.variation[0].payload === null){
+          this.errorMessage = 'Unit is required'
+          return false
+        }
+      }else{
+        if(this.newAttribute.payload === '' || this.newAttribute.payload === null){
+          this.errorMessage = 'Unit is required'
+          return false
+        }
       }
       return true
     },
@@ -428,8 +446,10 @@ export default {
         if(this.data.featured === null){
           this.newImage.product_id = this.data.id
           this.newImage.url = url
+          console.log('new')
           this.createRequest(this.newImage)
         }else{
+          console.log('old')
           this.data.featured[0].url = url
           this.updateRequest(this.data.featured[0])
         }
@@ -456,6 +476,7 @@ export default {
       })
     },
     manageImageUrl(url, status){
+      console.log('fsdafs')
       this.imageStatus = status
       this.createPhoto(url)
     },
