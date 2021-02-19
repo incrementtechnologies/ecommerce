@@ -221,7 +221,7 @@
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Other Details'">
-        <other-details :item="data"></other-details>
+        <other-details @files="samples($event)" :item="data"></other-details>
       </div>
     </div>
     <browse-images-modal></browse-images-modal>
@@ -315,6 +315,9 @@ export default {
     },
     selectImage(url){
       this.selectedImage = url
+    },
+    samples(data){
+      console.log(data)
     },
     retrieve(){
       let parameter = {
