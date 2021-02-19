@@ -73,10 +73,7 @@
           <label>Activity Group</label>
           <br>
           <select class="form-control form-control-custom" v-model="data.details.group">
-            <option value="group1">Group 1</option>
-            <option value="group2">Group 2</option>
-            <option value="group3">Group 3</option>
-            <option value="group4">Group 4</option>
+            <option v-for="(group, index) in groups" :key="index" :value="group">{{group}}</option>
           </select>
         </div>
         <div class="product-item-title" style="width: 58%; margin-right: 1%;">
@@ -115,28 +112,26 @@
           <label>Formulation</label>
           <br>
           <select class="form-control form-control-custom" v-model="data.details.formulation">
-            <option value="formulation1">Formulation 1</option>
-            <option value="formulation2">Formulation 2</option>
-            <option value="formulation3">Formulation 3</option>
+            <option v-for="(formulation, index) in formulations.FORMULATION" :key="index" :value="formulation">{{formulation}}</option>
           </select>
         </div>
         <div class="product-item-title">
-          <label>Available Safety Equipment</label>
+          <label>Application Safety Equipment</label>
           <br>
           <div class="form-check">
             
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment1" value="equipment1">Equipment 1
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment1" value="Cotton overalls buttoned to neck and wrist"><span>Cotton overalls buttoned to neck and wrist</span>
             </label>
           </div>
           <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment2" value="equipment2">Equipment 2
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment2" value="A Washable hat "><span>A Washable hat</span> 
             </label>
           </div>
           <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="equipment3">Equipment 3
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Elbow-lenght PVC gloves"><span>Elbow-lenght PVC gloves</span>  
             </label>
           </div>
         </div>
@@ -233,6 +228,7 @@ import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
+import GROUP from './Group.js'
 import axios from 'axios'
 export default {
   mounted(){
@@ -245,6 +241,7 @@ export default {
       sample: [],
       errorMessage: null,
       data: null,
+      formulations: GROUP,
       code: this.$route.params.code,
       prevMenuIndex: 0,
       selectedMenu: COMMON.ecommerce.editProductMenu[0],
@@ -271,7 +268,8 @@ export default {
         active: [],
         safety_equipment: [],
         mixing_order: []
-      }
+      },
+      groups: []
     }
   },
   computed: {
@@ -329,8 +327,10 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('products/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
+        console.log(response.data)
         if(response.data.length > 0){
           this.data = response.data[0]
+          this.tagChecker(this.data)
         }
       })
     },
@@ -343,6 +343,17 @@ export default {
         $('#loading').css({display: 'none'})
         ROUTER.push('/products')
       })
+    },
+    tagChecker(data){
+      if(data.tags.includes('insecticide')){
+        this.groups = GROUP.INSECTICIDE
+      }else if(data.tags.includes('herbicide')){
+        this.groups = GROUP.HERBICIDE
+      }else if(data.tags.includes('fungicide')){
+        this.groups = GROUP.FUNGICIDE
+      }else{
+        this.groups = GROUP.ADJUVANT
+      }
     },
     validate(){
       this.errorMessage = null
