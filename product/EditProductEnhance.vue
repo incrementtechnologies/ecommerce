@@ -73,10 +73,7 @@
           <label>Activity Group</label>
           <br>
           <select class="form-control form-control-custom" v-model="data.details.group">
-            <option value="group1">Group 1</option>
-            <option value="group2">Group 2</option>
-            <option value="group3">Group 3</option>
-            <option value="group4">Group 4</option>
+            <option v-for="(group, index) in groups" :key="index" :value="group">{{group}}</option>
           </select>
         </div>
         <div class="product-item-title" style="width: 58%; margin-right: 1%;">
@@ -115,28 +112,26 @@
           <label>Formulation</label>
           <br>
           <select class="form-control form-control-custom" v-model="data.details.formulation">
-            <option value="formulation1">Formulation 1</option>
-            <option value="formulation2">Formulation 2</option>
-            <option value="formulation3">Formulation 3</option>
+            <option v-for="(formulation, index) in formulations.FORMULATION" :key="index" :value="formulation">{{formulation}}</option>
           </select>
         </div>
         <div class="product-item-title">
-          <label>Available Safety Equipment</label>
+          <label>Application Safety Equipment</label>
           <br>
           <div class="form-check">
             
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment1" value="equipment1">Equipment 1
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment1" value="Cotton overalls buttoned to neck and wrist"><span>Cotton overalls buttoned to neck and wrist</span>
             </label>
           </div>
           <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment2" value="equipment2">Equipment 2
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment2" value="A Washable hat "><span>A Washable hat</span> 
             </label>
           </div>
           <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="equipment3">Equipment 3
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Elbow-lenght PVC gloves"><span>Elbow-lenght PVC gloves</span>  
             </label>
           </div>
         </div>
@@ -221,7 +216,7 @@
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Other Details'">
-        <other-details @files="samples($event)" :item="data"></other-details>
+        <other-details @files="getFiles($event)" :item="data"></other-details>
       </div>
     </div>
     <browse-images-modal></browse-images-modal>
@@ -233,6 +228,7 @@ import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
+import GROUP from './Group.js'
 import axios from 'axios'
 export default {
   mounted(){
@@ -245,6 +241,7 @@ export default {
       sample: [],
       errorMessage: null,
       data: null,
+      formulations: GROUP,
       code: this.$route.params.code,
       prevMenuIndex: 0,
       selectedMenu: COMMON.ecommerce.editProductMenu[0],
@@ -271,7 +268,8 @@ export default {
         active: [],
         safety_equipment: [],
         mixing_order: []
-      }
+      },
+      groups: []
     }
   },
   computed: {
@@ -296,7 +294,7 @@ export default {
     'prices': require('components/increment/ecommerce/product/Prices.vue'),
     'confirmation': require('components/increment/generic/modal/Confirmation.vue'),
     'images': require('components/increment/ecommerce/product/Images.vue'),
-    'other-details': require('components/increment/ecommerce/product/OtherDetails.vue')
+    'other-details': require('components/increment/ecommerce/product/OtherDetailsEnhance.vue')
   },
   methods: {
     redirect(parameter){
@@ -319,6 +317,9 @@ export default {
     samples(data){
       console.log(data)
     },
+    getFiles(data){
+      console.log(this.data.details)
+    },
     retrieve(){
       let parameter = {
         condition: [{
@@ -332,8 +333,10 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('products/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
+        console.log(response.data)
         if(response.data.length > 0){
           this.data = response.data[0]
+          this.tagChecker(this.data)
         }
       })
     },
@@ -346,6 +349,17 @@ export default {
         $('#loading').css({display: 'none'})
         ROUTER.push('/products')
       })
+    },
+    tagChecker(data){
+      if(data.tags.includes('insecticide')){
+        this.groups = GROUP.INSECTICIDE
+      }else if(data.tags.includes('herbicide')){
+        this.groups = GROUP.HERBICIDE
+      }else if(data.tags.includes('fungicide')){
+        this.groups = GROUP.FUNGICIDE
+      }else{
+        this.groups = GROUP.ADJUVANT
+      }
     },
     validate(){
       this.errorMessage = null
@@ -360,6 +374,21 @@ export default {
       if(typeof this.common.ecommerce.productTitleLimit !== undefined && typeof this.common.ecommerce.productTitleLimit !== 'undefined' && this.data.title.length > this.common.ecommerce.productTitleLimit){
         this.errorMessage = 'Product title length should not exceed to ' + this.common.ecommerce.productTitleLimit + ' characters.'
         return false
+      }
+      if(parseInt(this.data.details.active.value) <= 0 || parseInt(this.data.details.shelf_life) <= 0){
+        this.errorMessage = 'Fields should be greater than 0'
+        return false
+      }
+      if(this.data.variation !== null){
+        if(this.data.variation[0].payload === '' || this.data.variation[0].payload === null){
+          this.errorMessage = 'Unit is required'
+          return false
+        }
+      }else{
+        if(this.newAttribute.payload === '' || this.newAttribute.payload === null){
+          this.errorMessage = 'Unit is required'
+          return false
+        }
       }
       return true
     },
@@ -417,8 +446,10 @@ export default {
         if(this.data.featured === null){
           this.newImage.product_id = this.data.id
           this.newImage.url = url
+          console.log('new')
           this.createRequest(this.newImage)
         }else{
+          console.log('old')
           this.data.featured[0].url = url
           this.updateRequest(this.data.featured[0])
         }
@@ -445,6 +476,7 @@ export default {
       })
     },
     manageImageUrl(url, status){
+      console.log('fsdafs')
       this.imageStatus = status
       this.createPhoto(url)
     },

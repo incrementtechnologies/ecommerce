@@ -9,46 +9,27 @@
             <label for="fileLabel" style="font-weight: 400">Label</label>
           </b-col>
           <b-col>
-            <!-- If file was confirmed to upload -->
+
             <div v-if="isSuccessLabel">
               <button class="customButton" :download="myfilename">
                 <i class="far fa-file-alt fa-2x" style="color: green"></i>
               </button>
             </div>
+            <!-- File is with value -->
 
-            <!-- If wether file has value or not but visited this page newly -->
-            <div v-if="!isSuccessLabel">
-
-              <!-- If file has no value -->
-              <div v-if="file1Null === null">
-
-                <!-- If you already picked a temporary file to upload
-                the file_title1 will be the storage for the current title name of the file you have chosen -->
-
-                <div v-if="file_title1 !== null">
+            <div v-if="!file1Null">
+              <div v-if="isEditLabel">
+                <button class="customButton" :download="myfilename">
+                  <i class="far fa-file-alt fa-2x" style="color: green"></i>
+                </button>
+              </div>
+            </div>
+            
+            <!-- File has no value -->
+              <div v-if="file1Null">
+                <div v-if="isEditLabel">
                   <div class="image-upload">
                     <label for="file-input">
-                      <i
-                        class="far fa-file-alt fa-2x"
-                        style="color: green; cursor: pointer"
-                      ></i>
-                    </label>
-                    <input id="file-input"
-                      ref="upload" 
-                      name="upload" 
-                      type="file" 
-                      accept="application/pdf,application/vnd.ms-excel" 
-                      @change="uploadFile1('file-input', $event)" 
-                    />
-                  </div>
-                </div>
-                
-                <!-- file_title1 is a temporary storage for the uploaded file
-                and if it is null -->
-
-                <div v-if="file_title1 === null">
-                  <div class="image-upload">
-                    <label for="file-input" >
                       <i
                         class="far fa-file-alt fa-2x"
                         style="color: red; cursor: pointer"
@@ -59,73 +40,56 @@
                       name="upload" 
                       type="file" 
                       accept="application/pdf,application/vnd.ms-excel" 
-                      @change="uploadFile1('file-input', $event)" 
-                    />
+                      @change="uploadFile1($event)" />
                   </div>
                 </div>
               </div>
 
-              <!-- If file already have a value while newly visited -->
-              <div v-if="file1Null !== null">
-
-                <!-- When pencil was clicked -->
-                <div v-if="isCancelLabel">
-                  <div class="file-upload">
-                    <label for="file-input">
-                      <i
-                        class="far fa-file-alt fa-2x"
-                        style="color: green; cursor: pointer"
-                      ></i>
-                    </label>
-                    <input id="file-input"
-                      ref="upload" 
-                      name="upload" 
-                      type="file" 
-                      accept="application/pdf,application/vnd.ms-excel" 
-                      @change="uploadFile1('file-input', $event)" 
-                    />
-                  </div>
-
-                </div>
-                <!-- When cancelled to edit -->
-                <div v-if="isEditLabel"> 
-                  <button class="customButton" :download="myfilename">
-                    <i class="far fa-file-alt fa-2x" style="color: green"></i>
-                  </button>
-                </div>
+            <!-- File has value but want to update or edit -->
+            <div v-if="isCancelLabel">
+                <div class="image-upload">
+                  <label for="file-input">
+                    <i class="far fa-file-alt fa-2x" style="color: green;cursor: pointer;"></i>
+                  </label>
+                  <input id="file-input"
+                    ref="upload" 
+                    name="upload" 
+                    type="file"
+                    v-on:change="uploadFile1"
+                  />
               </div>
             </div>
           </b-col>
           <b-col>
             <div>
               <div>
-              {{ this.file_title1 }}
-              </div>
+              {{ this.file_title }}
+            </div>
             </div>
             <div v-if="isCancelLabel">
-              <b-form-input v-model="file_title1" class="w-100" :value="this.file_title1"></b-form-input>
+              <b-form-input v-model="file_title" class="w-100" :value="this.file_title"></b-form-input>
             </div> 
           </b-col>
           <b-col>
-            <div v-if="isSuccessLabel">
-              <span style="color: green">
-                <i class="fas fa-check fa-2x"></i>
-              </span>
-            </div>
-            <div v-if="!isSuccessLabel">
-              <div v-if="file1Null !== null">
-                <div v-if="isEditLabel">
-                  <button class="customButton" v-on:click="editLabel()">
-                    <i class="fas fa-pencil-alt fa-2x"></i>
-                  </button>
-                </div>
-                <div v-if="isCancelLabel">
-                  <button class="customButton" v-on:click="cancelLabel()">
-                    <span style="color: red">
-                      <i class="fas fa-times fa-2x"></i>
-                    </span>
-                  </button>
-                </div>
+            <div v-if="!file1Null">
+              <div v-if="isEditLabel">
+                <button class="customButton" v-on:click="editLabel()">
+                  <i class="fas fa-pencil-alt fa-2x"></i>
+                </button>
+              </div>
+              <div v-else-if="isCancelLabel">
+                <button class="customButton" v-on:click="cancelLabel()">
+                  <span style="color: red">
+                    <i class="fas fa-times fa-2x"></i>
+                  </span>
+                </button>
+              </div>
+              <div v-else-if="isSuccessLabel">
+                <button class="customButton" v-on:click="successfulLabel()">
+                  <span style="color: black">
+                    <i class="fas fa-check-alt fa-2x"></i>
+                  </span>
+                </button>
               </div>
             </div>
           </b-col>
@@ -142,118 +106,89 @@
             >
           </b-col>
           <b-col>
-            <!-- If file was confirmed to upload -->
-            <div v-if="isSuccessSds">
-              <button class="customButton" :download="myfilename">
-                <i class="far fa-file-alt fa-2x" style="color: green"></i>
-              </button>
-            </div>
-
-            <!-- If wether file has value or not but visited this page newly -->
-            <div v-if="!isSuccessSds">
-
-              <!-- If file has no value -->
-              <div v-if="file2Null === null">
-
-                <!-- If you already picked a temporary file to upload
-                the file_title2 will be the storage for the current title name of the file you have chosen -->
-
-                <div v-if="file_title2 !== null">
-                  <div class="image-upload">
-                    <label for="file-input2">
-                      <i
-                        class="far fa-file-alt fa-2x"
-                        style="color: green; cursor: pointer"
-                      ></i>
-                    </label>
-                    <input id="file-input2"
-                      ref="upload" 
-                      name="upload" 
-                      type="file" 
-                      accept="application/pdf,application/vnd.ms-excel" 
-                      @change="uploadFile2('file-input2', $event)" 
-                    />
-                  </div>
-                </div>
-                
-                <!-- file_title2 is a temporary storage for the uploaded file
-                and if it is null -->
-
-                <div v-if="file_title2 === null">
-                  <div class="image-upload">
-                    <label for="file-input2">
-                      <i
-                        class="far fa-file-alt fa-2x"
-                        style="color: red; cursor: pointer"
-                      ></i>
-                    </label>
-                    <input id="file-input2"
-                      ref="upload" 
-                      name="upload" 
-                      type="file" 
-                      accept="application/pdf,application/vnd.ms-excel" 
-                      @change="uploadFile2('file-input2', $event)" 
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <!-- If file already have a value while newly visited -->
-              <div v-if="file2Null !== null">
-
-                <!-- When pencil was clicked -->
-                <div v-if="isCancelSds">
-                  <div class="file-upload">
-                    <label for="file-input2">
-                      <i
-                        class="far fa-file-alt fa-2x"
-                        style="color: green; cursor: pointer"
-                      ></i>
-                    </label>
-                    <input id="file-input2"
-                      ref="upload" 
-                      name="upload" 
-                      type="file" 
-                      accept="application/pdf,application/vnd.ms-excel" 
-                      @change="uploadFile2('file-input2', $event)" 
-                    />
-                  </div>
-
-                </div>
-                <!-- When cancelled to edit -->
-                <div v-if="isEditSds"> 
+            <!-- File is with value -->
+                <div v-if="!file2Null">
+                  <div v-if="isEditSds">
                   <button class="customButton" :download="myfilename">
                     <i class="far fa-file-alt fa-2x" style="color: green"></i>
                   </button>
                 </div>
               </div>
-            </div>
-          </b-col>
-          <b-col>
-            <div v-if="file_title2">
-              <button class="btn btn-warning" v-on:click="uploadAll()">Update PDF</button>
-            </div>
-          </b-col>
-          <b-col>
+            <!-- </div> -->
+
             <div v-if="isSuccessSds">
-              <span style="color: green">
-                <i class="fas fa-check fa-2x"></i>
-              </span>
+              <button class="customButton" :download="myfilename">
+                <i class="far fa-file-alt fa-2x" style="color: green"></i>
+              </button>
             </div>
-            <div v-if="!isSuccessSds">
-              <div v-if="file2Null !== null">
-                <div v-if="isEditSds">
-                  <button class="customButton" v-on:click="editSds()">
-                    <i class="fas fa-pencil-alt fa-2x"></i>
-                  </button>
+            
+            <!-- File has no value -->
+                <div v-if="file2Null">
+                  <div v-if="isEditSds">
+                  <div class="image-upload">
+                    <label for="file-input">
+                      <i
+                        class="far fa-file-alt fa-2x"
+                        style="color: red;"
+                      ></i>
+                    </label>
+                    <!-- <input id="file-input" ref="file2" type="file" v-on:change="uploadFile2($event)" /> -->
+                  </div>
                 </div>
-                <div v-if="isCancelSds">
-                  <button class="customButton" v-on:click="cancelSds()">
-                    <span style="color: red">
-                      <i class="fas fa-times fa-2x"></i>
-                    </span>
-                  </button>
-                </div>
+              </div>
+            
+
+            <!-- File has value but want to update or edit -->
+            <div v-if="isCancelSds">
+                <div class="image-upload">
+                  <label for="file-input">
+                    <i class="far fa-file-alt fa-2x" style="color: green;cursor: pointer;"></i>
+                  </label>
+                  <!-- <input id="file-input" type="file"/> -->
+              </div>  
+            </div>
+            <!-- <div v-if="file2Null">
+              <div class="image-upload">
+                <label for="file-input">
+                  <i
+                    class="far fa-file-alt fa-2x"
+                    style="color: red; cursor: pointer"
+                  ></i>
+                </label>
+                <input id="file-input" type="file" />
+              </div>
+            </div>
+            <div v-if="!file2Null">
+              <button class="customButton" :download="myfilename">
+                <i class="far fa-file-alt fa-2x" style="color: green"></i>
+              </button>
+            </div> -->
+          </b-col>
+          <b-col>
+            <div v-if="!file2Null">
+              <button class="btn btn-warning">Update PDF</button>
+            </div>
+          </b-col>
+          <b-col>
+            <div v-if="!file2Null">
+              <div v-if="isEditSds">
+                <button class="customButton" v-on:click="editSds()">
+                  <i class="fas fa-pencil-alt fa-2x"></i>
+                </button>
+              </div>
+              <div v-else-if="isCancelSds">
+                <button class="customButton" v-on:click="cancelSds()">
+                  <span style="color: red">
+                    <i class="fas fa-times fa-2x"></i>
+                  </span>
+                </button>
+              </div>
+              <div v-else-if="isSuccessSds">
+                <button class="customButton" v-on:click="successfulSds()">
+                  <span style="color: black">
+                    <i class="fas fa-check-alt fa-2x"></i>
+                  </span>
+                </button>
               </div>
             </div>
           </b-col>
@@ -274,7 +209,9 @@ export default {
   data() {
     return {
       user: AUTH.user,
+      props: ['data'],
       config: CONFIG,
+      errorMessage: null,
       isOpen: false,
       open: false,
       isEditLabel: true,
@@ -283,14 +220,13 @@ export default {
       isEditSds: true,
       isCancelSds: false,
       isSuccessSds: false,
-      file1Null: null,
-      file2Null: null,
-      file_title1: null,
-      file_title2: null,
+      file1Null: true,
+      file1: '',
+      file1Name: null,
+      file2Name: null,
       quantity: '',
+      file2Null: true,
       productVariationNew: '',
-      temp_file1: '',
-      temp_file2: '',
       options: [
         { item: 'A', name: 'Option A' },
         { item: 'B', name: 'Option B' },
@@ -299,8 +235,9 @@ export default {
       ],
       selected: 'Option A',
       myUrl: '#',
-      myfilename: this.image,
+      myFilename: this.image,
       documentLabel: ['Label', 'Safety Data Sheet (SSDS)'],
+      file_title: 'No File',
       headers: ['Product Name', 'Size', 'Availabel', ' '],
       items: [
         { Product_Name: 'Thrillogy', Size: '110L', Availabel: '12' },
@@ -313,31 +250,19 @@ export default {
     downloadFile1: function () {
       console.log('try')
     },
-    uploadFile1: function (id, event) {
-      $(`#${id}`)[0].click()
-      this.temp_file1 = event.target.files
-      this.file_title1 = this.temp_file1[0].name
-      console.log('File1', event)
-    },
-
-    uploadFile2: function (id, event) {
-      $(`#${id}`)[0].click()
-      this.temp_file2 = event.target.files
-      this.file_title2 = this.temp_file2[0].name
-      console.log('File2', event)
-    },
-
-    uploadAll(){
+    uploadFile1: function (event) {
+      this.file1 = event.target.files
+      this.file_title = this.file1[0].name
+      console.log(this.file_title)
+      // this.file1Null = !this.file1Null
       this.successLabel()
-      this.successSds()
-      let file = {
-        file1: this.temp_file1,
-        file2: this.temp_file2
-      }
-      console.log(this.isSuccessLabel)
-      this.file1Null = false
-      this.file2Null = false
-      this.$emit('files', file)
+    },
+
+    uploadFile2: function (event) {
+      console.log('diri')
+      this.file2 = event.target.files
+      // this.file1Null = !this.file1Null
+      this.successLabel()
     },
 
     addNewProductVariation: function() {
