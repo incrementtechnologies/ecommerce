@@ -288,15 +288,17 @@ export default {
   methods: {
     sortArrayTitle(sort){
       this.activeSortTitle = sort
-      if(sort === 'desc'){
-        this.data = this.data.sort((a, b) => {
+      let result = null
+      if(sort === 'asc'){
+        result = this.data.sort((a, b) => {
           return a.title < b.title ? -1 : 1
         })
       }else{
-        this.data = this.data.sort((a, b) => {
+        result = this.data.sort((a, b) => {
           return a.title > b.title ? -1 : 1
         })
       }
+      this.data = result
     },
     sortArrayInventory(sort){
       this.activeSortInventory = sort

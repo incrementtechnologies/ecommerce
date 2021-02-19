@@ -135,7 +135,7 @@ export default {
   methods: {
     sortArrayTitle(sort){
       this.activeSortTitle = sort
-      if(sort === 'desc'){
+      if(sort === 'asc'){
         this.data = this.data.sort((a, b) => {
           return a.title < b.title ? -1 : 1
         })
