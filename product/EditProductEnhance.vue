@@ -131,7 +131,22 @@
           </div>
           <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Elbow-lenght PVC gloves"><span>Elbow-lenght PVC gloves</span>  
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Elbow-lenght PVC gloves"><span>Elbow-lengTH PVC gloves</span>  
+            </label>
+          </div>
+           <div class="form-check">
+            <label class="form-check-label">
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Face shield or googles"><span>Face shield or googles</span>  
+            </label>
+          </div>
+           <div class="form-check">
+            <label class="form-check-label">
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Half facepiece respirator or disposable respirator"><span>Half facepiece respirator or disposable respirator</span>  
+            </label>
+          </div>
+           <div class="form-check">
+            <label class="form-check-label">
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Full respirator"><span>Full respirator</span>  
             </label>
           </div>
         </div>
