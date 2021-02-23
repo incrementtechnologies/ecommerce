@@ -65,7 +65,8 @@ export default {
     images: [],
     errorMessage: null,
     idImage: null,
-    file: null
+    file: null,
+    productId: null
   }),
   mounted(){
     this.retrieveImage()
@@ -87,6 +88,7 @@ export default {
     },
     setUpFileUpload(event){
       let files = event.target.files || event.dataTransfer.files
+      console.log(files)
       if(!files.length){
         return false
       }else{
@@ -106,6 +108,7 @@ export default {
       this.upload()
     },
     upload(){
+      console.log('upload', this.productId)
       if(parseInt(this.file.size / 1024) > 1024){
         this.errorMessage = 'Allowed size is up to 1 MB only'
         this.file = null
@@ -115,10 +118,12 @@ export default {
       formData.append('file', this.file)
       formData.append('file_url', this.file.name.replace(' ', '_'))
       formData.append('account_id', this.user.userID)
+      formData.append('category', `product${this.productId}`)
       $('#loading').css({'display': 'block'})
       console.log('imageRoute', formData)
       axios.post(this.config.BACKEND_URL + '/images/upload?token=' + AUTH.tokenData.token, formData).then(response => {
         $('#loading').css({'display': 'none'})
+        this.retrieveImage()
         if(response.data.data !== null){
           this.retrieveImage()
         }
@@ -145,6 +150,7 @@ export default {
       })
     },
     retrieveImage(){
+      this.productId = this.data.id
       const parameter = {
         condition: [{
           value: this.user.userID,
@@ -153,10 +159,11 @@ export default {
         }],
         sort: {
           created_at: 'desc'
-        }
+        },
+        category: `product${this.data.id}`
       }
       $('#loading').css({display: 'block'})
-      this.APIRequest('images/retrieve', parameter).done(response => {
+      this.APIRequest('images/retrieve_with_category', parameter).done(response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           // console.log(response.data)

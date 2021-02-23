@@ -231,7 +231,7 @@
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Other Details'">
-        <other-details @files="getFiles($event)" :item="data"></other-details>
+        <other-details @file1="getFiles($event, 'file1')" @file2="getFiles($event, 'file2')" v-bind:item="data"></other-details>
       </div>
     </div>
     <browse-images-modal></browse-images-modal>
@@ -332,8 +332,23 @@ export default {
     samples(data){
       console.log(data)
     },
-    getFiles(data){
-      console.log(this.data.details)
+    getFiles(data, fileNumber){
+      if(data !== null){
+        if(fileNumber === 'file1'){
+          console.log('data1', data)
+          console.log('file1', this.data.details)
+          this.data.details.files.label.title = data.title
+          this.data.details.files.label.url = data.url
+          this.updateProduct()
+          this.retrieve()
+        }else{
+          console.log('file2s', this.data.details)
+          this.data.details.files.sds.title = data.title
+          this.data.details.files.sds.url = data.url
+          this.updateProduct()
+          this.retrieve()
+        }
+      }
     },
     retrieve(){
       let parameter = {
@@ -423,7 +438,6 @@ export default {
         }else{
           this.retrieve()
         }
-        ROUTER.push(AUTH.redirectRoute(this.user.type))
       })
     },
     createAttribute(){
