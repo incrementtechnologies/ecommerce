@@ -281,7 +281,7 @@ export default {
       let key = Object.keys(this.sort)
       let parameter = {
         column: this.filter.column,
-        value: '%' + this.filter.value + '%',
+        value: this.filter.value ? ('%' + this.filter.value + '%') : '%%',
         sort: {
           value: this.sort[key[0]],
           column: key[0]
