@@ -82,7 +82,7 @@
         </tr>
       </tbody>
     </table>
-    <create-product-traces :params="productId"/>
+    <create-product-traces ref="addInventory" :params="productId"/>
     <Pager
       :pages="numPages"
       :active="activePage"
@@ -316,7 +316,13 @@ export default {
       ROUTER.push(parameter)
     },
     addProductTraces(id){
+      var date = new Date()
       this.productId = id
+      this.$refs.addInventory.newData.batch_number = null
+      this.$refs.addInventory.manufacturing.year = date.getFullYear()
+      this.$refs.addInventory.manufacturing.month = (parseInt(date.getMonth()) + 1)
+      this.$refs.addInventory.manufacturing.date = null
+      this.$refs.addInventory.newData.qty = 1
       setTimeout(() => {
         $('#createProductTracesModal').modal('show')
       }, 100)

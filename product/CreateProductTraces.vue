@@ -57,7 +57,7 @@
 
             <div class="form-group">
               <label for="exampleInputEmail1">Quantity <b class="text-danger">*</b></label>
-              <input type="number" class="form-control" placeholder="Type qty here..." v-model="newData.qty">
+              <input type="number" min="1" class="form-control" placeholder="Type qty here..." v-model="newData.qty">
             </div>
           </div>
           <div class="modal-footer">
