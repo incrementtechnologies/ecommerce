@@ -89,7 +89,7 @@
             <div class="product-item-title" style="width: 20%; margin-top: 2.5%;">
               <label></label>
               <br>
-              <select class="form-control form-control-custom" v-model="newAttribute.payload">
+              <select class="form-control form-control-custom" v-model="data.details.active.attribute">
                 <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
               </select>
             </div>
@@ -428,7 +428,9 @@ export default {
       }
       console.log(this.data.details)
       this.data.details = JSON.stringify(this.data.details)
+      $('#loading').css({display: 'block'})
       this.APIRequest('products/update', this.data).then(response => {
+        $('#loading').css({display: 'none'})
         if(this.common.ecommerce.productUnits !== null){
           if(this.data.variation !== null){
             this.updateAttribute(this.data.variation[0])
