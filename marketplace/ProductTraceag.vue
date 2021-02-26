@@ -47,20 +47,58 @@
         <!-- <div class="product-row" v-if="data.variation !== null">
           <span>{{data.variation[0].payload_value}} {{data.variation[0].payload}}</span>
         </div> -->
-        <div class="product-row" v-if="data.sku !== null && data.sku !== ''">
-          <label class="product-row-labels">Sku:</label>
-          <label class="text-danger"><i>&nbsp;&nbsp;{{data.sku}}</i></label>
-        </div>
-        <div class="product-row" v-if="data.tags !== null">
-          <label class="product-row-labels">Tags:</label>
-          <label>&nbsp;&nbsp;&nbsp;{{data.tags}}</label>
-        </div>
-        <div class="product-row-merchant" v-if="data.merchant !== null">
-          <label class="product-row-labels">Merchant:</label>
-          <label>&nbsp;&nbsp;{{data.merchant.name}}</label>
-        </div>
-        <div class="product-row" v-if="data.merchant !== null">
-          <span class="product-row-labels">Website: &nbsp;&nbsp;<a :href="data.merchant.website" target="__blank">{{data.merchant.website}}</a></span>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="product-row" v-if="data.sku !== null && data.sku !== ''">
+              <label class="product-row-labels">Sku:</label>
+              <label class="text-danger"><i>&nbsp;&nbsp;{{data.sku}}</i></label>
+            </div>
+            <div class="product-row" v-if="data.tags !== null">
+              <label class="product-row-labels">Tags:</label>
+              <label>&nbsp;&nbsp;&nbsp;{{data.tags}}</label>
+            </div>
+            <div class="product-row-merchant" v-if="data.merchant !== null">
+              <label class="product-row-labels">Merchant:</label>
+              <label>&nbsp;&nbsp;{{data.merchant.name}}</label>
+            </div>
+            <div class="product-row" v-if="data.merchant !== null">
+              <span class="product-row-labels">Website: &nbsp;&nbsp;<a :href="data.merchant.website" target="__blank">{{data.merchant.website}}</a></span>
+            </div>
+            <div class="product-row" v-if="data.details.active.active_name !== null">
+              <label class="product-row-labels">Active:</label>
+              <label>&nbsp;&nbsp;&nbsp;{{data.details.active.active_name}}({{data.details.active.value}} {{data.details.active.value}})</label>
+            </div>
+            <div class="product-row" v-if="data.details.shelf_life !== null">
+              <label class="product-row-labels">Shelf Life:</label>
+              <label>&nbsp;&nbsp;&nbsp;{{data.details.shelf_life}}</label>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="product-row" v-if="data.details.approval_date !== null">
+              <label class="product-row-labels">Approval Date:</label>
+              <label>&nbsp;&nbsp;&nbsp;{{data.details.approval_date}}</label>
+            </div>
+            <div class="product-row" v-if="data.details.approval_number !== null">
+              <label class="product-row-labels">Approval Number:</label>
+              <label>&nbsp;&nbsp;&nbsp;{{data.details.approval_number}}</label>
+            </div>
+            <div class="product-row" v-if="data.details.formulation !== null">
+              <label class="product-row-labels">Formulation:</label>
+              <label>&nbsp;&nbsp;&nbsp;{{data.details.formulation}}</label>
+            </div>
+            <div class="product-row" v-if="data.details.mixing_order !== null">
+              <label class="product-row-labels">Mixing Order:</label>
+              <label>&nbsp;&nbsp;&nbsp;{{data.details.mixing_order}}</label>
+            </div>
+            <div class="product-row" v-if="data.details.other_ingredient !== null">
+              <label class="product-row-labels">Other Ingredient:</label>
+              <label>&nbsp;&nbsp;&nbsp;{{data.details.other_ingredient}}</label>
+            </div>
+            <div class="product-row" v-if="data.details.safety_equipment.length > 0">
+              <label class="product-row-labels">Safety Equipment:</label>
+              <label v-for="(el, index) in data.details.safety_equipment" :key="index">&nbsp;&nbsp;&nbsp;{{el}}</label>
+            </div>
+          </div>
         </div>
       </div>
     </div><br>
@@ -75,8 +113,32 @@
           <label v-html="data.description"></label>
         </label>
       </div>
-      <div class="details-holder" v-if="prevMenuIndex === 1">
+      <!-- <div class="details-holder" v-if="prevMenuIndex === 1">
         <label>Shippings</label>
+      </div> -->
+      <div class="details-holder" v-if="prevMenuIndex === 1">
+        <div class="row">
+          <div class="col-sm-3">
+            <label>Label</label>
+          </div>
+          <div class="col-sm-3">
+            <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.label.title !== null ? 'color: #cae166' : 'color: red'"></i>
+          </div>
+          <div class="col-sm-3">
+            <label>{{data.details.files.label.title}}</label>
+          </div>
+        </div><hr>
+        <div class="row">
+          <div class="col-sm-3">
+            <label>SDS</label>
+          </div>
+          <div class="col-sm-3">
+            <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.sds.title !== null ? 'color: #cae166' : 'color: red'"></i>
+          </div>
+          <div class="col-sm-3">
+            <label>{{data.details.files.sds.title}}</label>
+          </div>
+        </div>
       </div>
       <div class="details-holder" v-if="prevMenuIndex === 2">
         <product-comments :payloadValue="data.id" :payload="'product'" :load="true"></product-comments>
@@ -85,6 +147,9 @@
   </div>
 </template>
 <style scoped>
+  #icon{
+    font-size: 30px;
+  }
   .title{
     width: 100%;
     float: left;
@@ -145,7 +210,7 @@
   .product-details{
     min-height: 50px;
     width: 50%;
-    margin-left: 10%;
+    margin-left: 5%;
     float: left;
     overflow-y: hidden;
   }
@@ -187,7 +252,7 @@
     line-height: 40px;
   }
   .product-row label{
-    width: 5%;
+    /* width: 5%; */
     margin-top: 0px;
     margin-bottom: 0px;
   }
@@ -321,7 +386,8 @@ export default {
       code: this.$route.params.code,
       status: this.$route.params.status,
       productMenu: [
-        {title: 'Details', flag: true}
+        {title: 'Details', flag: true},
+        {title: 'Other Details', flag: false}
         // {title: 'Supplier', flag: false},
         // {title: 'Shippings', flag: false},
         // {title: 'Reviews', flag: false}
