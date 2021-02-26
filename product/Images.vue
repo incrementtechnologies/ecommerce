@@ -15,8 +15,9 @@
        <div class="images-holder">
         <div class="product-row" style="text-align: left !important;">
           <label style="width: 100%">
-            <label style="width: 70%">Other Images</label>
+            <label style="width: 20%">Other Images</label>
             <!-- <button class="btn btn-primary pull-right" @click="showImages('images')">Select</button> -->
+            <label v-if="hasError === true" style="color: red;font-size:10px;width: 20%">Image already existed</label>
           </label>
         </div>
         <div>
@@ -24,8 +25,8 @@
           </div>
            <!-- <div class="row"> -->
              <div class="scrolling-wrapper d-flex">
-               <div style="height:100px !important;width:100px !important;" @click="addImage()">
-                 <i class="fa fa-plus plusIcon" style="font-size:100px;padding:10px"></i>
+               <div style="height:100px !important;width:100px !important; border:2px solid gray" id="imageCont" @click="addImage()">
+                 <i class="fa fa-plus plusIcon" style="font-size:40px;padding:10px; vertical-align:middle;margin-top: 20px;margin-right:10px;color:gray"></i>
                  <input type="file" id="Image" accept="image/*" @change="setUpFileUpload($event)">
                  <!-- <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfTMy2AHYJpPh-4Eojkm_s5QX6_emLxwfZeg&usqp=CAU" style="width:100px;height:100px;border:2px solid black"> -->
                </div>
@@ -66,7 +67,8 @@ export default {
     errorMessage: null,
     idImage: null,
     file: null,
-    productId: null
+    productId: null,
+    hasError: false
   }),
   mounted(){
     this.retrieveImage()
@@ -112,6 +114,11 @@ export default {
       if(parseInt(this.file.size / 1024) > 1024){
         this.errorMessage = 'Allowed size is up to 1 MB only'
         this.file = null
+        return
+      }
+      console.log('fdsfadsfds', this.file.name)
+      this.validateImage(this.file.name)
+      if(this.hasError === true){
         return
       }
       let formData = new FormData()
@@ -174,6 +181,17 @@ export default {
           this.filteredData = null
         }
       })
+    },
+    validateImage(imageName){
+      this.images.map(el => {
+        console.log('efdsafdsfsd', el)
+        let name = el.url.substring(el.url.lastIndexOf('_') + 1)
+        if(imageName === name){
+          this.hasError = true
+        }else{
+          this.hasError = false
+        }
+      })
     }
   }
 }
@@ -199,16 +217,16 @@ export default {
         display: inline-block;
       }
     }
+    #imageCont:hover{
+      background-color: #cae166;
+      cursor: pointer;
+    }
     ::-webkit-scrollbar-thumb{
       background: #555;
       width: 10px;
       height: 10px;
     }
-    .plusIcon:hover{
-      cursor: pointer;
-      color: #cae166;
-    }
-    .plusIcon:active, .plusIcon:focus{
+    #imageCont:active, #imageCont:focus{
       cursor: pointer;
       color: #a3c026;
     }
