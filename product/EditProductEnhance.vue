@@ -69,39 +69,67 @@
             <option value="published">Published</option>
           </select>
         </div>
-        <div class="product-item-title">
+        <div class="product-item-title" style="width: 90%">
           <label>Activity Group</label>
           <br>
-          <select class="form-control form-control-custom" v-model="data.details.group">
+          <select class="form-control form-control-custom"  v-model="group">
             <option v-for="(group, index) in groups" :key="index" :value="group">{{group}}</option>
           </select>
         </div>
-        <div class="product-item-title" style="width: 58%; margin-right: 1%;">
+        <div class="product-item-title pl-4" style="width: 10%; margin-top: 5.5%;">
+              <button class="btn btn-primary" @click="addGroup"><i class="fa fa-plus"></i></button>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover table-borderless">
+              <tbody>
+                <tr v-for="(group, index) in listGroup" :key="index">
+                  <td>{{group.group}}</td>
+                  <td><button class="btn btn-danger" @click="removeGroup(index)"><i class="fa fa-close"></i></button></td>
+                </tr>
+              </tbody>
+          </table>
+          </div>
+        <div class="product-item-title" style="width: 48%; margin-right: 1%;">
               <label>Actives</label>
               <br>
-              <input type="text" class="form-control form-control-custom" v-model="data.details.active.active_name" placeholder="Active constituents">
+              <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents">
             </div>
             <div class="product-item-title" style="width: 20%; margin-right: 1%; margin-top: 2.5%;">
               <label></label>
               <br>
-              <input type="number" class="form-control form-control-custom" v-model="data.details.active.value" placeholder="value">
+              <input type="number" class="form-control form-control-custom" v-model="active.value" placeholder="value">
             </div>
             <div class="product-item-title" style="width: 20%; margin-top: 2.5%;">
               <label></label>
               <br>
-              <select class="form-control form-control-custom" v-model="data.details.active.attribute">
+              <select class="form-control form-control-custom" v-model="active.attribute">
                 <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
               </select>
+            </div>
+            <div class="product-item-title pl-4" style="width: 10%; margin-top: 5.5%;">
+              <button class="btn btn-primary" @click="addActive"><i class="fa fa-plus"></i></button>
+            </div>
+            <div class="table-responsive">
+            <table class="table table-hover table-borderless">
+                <tbody>
+                  <tr v-for="(active, index) in actives" :key="index">
+                    <td>{{active.active_name}}</td>
+                    <td>{{active.value}}</td>
+                    <td>{{active.attribute}}</td>
+                    <td><button class="btn btn-danger" @click="removeActive(index)"><i class="fa fa-close"></i></button></td>
+                  </tr>
+                </tbody>
+            </table>
             </div>
         <div class="product-item-title">
           <label>Solvent (if applicable)</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.solvent" placeholder="Type product sku here...">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.solvent" placeholder="Solvent">
         </div>
          <div class="product-item-title">
           <label>Other scheduled ingredients</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.other_ingredient" placeholder="Type product sku here...">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.other_ingredient" placeholder="Other ingredients">
         </div>
          <div class="product-item-title">
           <label>Mixing Order</label>
@@ -284,7 +312,15 @@ export default {
         safety_equipment: [],
         mixing_order: []
       },
-      groups: []
+      groups: [],
+      actives: [],
+      active: {
+        active_name: null,
+        value: null,
+        attribute: null
+      },
+      group: null,
+      listGroup: []
     }
   },
   computed: {
@@ -322,6 +358,42 @@ export default {
         this.prevMenuIndex = index
         this.selectedMenu = this.productMenu[index]
       }
+    },
+    addActive(){
+      if(this.active.active_name === null || this.active.value === null || this.active.attribute === null){
+        this.errorMessage = 'Empty fields cannot be added'
+        return
+      }
+      let active = {
+        active_name: this.active.active_name,
+        value: this.active.value,
+        attribute: this.active.attribute
+      }
+      if(this.actives.length < 3){
+        this.actives.push(active)
+        this.active.active_name = null
+        this.active.value = null
+        this.active.attribute = null
+      }else{
+        this.errorMessage = 'Active already reach max number(3)'
+      }
+    },
+    removeActive(index){
+      this.actives.splice(index, 1)
+    },
+    addGroup(){
+      if(this.group === null){
+        this.errorMessage = 'Empty field cannot be added'
+        return
+      }
+      let group = {
+        group: this.group
+      }
+      this.listGroup.push(group)
+      this.group = null
+    },
+    removeGroup(index){
+      this.listGroup.splice(index, 1)
     },
     showConfirmationModal(id){
       this.$refs.confirmationModal.show(id)
@@ -366,6 +438,9 @@ export default {
         console.log(response.data)
         if(response.data.length > 0){
           this.data = response.data[0]
+          this.actives = this.data.details.active
+          this.listGroup = this.data.details.group
+          console.log(this.actives)
           this.tagChecker(this.data)
         }
       })
@@ -426,8 +501,10 @@ export default {
       if(this.validate() === false){
         return
       }
-      console.log(this.data.details)
+      this.data.details.group = this.listGroup
+      this.data.details.active = this.actives
       this.data.details = JSON.stringify(this.data.details)
+      console.log(this.data.details)
       $('#loading').css({display: 'block'})
       this.APIRequest('products/update', this.data).then(response => {
         $('#loading').css({display: 'none'})
@@ -460,6 +537,8 @@ export default {
       if(item.payload_value !== null && item.payload_value !== '' && parseInt(item.payload_value) > 0){
         this.APIRequest('product_attributes/update', item).then(response => {
           if(response.data === true){
+            this.retrieve()
+          }else{
             this.retrieve()
           }
         })
