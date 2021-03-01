@@ -26,7 +26,7 @@
            <!-- <div class="row"> -->
              <div class="scrolling-wrapper d-flex">
                <div style="height:100px !important;width:100px !important; border:2px solid gray" id="imageCont" @click="addImage()">
-                 <i class="fa fa-plus plusIcon" style="font-size:40px;padding:10px; vertical-align:middle;margin-top: 20px;margin-right:10px;color:gray"></i>
+                 <i class="fa fa-plus plusIcon" style="font-size:40px;padding:10px; vertical-align:middle;margin-top: 20px;margin-right:10px"></i>
                  <input type="file" id="Image" accept="image/*" @change="setUpFileUpload($event)">
                  <!-- <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfTMy2AHYJpPh-4Eojkm_s5QX6_emLxwfZeg&usqp=CAU" style="width:100px;height:100px;border:2px solid black"> -->
                </div>
@@ -95,6 +95,7 @@ export default {
         return false
       }else{
         this.file = files[0]
+        console.log('fdsafdsf', this.file)
         let filename = this.file.name.toLowerCase()
         if(filename.substring(filename.lastIndexOf('.')) === '.png' || filename.substring(filename.lastIndexOf('.')) === '.jpg' || filename.substring(filename.lastIndexOf('.')) === '.jpeg' || filename.substring(filename.lastIndexOf('.')) === '.gif' || filename.substring(filename.lastIndexOf('.')) === '.tif' || filename.substring(filename.lastIndexOf('.')) === '.bmp'){
           this.createFile(files[0])
