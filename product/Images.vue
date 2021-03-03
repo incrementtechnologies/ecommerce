@@ -26,7 +26,7 @@
            <!-- <div class="row"> -->
              <div class="scrolling-wrapper d-flex">
                <div style="height:100px !important;width:100px !important; border:2px solid gray" id="imageCont" @click="addImage()">
-                 <i class="fa fa-plus plusIcon" style="font-size:40px;padding:10px; vertical-align:middle;margin-top: 20px;margin-right:10px"></i>
+                 <i class="fa fa-plus plusIcon" style="font-size:40px;padding:10px; vertical-align:middle;margin-top: 20px;margin-right:1%"></i>
                  <input type="file" id="Image" accept="image/*" @change="setUpFileUpload($event)">
                  <!-- <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfTMy2AHYJpPh-4Eojkm_s5QX6_emLxwfZeg&usqp=CAU" style="width:100px;height:100px;border:2px solid black"> -->
                </div>
@@ -131,6 +131,7 @@ export default {
       console.log('imageRoute', formData)
       axios.post(this.config.BACKEND_URL + '/images/upload?token=' + AUTH.tokenData.token, formData).then(response => {
         $('#loading').css({'display': 'none'})
+        this.hasError = false
         this.retrieveImage()
         if(response.data.data !== null){
           this.retrieveImage()
@@ -189,8 +190,6 @@ export default {
         let name = el.url.substring(el.url.lastIndexOf('_') + 1)
         if(imageName === name){
           this.hasError = true
-        }else{
-          this.hasError = false
         }
       })
     }
