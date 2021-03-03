@@ -118,8 +118,14 @@ export default {
       ROUTER.push(parameter)
     },
     addTraces(){
+      var date = new Date()
       this.$refs.addTrace.errorMessage = null
       this.productId = this.item.id
+      this.$refs.addTrace.newData.batch_number = null
+      this.$refs.addTrace.newData.qty = 1
+      this.$refs.addTrace.manufacturing.date = null
+      this.$refs.addTrace.manufacturing.year = date.getFullYear()
+      this.$refs.addTrace.manufacturing.month = (parseInt(date.getMonth()) + 1)
       setTimeout(() => {
         $('#createProductTracesModal').modal('show')
       }, 100)
