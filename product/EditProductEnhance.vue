@@ -80,11 +80,17 @@
               <button class="btn btn-primary" @click="addGroup"><i class="fa fa-plus"></i></button>
         </div>
         <div class="table-responsive">
-          <table class="table table-hover table-borderless">
+          <table class="table table-hover table-bordered table-sm w-50" v-if="listGroup !== null">
+              <thead >
+                  <tr>
+                    <td>Group</td>
+                    <td>Action</td>
+                  </tr>
+              </thead>
               <tbody>
                 <tr v-for="(group, index) in listGroup" :key="index">
                   <td>{{group.group}}</td>
-                  <td><button class="btn btn-danger" @click="removeGroup(index)"><i class="fa fa-close"></i></button></td>
+                  <td><button class="btn" @click="removeGroup(index)" style="width:20%; background-color: transparent"><i class="fa fa-trash" style="color: red"></i></button></td>
                 </tr>
               </tbody>
           </table>
@@ -110,13 +116,21 @@
               <button class="btn btn-primary" @click="addActive"><i class="fa fa-plus"></i></button>
             </div>
             <div class="table-responsive">
-            <table class="table table-hover table-borderless">
-                <tbody>
+            <table class="table table-hover table-bordered table-sm w-50 " v-if="actives === null || actives.length > 0">
+              <thead>
+                  <tr>
+                    <td>Active Constituent</td>
+                    <td>Value</td>
+                    <td>Attribute</td>
+                    <td>Action</td>
+                  </tr>
+              </thead>
+                <tbody v-if="actives === null || actives.length > 0">
                   <tr v-for="(active, index) in actives" :key="index">
                     <td>{{active.active_name}}</td>
                     <td>{{active.value}}</td>
                     <td>{{active.attribute}}</td>
-                    <td><button class="btn btn-danger" @click="removeActive(index)"><i class="fa fa-close"></i></button></td>
+                    <td><button class="btn" @click="removeActive(index)" style="width:20%; background-color: transparent"><i class="fa fa-trash" style="color: red"></i></button></td>
                   </tr>
                 </tbody>
             </table>
@@ -203,35 +217,6 @@
           <button class="btn btn-warning pull-right" @click="redirect('/marketplace/product/' + data.code + '/' + 'preview')" style="margin-right: 10px; margin-top: 5px;">Preview</button>
         </div>
       </div>
-      <!-- <div class="product-image" style="position: relative;">
-        <div class="product-row" style="text-align: left !important;">
-          <label style="width: 100%">
-            <label style="width: 70%">Featured Image</label>
-            <button class="btn btn-primary pull-right" @click="showImages('featured')">Select</button>
-          </label>
-        </div>
-        <img :src="config.BACKEND_URL + selectedImage" class="main-image" v-if="selectedImage !== null">
-        <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image" v-if="selectedImage === null && data.featured !== null">
-        <i class="fa fa-image" v-if="selectedImage === null && data.featured === null"></i>
-        <label class="remove-image text-danger" id="featured-image-remove" @click="removeImage(data.featured[0].id)" v-if="selectedImage === null && data.featured !== null">
-          <i class="fa fa-times"></i>
-        </label>
-       <div class="images-holder">
-        <div class="product-row" style="text-align: left !important;">
-          <label style="width: 100%">
-            <label style="width: 70%">Other Images</label>
-            <button class="btn btn-primary pull-right" @click="showImages('images')">Select</button>
-          </label>
-        </div>
-        <div v-for="item, index in data.images" class="image-item" @click="selectImage(item.url)" style="position: relative;">
-          <img :src="config.BACKEND_URL + item.url" class="other-image">
-          <div class="overlay"></div>
-          <label class="remove-image text-danger" id="other-images-remove" @click="removeImage(item.id)" v-if="item.status !== 'featured'">
-            <i class="fa fa-times"></i>
-          </label>
-        </div>
-       </div>
-      </div> -->
       <images :data="data"/>
     </div>
     <div class="product-more-details">
