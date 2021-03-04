@@ -97,6 +97,7 @@ export default {
       }
     },
     deleteItem(item){
+      console.log(item)
       let parameter = {
         id: item.id
       }
