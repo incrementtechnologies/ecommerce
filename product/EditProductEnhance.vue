@@ -69,42 +69,81 @@
             <option value="published">Published</option>
           </select>
         </div>
-        <div class="product-item-title">
+        <div class="product-item-title" style="width: 90%">
           <label>Activity Group</label>
           <br>
-          <select class="form-control form-control-custom" v-model="data.details.group">
-            <option value="group1">Group 1</option>
-            <option value="group2">Group 2</option>
-            <option value="group3">Group 3</option>
-            <option value="group4">Group 4</option>
+          <select class="form-control form-control-custom"  v-model="group">
+            <option v-for="(group, index) in groups" :key="index" :value="group">{{group}}</option>
           </select>
         </div>
-        <div class="product-item-title" style="width: 58%; margin-right: 1%;">
+        <div class="product-item-title pl-4" style="width: 10%; margin-top: 5.5%;">
+              <button class="btn btn-primary" @click="addGroup"><i class="fa fa-plus"></i></button>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered table-sm w-50" v-if="listGroup.length > 0">
+              <thead >
+                  <tr>
+                    <td>Group</td>
+                    <td>Action</td>
+                  </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(group, index) in listGroup" :key="index">
+                  <td>{{group.group}}</td>
+                  <td><button class="btn" @click="removeGroup(index)" style="width:20%; background-color: transparent"><i class="fa fa-trash" style="color: red"></i></button></td>
+                </tr>
+              </tbody>
+          </table>
+          </div>
+        <div class="product-item-title" style="width: 48%; margin-right: 1%;">
               <label>Actives</label>
               <br>
-              <input type="text" class="form-control form-control-custom" v-model="data.details.active.active_name" placeholder="Active constituents">
+              <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents">
             </div>
             <div class="product-item-title" style="width: 20%; margin-right: 1%; margin-top: 2.5%;">
               <label></label>
               <br>
-              <input type="number" class="form-control form-control-custom" v-model="data.details.active.value" placeholder="value">
+              <input type="number" class="form-control form-control-custom" v-model="active.value" placeholder="value">
             </div>
             <div class="product-item-title" style="width: 20%; margin-top: 2.5%;">
               <label></label>
               <br>
-              <select class="form-control form-control-custom" v-model="newAttribute.payload">
+              <select class="form-control form-control-custom" v-model="active.attribute">
                 <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
               </select>
+            </div>
+            <div class="product-item-title pl-4" style="width: 10%; margin-top: 5.5%;">
+              <button class="btn btn-primary" @click="addActive"><i class="fa fa-plus"></i></button>
+            </div>
+            <div class="table-responsive">
+            <table class="table table-hover table-bordered table-sm w-50 " v-if="actives === null || actives.length > 0">
+              <thead>
+                  <tr>
+                    <td>Active Constituent</td>
+                    <td>Value</td>
+                    <td>Attribute</td>
+                    <td>Action</td>
+                  </tr>
+              </thead>
+                <tbody v-if="actives === null || actives.length > 0">
+                  <tr v-for="(active, index) in actives" :key="index">
+                    <td>{{active.active_name}}</td>
+                    <td>{{active.value}}</td>
+                    <td>{{active.attribute}}</td>
+                    <td><button class="btn" @click="removeActive(index)" style="width:20%; background-color: transparent"><i class="fa fa-trash" style="color: red"></i></button></td>
+                  </tr>
+                </tbody>
+            </table>
             </div>
         <div class="product-item-title">
           <label>Solvent (if applicable)</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.solvent" placeholder="Type product sku here...">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.solvent" placeholder="Solvent">
         </div>
          <div class="product-item-title">
           <label>Other scheduled ingredients</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.other_ingredient" placeholder="Type product sku here...">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.other_ingredient" placeholder="Other ingredients">
         </div>
          <div class="product-item-title">
           <label>Mixing Order</label>
@@ -115,28 +154,41 @@
           <label>Formulation</label>
           <br>
           <select class="form-control form-control-custom" v-model="data.details.formulation">
-            <option value="formulation1">Formulation 1</option>
-            <option value="formulation2">Formulation 2</option>
-            <option value="formulation3">Formulation 3</option>
+            <option v-for="(formulation, index) in formulations.FORMULATION" :key="index" :value="formulation">{{formulation}}</option>
           </select>
         </div>
         <div class="product-item-title">
-          <label>Available Safety Equipment</label>
+          <label>Application Safety Equipment</label>
           <br>
           <div class="form-check">
             
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment1" value="equipment1">Equipment 1
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment1" value="Cotton overalls buttoned to neck and wrist"><span>Cotton overalls buttoned to neck and wrist</span>
             </label>
           </div>
           <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment2" value="equipment2">Equipment 2
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment2" value="A Washable hat "><span>A Washable hat</span> 
             </label>
           </div>
           <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="equipment3">Equipment 3
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Elbow-lenght PVC gloves"><span>Elbow-lengTH PVC gloves</span>  
+            </label>
+          </div>
+           <div class="form-check">
+            <label class="form-check-label">
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Face shield or googles"><span>Face shield or googles</span>  
+            </label>
+          </div>
+           <div class="form-check">
+            <label class="form-check-label">
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Half facepiece respirator or disposable respirator"><span>Half facepiece respirator or disposable respirator</span>  
+            </label>
+          </div>
+           <div class="form-check">
+            <label class="form-check-label">
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Full respirator"><span>Full respirator</span>  
             </label>
           </div>
         </div>
@@ -165,35 +217,6 @@
           <button class="btn btn-warning pull-right" @click="redirect('/marketplace/product/' + data.code + '/' + 'preview')" style="margin-right: 10px; margin-top: 5px;">Preview</button>
         </div>
       </div>
-      <!-- <div class="product-image" style="position: relative;">
-        <div class="product-row" style="text-align: left !important;">
-          <label style="width: 100%">
-            <label style="width: 70%">Featured Image</label>
-            <button class="btn btn-primary pull-right" @click="showImages('featured')">Select</button>
-          </label>
-        </div>
-        <img :src="config.BACKEND_URL + selectedImage" class="main-image" v-if="selectedImage !== null">
-        <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image" v-if="selectedImage === null && data.featured !== null">
-        <i class="fa fa-image" v-if="selectedImage === null && data.featured === null"></i>
-        <label class="remove-image text-danger" id="featured-image-remove" @click="removeImage(data.featured[0].id)" v-if="selectedImage === null && data.featured !== null">
-          <i class="fa fa-times"></i>
-        </label>
-       <div class="images-holder">
-        <div class="product-row" style="text-align: left !important;">
-          <label style="width: 100%">
-            <label style="width: 70%">Other Images</label>
-            <button class="btn btn-primary pull-right" @click="showImages('images')">Select</button>
-          </label>
-        </div>
-        <div v-for="item, index in data.images" class="image-item" @click="selectImage(item.url)" style="position: relative;">
-          <img :src="config.BACKEND_URL + item.url" class="other-image">
-          <div class="overlay"></div>
-          <label class="remove-image text-danger" id="other-images-remove" @click="removeImage(item.id)" v-if="item.status !== 'featured'">
-            <i class="fa fa-times"></i>
-          </label>
-        </div>
-       </div>
-      </div> -->
       <images :data="data"/>
     </div>
     <div class="product-more-details">
@@ -221,7 +244,7 @@
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Other Details'">
-        <other-details :item="data"></other-details>
+        <other-details @file1="getFiles($event, 'file1')" @file2="getFiles($event, 'file2')" v-bind:item="data"></other-details>
       </div>
     </div>
     <browse-images-modal></browse-images-modal>
@@ -233,6 +256,7 @@ import ROUTER from 'src/router'
 import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
+import GROUP from './Group.js'
 import axios from 'axios'
 export default {
   mounted(){
@@ -245,6 +269,7 @@ export default {
       sample: [],
       errorMessage: null,
       data: null,
+      formulations: GROUP,
       code: this.$route.params.code,
       prevMenuIndex: 0,
       selectedMenu: COMMON.ecommerce.editProductMenu[0],
@@ -271,7 +296,16 @@ export default {
         active: [],
         safety_equipment: [],
         mixing_order: []
-      }
+      },
+      groups: [],
+      actives: [],
+      active: {
+        active_name: null,
+        value: null,
+        attribute: null
+      },
+      group: null,
+      listGroup: []
     }
   },
   computed: {
@@ -296,7 +330,7 @@ export default {
     'prices': require('components/increment/ecommerce/product/Prices.vue'),
     'confirmation': require('components/increment/generic/modal/Confirmation.vue'),
     'images': require('components/increment/ecommerce/product/Images.vue'),
-    'other-details': require('components/increment/ecommerce/product/OtherDetails.vue')
+    'other-details': require('components/increment/ecommerce/product/OtherDetailsEnhance.vue')
   },
   methods: {
     redirect(parameter){
@@ -310,11 +344,68 @@ export default {
         this.selectedMenu = this.productMenu[index]
       }
     },
+    addActive(){
+      if(this.active.active_name === null || this.active.value === null || this.active.attribute === null){
+        this.errorMessage = 'Empty fields cannot be added'
+        return
+      }
+      let active = {
+        active_name: this.active.active_name,
+        value: this.active.value,
+        attribute: this.active.attribute
+      }
+      if(this.actives.length < 3){
+        this.actives.push(active)
+        this.active.active_name = null
+        this.active.value = null
+        this.active.attribute = null
+      }else{
+        this.errorMessage = 'Active already reach max number(3)'
+      }
+    },
+    removeActive(index){
+      this.actives.splice(index, 1)
+    },
+    addGroup(){
+      if(this.group === null){
+        this.errorMessage = 'Empty field cannot be added'
+        return
+      }
+      let group = {
+        group: this.group
+      }
+      this.listGroup.push(group)
+      this.group = null
+    },
+    removeGroup(index){
+      this.listGroup.splice(index, 1)
+    },
     showConfirmationModal(id){
       this.$refs.confirmationModal.show(id)
     },
     selectImage(url){
       this.selectedImage = url
+    },
+    samples(data){
+      console.log(data)
+    },
+    getFiles(data, fileNumber){
+      if(data !== null){
+        if(fileNumber === 'file1'){
+          console.log('data1', data)
+          console.log('file1', this.data.details)
+          this.data.details.files.label.title = data.title
+          this.data.details.files.label.url = data.url
+          this.updateProduct()
+          this.retrieve()
+        }else{
+          console.log('file2s', this.data.details)
+          this.data.details.files.sds.title = data.title
+          this.data.details.files.sds.url = data.url
+          this.updateProduct()
+          this.retrieve()
+        }
+      }
     },
     retrieve(){
       let parameter = {
@@ -329,8 +420,13 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('products/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
+        console.log(response.data)
         if(response.data.length > 0){
           this.data = response.data[0]
+          this.actives = this.data.details.active
+          this.listGroup = this.data.details.group != null ? this.data.details.group : []
+          console.log(this.actives)
+          this.tagChecker(this.data)
         }
       })
     },
@@ -343,6 +439,17 @@ export default {
         $('#loading').css({display: 'none'})
         ROUTER.push('/products')
       })
+    },
+    tagChecker(data){
+      if(data.tags.includes('insecticide')){
+        this.groups = GROUP.INSECTICIDE
+      }else if(data.tags.includes('herbicide')){
+        this.groups = GROUP.HERBICIDE
+      }else if(data.tags.includes('fungicide')){
+        this.groups = GROUP.FUNGICIDE
+      }else{
+        this.groups = GROUP.ADJUVANT
+      }
     },
     validate(){
       this.errorMessage = null
@@ -358,15 +465,34 @@ export default {
         this.errorMessage = 'Product title length should not exceed to ' + this.common.ecommerce.productTitleLimit + ' characters.'
         return false
       }
+      if(parseInt(this.data.details.active.value) <= 0 || parseInt(this.data.details.shelf_life) <= 0){
+        this.errorMessage = 'Fields should be greater than 0'
+        return false
+      }
+      if(this.data.variation !== null){
+        if(this.data.variation[0].payload === '' || this.data.variation[0].payload === null){
+          this.errorMessage = 'Unit is required'
+          return false
+        }
+      }else{
+        if(this.newAttribute.payload === '' || this.newAttribute.payload === null){
+          this.errorMessage = 'Unit is required'
+          return false
+        }
+      }
       return true
     },
     updateProduct(){
       if(this.validate() === false){
         return
       }
-      console.log(this.data.details)
+      this.data.details.group = this.listGroup
+      this.data.details.active = this.actives
       this.data.details = JSON.stringify(this.data.details)
+      console.log(this.data.details)
+      $('#loading').css({display: 'block'})
       this.APIRequest('products/update', this.data).then(response => {
+        $('#loading').css({display: 'none'})
         if(this.common.ecommerce.productUnits !== null){
           if(this.data.variation !== null){
             this.updateAttribute(this.data.variation[0])
@@ -376,7 +502,6 @@ export default {
         }else{
           this.retrieve()
         }
-        ROUTER.push(AUTH.redirectRoute(this.user.type))
       })
     },
     createAttribute(){
@@ -398,6 +523,8 @@ export default {
         this.APIRequest('product_attributes/update', item).then(response => {
           if(response.data === true){
             this.retrieve()
+          }else{
+            this.retrieve()
           }
         })
       }else{
@@ -414,8 +541,10 @@ export default {
         if(this.data.featured === null){
           this.newImage.product_id = this.data.id
           this.newImage.url = url
+          console.log('new')
           this.createRequest(this.newImage)
         }else{
+          console.log('old')
           this.data.featured[0].url = url
           this.updateRequest(this.data.featured[0])
         }
@@ -423,20 +552,27 @@ export default {
         this.newImage.status = 'others'
         this.newImage.product_id = this.data.id
         this.newImage.url = url
+        console.log(this.newImage)
         this.createRequest(this.newImage)
       }
     },
     createRequest(parameter){
+      $('#loading').css({display: 'block'})
       this.APIRequest('product_images/create', parameter).then(response => {
+        $('#loading').css({display: 'none'})
         this.retrieve()
       })
     },
     updateRequest(parameter){
+      $('#loading').css({display: 'block'})
       this.APIRequest('product_images/update', parameter).then(response => {
+        $('#loading').css({display: 'none'})
         this.retrieve()
       })
     },
-    manageImageUrl(url){
+    manageImageUrl(url, status){
+      console.log('fsdafs')
+      this.imageStatus = status
       this.createPhoto(url)
     },
     removeImage(id){

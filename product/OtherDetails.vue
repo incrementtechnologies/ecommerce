@@ -67,7 +67,7 @@
             </div>
             </div>
             <div v-if="isCancelLabel">
-              <!-- <b-form-input v-model="file_title" class="w-100" :value="this.file_title"></b-form-input> -->
+              <b-form-input v-model="file_title" class="w-100" :value="this.file_title"></b-form-input>
             </div> 
           </b-col>
           <b-col>

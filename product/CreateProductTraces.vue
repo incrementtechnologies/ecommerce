@@ -220,7 +220,7 @@ export default {
       }
     },
     validate(){
-      if(this.newData.batch_number === null || this.manufacturing.date === null || this.manufacturing.month === null || this.manufacturing.year === null || this.newData.qty <= 0){
+      if(this.newData.batch_number === null || this.manufacturing.date === null || this.manufacturing.month === null || this.manufacturing.year === null){
         this.errorMessage = 'All fields are required'
         return false
       }

@@ -11,12 +11,13 @@
         <i class="fa fa-image" v-if="selectedImage === null && data.featured === null"></i>
         <label class="remove-image text-danger" id="featured-image-remove" @click="removeImage(data.featured[0].id)" v-if="selectedImage === null && data.featured !== null">
           <i class="fa fa-times"></i>
-        </label>
+        </label>``
        <div class="images-holder">
         <div class="product-row" style="text-align: left !important;">
           <label style="width: 100%">
-            <label style="width: 70%">Other Images</label>
+            <label style="width: 20%">Other Images</label>
             <!-- <button class="btn btn-primary pull-right" @click="showImages('images')">Select</button> -->
+            <label v-if="hasError === true" style="color: red;font-size:10px;width: 20%">Image already existed</label>
           </label>
         </div>
         <div>
@@ -24,23 +25,23 @@
           </div>
            <!-- <div class="row"> -->
              <div class="scrolling-wrapper d-flex">
-               <div style="height:100px !important;width:100px !important;" @click="addImage()">
-                 <i class="fa fa-plus plusIcon" style="font-size:100px;padding:10px"></i>
-                 <input type="file" id="Image" :accept="type ? type : 'image/*'" @change="setUpFileUpload($event)">
+               <div style="height:100px !important;width:100px !important; border:2px solid gray" id="imageCont" @click="addImage()">
+                 <i class="fa fa-plus plusIcon" style="font-size:40px;padding:10px; vertical-align:middle;margin-top: 20px;margin-right:1%"></i>
+                 <input type="file" id="Image" accept="image/*" @change="setUpFileUpload($event)">
                  <!-- <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfTMy2AHYJpPh-4Eojkm_s5QX6_emLxwfZeg&usqp=CAU" style="width:100px;height:100px;border:2px solid black"> -->
                </div>
-              <div  v-for="item in images" :key="item.id" @click="selectImage(item.url)" style="height:100px;width:100px" class="imageContainer p-10">
+              <div  v-for="item in images" :key="item.id" style="height:100px;width:100px" class="imageContainer p-10">
                   <!-- <i class="fa fa-times class text"></i> -->
-                  <img :src="config.BACKEND_URL + item.url" class="image">
-                  <label class="middle"  @click="removeImage(item.id)" v-if="item.status !== 'featured'">
+                  <img :src="config.BACKEND_URL + item.url" class="image" @click="selectImage(item.url)">
+                  <label class="middle"  @click="deleteImage(item.id)" v-if="item.status !== 'featured'">
                     <i class="fa fa-times-circle text" ></i>
                   </label>
               </div>
              <!-- </div> -->
            </div>
            <div style="float:right">
-            <button class="btn btn-danger">Cancel</button>
-            <button class="btn btn-primary">Apply</button>
+            <button class="btn btn-danger" @click="cancel()">Cancel</button>
+            <button class="btn btn-primary" @click="apply()">Apply</button>
            </div>
         </div>
        </div>
@@ -65,7 +66,9 @@ export default {
     images: [],
     errorMessage: null,
     idImage: null,
-    file: null
+    file: null,
+    productId: null,
+    hasError: false
   }),
   mounted(){
     this.retrieveImage()
@@ -77,12 +80,22 @@ export default {
     selectImage(url){
       this.selectedImage = url
     },
+    apply(){
+      this.$parent.manageImageUrl(this.selectedImage, 'featured')
+    },
+    cancel(){
+      this.retrieveImage()
+      this.$parent.retrieve()
+      this.selectedImage = null
+    },
     setUpFileUpload(event){
       let files = event.target.files || event.dataTransfer.files
+      console.log(files)
       if(!files.length){
         return false
       }else{
         this.file = files[0]
+        console.log('fdsafdsf', this.file)
         let filename = this.file.name.toLowerCase()
         if(filename.substring(filename.lastIndexOf('.')) === '.png' || filename.substring(filename.lastIndexOf('.')) === '.jpg' || filename.substring(filename.lastIndexOf('.')) === '.jpeg' || filename.substring(filename.lastIndexOf('.')) === '.gif' || filename.substring(filename.lastIndexOf('.')) === '.tif' || filename.substring(filename.lastIndexOf('.')) === '.bmp'){
           this.createFile(files[0])
@@ -91,6 +104,40 @@ export default {
           this.file = null
         }
       }
+    },
+    createFile(file){
+      let fileReader = new FileReader()
+      fileReader.readAsDataURL(file)
+      this.upload()
+    },
+    upload(){
+      console.log('upload', this.productId)
+      if(parseInt(this.file.size / 1024) > 1024){
+        this.errorMessage = 'Allowed size is up to 1 MB only'
+        this.file = null
+        return
+      }
+      console.log('fdsfadsfds', this.file.name)
+      this.validateImage(this.file.name)
+      if(this.hasError === true){
+        return
+      }
+      let formData = new FormData()
+      formData.append('file', this.file)
+      formData.append('file_url', this.file.name.replace(' ', '_'))
+      formData.append('account_id', this.user.userID)
+      formData.append('category', `product${this.productId}`)
+      $('#loading').css({'display': 'block'})
+      console.log('imageRoute', formData)
+      axios.post(this.config.BACKEND_URL + '/images/upload?token=' + AUTH.tokenData.token, formData).then(response => {
+        $('#loading').css({'display': 'none'})
+        this.hasError = false
+        this.retrieveImage()
+        if(response.data.data !== null){
+          this.retrieveImage()
+        }
+      })
+      this.prevIndex = null
     },
     removeImage(id){
       let parameter = {
@@ -105,15 +152,14 @@ export default {
       let params = {
         id: id
       }
+      $('#loading').css({display: 'block'})
       axios.post(this.config.BACKEND_URL + '/images/delete?token=' + AUTH.tokenData.token, params).then(response => {
-        this.retrieve()
+        $('#loading').css({display: 'none'})
+        this.retrieveImage()
       })
-      this.prevIndex = null
-      setTimeout(() => {
-        $('#browseImagesModal').modal('show')
-      }, 800)
     },
     retrieveImage(){
+      this.productId = this.data.id
       const parameter = {
         condition: [{
           value: this.user.userID,
@@ -122,11 +168,12 @@ export default {
         }],
         sort: {
           created_at: 'desc'
-        }
+        },
+        category: `product${this.data.id}`
       }
-      this.loadingFlag = true
-      this.APIRequest('images/retrieve', parameter).done(response => {
-        this.loadingFlag = false
+      $('#loading').css({display: 'block'})
+      this.APIRequest('images/retrieve_with_category', parameter).done(response => {
+        $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           // console.log(response.data)
           this.images = response.data
@@ -134,6 +181,15 @@ export default {
         }else{
           this.data = null
           this.filteredData = null
+        }
+      })
+    },
+    validateImage(imageName){
+      this.images.map(el => {
+        console.log('efdsafdsfsd', el)
+        let name = el.url.substring(el.url.lastIndexOf('_') + 1)
+        if(imageName === name){
+          this.hasError = true
         }
       })
     }
@@ -147,34 +203,30 @@ export default {
       display: table;
       clear: both;
     }
-
     /* Six columns side by side */
     .column {
       float: left;
       width: 16.66%;
     }
-
     .scrolling-wrapper {
       overflow-x: scroll;
-      overflow-y: scroll;
+      overflow-y: hidden;
       white-space: nowrap;
       position: relative;
-
       .demo {
         display: inline-block;
       }
+    }
+    #imageCont:hover{
+      background-color: #cae166;
+      cursor: pointer;
     }
     ::-webkit-scrollbar-thumb{
       background: #555;
       width: 10px;
       height: 10px;
     }
-    .plusIcon:hover{
-      cursor: pointer;
-      color: #cae166;
-    }
-
-    .plusIcon:active, .plusIcon:focus{
+    #imageCont:active, #imageCont:focus{
       cursor: pointer;
       color: #a3c026;
     }
@@ -185,25 +237,20 @@ export default {
       backface-visibility: hidden;
       opacity: 1;
     }
-
     // .imageContainer:hover{
     //   background: #ffaa81;
     // }
-
     .imageContainer .image{
       // margin-left: 20px;
     }
-
     .imageContainer:hover .image {
       opacity: 0.3;
       background: #ffaa81;
       display: block;
     }
-
     .imageContainer:hover .middle {
       opacity: 1;
     }
-
     .text {
       color: red;
       cursor: pointer;
@@ -211,13 +258,10 @@ export default {
       font-size: 20px;
       padding: 16px 32px;
     }
-
     
     .imageContainer:hover .middle:hover .text{
       color: blue !important;
     }
-
-
     .middle {
       transition: .5s ease;
       opacity: 0;
@@ -227,7 +271,6 @@ export default {
       -ms-transform: translate(-50%, -50%);
       text-align: center;
     }
-
     .product-image{
       width: 36%;
       float: left;
@@ -257,13 +300,11 @@ export default {
       float: left;
       background: rgba(0, 0, 0, 0);
     }
-
     #Image{
       display: none;
       height: 200px;
       width: 200px;
     }
-
   .images-holder{
     width: 100%;
     float: left;
@@ -367,7 +408,6 @@ export default {
     overflow-y: hidden;
     margin-top: 25px;
   }
-
   .product-more-details .details-holder-bundled{
     width: 100%;
     float: left;
@@ -375,7 +415,6 @@ export default {
     overflow-y: hidden;
     margin-top: 25px;
   }
-
   .product-menu{
     list-style: none;
     padding: 0px;
@@ -409,29 +448,24 @@ export default {
   .form-control-custom{
     height: 50px !important;
   }
-
   .remove-image{
     position: absolute;
   }
-
   #featured-image-remove{
     top: 50px;
     right: 5px;
     z-index: 1000;
     font-size: 24px;
   }
-
   #other-images-remove{
     top: -20px;
     right: 0px;
     z-index: 1000;
     font-size: 18px;
   }
-
   .remove-image:hover{
     cursor: pointer;
   }
-
   @media (max-width: 992px){
     .product-item-details, .product-image, .product-more-details .details-holder, .product-menu{
       width: 100%;
