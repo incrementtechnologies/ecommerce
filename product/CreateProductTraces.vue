@@ -15,17 +15,19 @@
             </span>
             <br v-if="errorMessage !== null">
             <br>
-            <div class="row">
+            <div class="row" v-if="variations !== null">
               <div class="col-sm-9">
                 <label>Volume</label>
                 <br>
-                <input type="number" class="form-control form-control-custom" v-model="newData.payload_value" placeholder="Type volume here...">
+                <select class="form-control form-control-custom" v-model="newData.payload_value">
+                  <option v-for="(item, index) in variations" :value="item.payload_value">{{item.payload_value}}</option>
+                </select>
               </div>
               <div class="col-sm-3" >
                 <label>Units</label>
                 <br>
                 <select class="form-control form-control-custom" v-model="newData.payload">
-                  <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
+                  <option v-for="(item, index) in variations" :value="item.payload">{{item.payload}}</option>
                 </select>
               </div>
             </div><br>
@@ -204,7 +206,7 @@ export default {
   components: {
     DatePicker
   },
-  props: ['params'],
+  props: ['params', 'variations'],
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
