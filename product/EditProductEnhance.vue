@@ -80,7 +80,7 @@
               <button class="btn btn-primary" @click="addGroup"><i class="fa fa-plus"></i></button>
         </div>
         <div class="table-responsive">
-          <table class="table table-hover table-bordered table-sm w-50" v-if="listGroup !== null">
+          <table class="table table-hover table-bordered table-sm w-50" v-if="listGroup.length > 0">
               <thead >
                   <tr>
                     <td>Group</td>
@@ -424,7 +424,7 @@ export default {
         if(response.data.length > 0){
           this.data = response.data[0]
           this.actives = this.data.details.active
-          this.listGroup = this.data.details.group
+          this.listGroup = this.data.details.group != null ? this.data.details.group : []
           console.log(this.actives)
           this.tagChecker(this.data)
         }
