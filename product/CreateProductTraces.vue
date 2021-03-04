@@ -16,18 +16,11 @@
             <br v-if="errorMessage !== null">
             <br>
             <div class="row" v-if="variations !== null">
-              <div class="col-sm-9">
-                <label>Volume</label>
+              <div class="col-sm-12">
+                <label>Variations</label>
                 <br>
-                <select class="form-control form-control-custom" v-model="newData.payload_value">
-                  <option v-for="(item, index) in variations" :value="item.payload_value">{{item.payload_value}}</option>
-                </select>
-              </div>
-              <div class="col-sm-3" >
-                <label>Units</label>
-                <br>
-                <select class="form-control form-control-custom" v-model="newData.payload">
-                  <option v-for="(item, index) in variations" :value="item.payload">{{item.payload}}</option>
+                <select class="form-control form-control-custom" v-model="newData.product_attribute_id">
+                  <option v-for="(item, index) in variations" :value="item.id">{{item.payload_value}} - {{item.payload}}</option>
                 </select>
               </div>
             </div><br>
@@ -198,8 +191,7 @@ export default {
         product_id: null,
         account_id: null,
         inventory_type: COMMON.ecommerce.inventoryType,
-        payload_value: null,
-        payload: null
+        product_attribute_id: null
       }
     }
   },
@@ -217,27 +209,16 @@ export default {
         this.newData.product_id = this.params
         this.newData.account_id = this.user.userID
         this.newData.manufacturing_date = this.manufacturing.year + '-' + this.manufacturing.month + ((this.manufacturing.date === null || this.manufacturing.date === '') ? '' : '-' + this.manufacturing.date)
-        let parameter = {
-          payload: this.newData.payload,
-          payload_value: this.newData.payload_value,
-          product_id: this.params
-        }
         $('#loading').css({'display': 'block'})
         this.APIRequest('product_traces/create', this.newData).then(response => {
           $('#loading').css({'display': 'none'})
-          this.APIRequest('product_attributes/create', parameter).then(response => {
-            if(response.data > 0){
-              this.newData.payload_value = null
-              this.newData.payload = null
-              this.errorMessage = null
-            }
-          })
           this.newData = {
             batch_number: null,
             manufacturing_date: null,
             qty: 1,
             product_id: null,
             account_id: null,
+            product_attribute_id: null,
             inventory_type: COMMON.ecommerce.inventoryType
           }
           this.manufacturing = {
@@ -251,7 +232,8 @@ export default {
       }
     },
     validate(){
-      if(this.newData.batch_number === null || this.manufacturing.date === null || this.manufacturing.month === null || this.manufacturing.year === null || this.newData.payload <= 0 || this.newData.payload_value === null){
+      console.log(this.newData)
+      if(this.newData.batch_number === null || this.manufacturing.date === null || this.manufacturing.month === null || this.manufacturing.year === null || this.newData.product_attribute_id === null){
         this.errorMessage = 'All fields are required'
         return false
       }
