@@ -36,7 +36,7 @@
              <button class="btn btn-warning" title="Total active trace in bundled">{{item.qty_in_bundled}}</button>
           </td>
           <td v-if="user.type !== 'MANUFACTURER'">
-             <button class="btn btn-primary" title="Total active trace">{{user.type === 'USER' && item.inventory ? parseInt(item.inventory.qty[0].total_remaining_product).toFixed(2) : parseInt(item.qty)}}</button>
+             <button class="btn btn-primary" title="Total active trace">{{user.type === "DISTRIBUTOR" ? parseInt(item.qty) : item.qty}}</button>
              <button class="btn btn-warning" title="Total active trace in bundled">{{item.qty_in_bundled}}</button>
           </td>
           <td v-if="user.type === 'MANUFACTURER'">
@@ -70,7 +70,7 @@
           </td>
           <td>{{item.tags}}</td>
           <td>
-             <button class="btn btn-primary" @click="redirect('/traces/' + item.code)" title="Total active trace">{{user.type === 'USER' ? parseFloat(item.qty).toFixed(2) : parseInt(item.qty)}}</button>
+             <button class="btn btn-primary" @click="redirect('/traces/' + item.code)" title="Total active trace">{{parseFloat(item.qty).toFixed(2)}}</button>
              <button class="btn btn-warning" title="Total active trace in bundled">{{item.qty_in_bundled}}</button>
           </td>
           <td>
