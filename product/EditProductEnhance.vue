@@ -31,7 +31,7 @@
           <br>
           <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here...">
         </div>
-        <div v-if="common.ecommerce.productUnits !== null">
+        <!-- <div v-if="common.ecommerce.productUnits !== null">
           <div v-if="data.variation !== null">
             <div class="product-item-title" style="width: 79%; margin-right: 1%;">
               <label>Volume</label>
@@ -60,7 +60,7 @@
               </select>
             </div>
           </div>
-        </div>
+        </div> -->
         <div class="product-item-title">
           <label>Status</label>
           <br>
@@ -315,7 +315,7 @@ export default {
           title: 'Inventory',
           flag: true
         }, {title: 'Other Details',
-          flag: false}] : COMMON.ecommerce.editProductMenu
+          flag: false}, {title: 'Variation', flag: false}] : COMMON.ecommerce.editProductMenu
       }
     }
   },
