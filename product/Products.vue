@@ -72,7 +72,7 @@
           </td>
           <td>{{item.tags}}</td>
           <td>
-             <button class="btn btn-primary" @click="redirect('/traces/' + item.code)" title="Total active trace">{{user.type === 'USER' ? parseFloat(item.qty).toFixed(2) : parseInt(item.qty)}}</button>
+             <button class="btn btn-primary" @click="redirect('/traces/' + item.code)" title="Total active trace">{{parseFloat(item.qty)}}</button>
              <button class="btn btn-warning" title="Total active trace in bundled">{{item.qty_in_bundled}}</button>
           </td>
           <td>
