@@ -345,7 +345,7 @@ export default {
       }
     },
     addActive(){
-      if(this.active.active_name === null || this.active.value === null || this.active.attribute === null){
+      if(this.active.active_name === null || (this.active.value === null || this.active.value <= 0) || this.active.attribute === null){
         this.errorMessage = 'Empty fields cannot be added'
         return
       }
@@ -423,9 +423,20 @@ export default {
         console.log(response.data)
         if(response.data.length > 0){
           this.data = response.data[0]
-          this.actives = this.data.details.active
-          this.listGroup = this.data.details.group != null ? this.data.details.group : []
-          console.log(this.actives)
+          let group = {
+            group: null
+          }
+          if(Array.isArray(this.data.details.group)){
+            this.listGroup = this.data.details.group != null ? this.data.details.group : []
+          }else{
+            group.group = this.data.details.group
+            this.listGroup.push(group)
+          }
+          if(Array.isArray(this.data.details.active)){
+            this.actives = this.data.details.active
+          }else{
+            this.actives.push(this.data.details.active)
+          }
           this.tagChecker(this.data)
         }
       })
