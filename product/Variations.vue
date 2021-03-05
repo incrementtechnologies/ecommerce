@@ -4,8 +4,11 @@
     <div class="form-group">
       <label for="exampleInputEmail1" style="font-weight: 600;">Variations</label>
       <div>
-        <select class="form-control form-control-custom"  style="float: left; width: 40%;" v-model="newAttribute.payload">
+        <select class="form-control form-control-custom"  style="float: left; width: 40%;" v-model="newAttribute.payload" v-if="item.variation === null">
             <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
+        </select>
+        <select class="form-control form-control-custom"  style="float: left; width: 40%;" v-model="newAttribute.payload" v-else>
+            <option :value="item.variation[0].payload">{{item.variation[0].payload}}</option>
         </select>
         <input type="text" class="form-control form-control-custom" style="float: left; width: 40%; margin-left: 10px;" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup.enter="create()">
         <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="create()"><i class="fa fa-plus"></i></button>
