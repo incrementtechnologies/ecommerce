@@ -64,13 +64,17 @@
             <div class="product-row" v-if="data.merchant !== null">
               <span class="product-row-labels">Website: &nbsp;&nbsp;<a :href="data.merchant.website" target="__blank">{{data.merchant.website}}</a></span>
             </div>
-            <div class="product-row" v-if="data.details.active.active_name !== null">
-              <label class="product-row-labels">Active:</label>
-              <label>&nbsp;&nbsp;&nbsp;{{data.details.active.active_name}}({{data.details.active.value}} {{data.details.active.value}})</label>
+            <div class="product-row" v-if="active.length > 0">
+              <label class="product-row-labels">Active/s:</label>
+              <label v-for="(active, index) in active" :key="index">&nbsp;&nbsp;&nbsp;{{active.active_name}},</label>
             </div>
             <div class="product-row" v-if="data.details.shelf_life !== null">
               <label class="product-row-labels">Shelf Life:</label>
               <label>&nbsp;&nbsp;&nbsp;{{data.details.shelf_life}}</label>
+            </div>
+             <div class="product-row" v-if="groups.length > 0">
+              <label class="product-row-labels">Group/s:</label>
+              <label v-for="(group, index) in groups" :key="index">&nbsp;&nbsp;&nbsp;{{group.group}},</label>
             </div>
           </div>
           <div class="col-sm-6">
@@ -121,8 +125,9 @@
           <div class="col-sm-3">
             <label>Label</label>
           </div>
-          <div class="col-sm-3">
-            <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.label.title !== null ? 'color: #cae166' : 'color: red'"></i>
+          <div class="col-sm-3" >
+            <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.label.title !== null ? 'color: #cae166' : 'color: red'" @click="download('data1')"></i>
+            <a :href="config.BACKEND_URL + data.details.files.label.url" id="data1" target="__blank"></a>
           </div>
           <div class="col-sm-3">
             <label>{{data.details.files.label.title}}</label>
@@ -133,7 +138,8 @@
             <label>SDS</label>
           </div>
           <div class="col-sm-3">
-            <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.sds.title !== null ? 'color: #cae166' : 'color: red'"></i>
+            <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.sds.title !== null ? 'color: #cae166' : 'color: red'" @click="download('data2')"></i>
+            <a :href="config.BACKEND_URL + data.details.files.sds.url" id="data2" target="__blank"></a>
           </div>
           <div class="col-sm-3">
             <label>{{data.details.files.sds.title}}</label>
@@ -149,6 +155,7 @@
 <style scoped>
   #icon{
     font-size: 30px;
+    cursor: pointer;
   }
   .title{
     width: 100%;
@@ -399,7 +406,9 @@ export default {
       activeSize: null,
       activeColor: null,
       currency: CURRENCY,
-      productCode: null
+      productCode: null,
+      groups: [],
+      active: []
     }
   },
   components: {
@@ -412,6 +421,9 @@ export default {
     },
     redirectBack(){
       ROUTER.go(-1)
+    },
+    download(id){
+      $(`#${id}`)[0].click()
     },
     selectMenu(index){
       if(this.prevMenuIndex !== index){
@@ -455,6 +467,20 @@ export default {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
           this.data = response.data[0]
+          let group = {
+            group: null
+          }
+          if(Array.isArray(this.data.details.active)){
+            this.active = this.data.details.active
+          }else{
+            this.active.push(this.data.details.active)
+          }
+          if(Array.isArray(this.data.details.group)){
+            this.groups = this.data.details.group
+          }else{
+            group.group = this.data.details.group
+            this.groups.push(group)
+          }
         }
       })
     }

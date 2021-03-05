@@ -8,11 +8,11 @@
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']">
     </filter-product>
-    <div style="margin-bottom: 10px;width: 100%; float: left;">
+    <!-- <div style="margin-bottom: 10px;width: 100%; float: left;">
       <button class="btn btn-primary" @click="filterBy('bundled')" :class="{'btn-warning': activePageNow === 'bundled'}">Bundled</button>
       <button class="btn btn-primary" @click="filterBy('regular')" :class="{'btn-warning': activePageNow === 'regular'}">Regular</button>
       <button class="btn btn-primary" @click="filterBy('all')" :class="{'btn-warning': activePageNow === 'all'}">All</button>
-    </div>
+    </div> -->
     <div class="products-holder" v-for="item, index in data" @click="redirect('/product/edit/' + item.code)" v-if="listStyle === 'columns' && data !== null">
       <div class="products-image">
         <img :src="config.BACKEND_URL + item.featured[0].url" v-if="item.featured !== null">
@@ -65,9 +65,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in data" :key="index">
+        <tr v-for="(item, index) in data" :key="index" v-if="item.type !== 'bundled'">
           <td>
-            <i class="fas fa-clone text-primary" v-if="item.type !== 'regular'" title="This is a bundled product"></i>
+            <i class="fas fa-clone text-primary" v-if="item.type === 'bundled'" title="This is a bundled product"></i>
             {{item.title}}
           </td>
           <td>{{item.tags}}</td>
