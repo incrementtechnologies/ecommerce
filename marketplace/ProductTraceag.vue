@@ -64,7 +64,7 @@
             <div class="product-row" v-if="data.merchant !== null">
               <span class="product-row-labels">Website: &nbsp;&nbsp;<a :href="data.merchant.website" target="__blank">{{data.merchant.website}}</a></span>
             </div>
-            <div class="product-row" v-if="active.length > 0">
+            <div class="product-row" v-if="active[0].active_name !== null">
               <label class="product-row-labels">Active/s:</label>
               <label v-for="(active, index) in active" :key="index">&nbsp;&nbsp;&nbsp;{{active.active_name}},</label>
             </div>

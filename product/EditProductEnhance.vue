@@ -116,7 +116,7 @@
               <button class="btn btn-primary" @click="addActive"><i class="fa fa-plus"></i></button>
             </div>
             <div class="table-responsive">
-            <table class="table table-hover table-bordered table-sm w-50 " v-if="actives === null || actives.length > 0">
+            <table class="table table-hover table-bordered table-sm w-50 " v-if="actives[0].active_name !== null">
               <thead>
                   <tr>
                     <td>Active Constituent</td>
