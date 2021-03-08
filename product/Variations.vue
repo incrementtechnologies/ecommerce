@@ -21,11 +21,18 @@
         <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="update(itemVariation)">
           <i class="fa fa-sync"></i>
         </button>
-        <button class="btn btn-danger form-control-custom" style="margin-left: 10px;" @click="deleteItem(itemVariation)">
+        <button class="btn btn-danger form-control-custom" style="margin-left: 10px;" @click="deleteConfirm(itemVariation)">
           <i class="fa fa-trash"></i>
         </button>
       </div>
     </div>
+    <Confirmation
+        :title="'Confirmation Modal'"
+        :message="'Are you sure you want to delete this variation?'"
+        ref="confirmDelete"
+        @onConfirm="deleteItem($event)"
+        >
+    </Confirmation>
   </div>
 </template>
 <style scoped>
@@ -69,6 +76,7 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
 import axios from 'axios'
+import Confirmation from 'src/components/increment/generic/modal/Confirmation.vue'
 export default {
   mounted(){
   },
@@ -79,6 +87,7 @@ export default {
       config: CONFIG,
       common: COMMON,
       errorMessage: null,
+      deletedId: null,
       newAttribute: {
         product_id: this.item.id,
         payload: null,
@@ -86,12 +95,31 @@ export default {
       }
     }
   },
+  components: {
+    Confirmation
+  },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
     },
+    payloadValueExit(newValue){
+      console.log(this.item)
+      this.item.variation.map(el => {
+        if(parseInt(newValue) === parseInt(el.payload_value)){
+          this.errorMessage = 'Value is already existed in the list'
+          return true
+        }else{
+          this.errorMessage = null
+          return false
+        }
+      })
+    },
     create(){
       if(this.newAttribute.payload_value !== null && this.newAttribute.payload_value !== ''){
+        this.payloadValueExit(this.newAttribute.payload_value)
+        if(this.errorMessage !== null){
+          return
+        }
         this.APIRequest('product_attributes/create', this.newAttribute).then(response => {
           if(response.data > 0){
             this.newAttribute.payload_value = null
@@ -103,10 +131,13 @@ export default {
         this.errorMessage = 'Fill up the required fields.'
       }
     },
-    deleteItem(item){
-      console.log(item)
+    deleteConfirm(item){
+      this.deletedId = item
+      $('#connectionError').modal('show')
+    },
+    deleteItem(){
       let parameter = {
-        id: item.id
+        id: this.deletedId
       }
       this.APIRequest('product_attributes/delete', parameter).then(response => {
         this.$parent.retrieve()
