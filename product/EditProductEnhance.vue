@@ -231,10 +231,10 @@
       <div class="details-holder" v-if="selectedMenu.title === 'Price'">
         <prices :item="data"></prices>
       </div>
-      <div class="details-holder" v-if="selectedMenu.title === 'Inventory'">
+      <!-- <div class="details-holder" v-if="selectedMenu.title === 'Inventory'">
         <inventories :item="data" v-if="common.ecommerce.inventoryType === 'inventory'"></inventories>
         <product-trace v-if="common.ecommerce.inventoryType === 'product_trace'" :item="data"></product-trace>
-      </div>
+      </div> -->
       <div class="details-holder" v-if="selectedMenu.title === 'Comment'">
         <product-comments :payloadValue="data.id" :payload="'product'" :load="true"></product-comments>
       </div>
@@ -311,10 +311,7 @@ export default {
   computed: {
     productMenu: function (){
       if(this.data !== null){
-        return (this.data.type === 'regular') ? [{
-          title: 'Inventory',
-          flag: true
-        }, {title: 'Other Details',
+        return (this.data.type === 'regular') ? [{title: 'Other Details',
           flag: false}, {title: 'Variation', flag: false}] : COMMON.ecommerce.editProductMenu
       }
     }
