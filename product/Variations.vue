@@ -11,7 +11,7 @@
             <option :value="item.variation[0].payload">{{item.variation[0].payload}}</option>
         </select>
         <input type="text" class="form-control form-control-custom" style="float: left; width: 40%; margin-left: 10px;" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup.enter="create()">
-        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="create()"><i class="fa fa-plus"></i></button>
+        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="confirmAdd()"><i class="fa fa-plus"></i></button>
       </div>
     </div>
     <div class="variations-content" v-if="item.variation !== null">
@@ -29,9 +29,9 @@
     </div>
     <Confirmation
         :title="'Confirmation Modal'"
-        :message="'Are you sure you want to delete this variation?'"
+        :message="'Are you sure you want to add this variation?'"
         ref="confirmDelete"
-        @onConfirm="deleteItem($event)"
+        @onConfirm="create($event)"
         >
     </Confirmation>
     <create-modal :property="createProductTraceModal"></create-modal>
@@ -152,17 +152,8 @@ export default {
         this.errorMessage = 'Fill up the required fields.'
       }
     },
-    deleteConfirm(item){
-      this.deletedId = item
+    confirmAdd(){
       $('#connectionError').modal('show')
-    },
-    deleteItem(){
-      let parameter = {
-        id: this.deletedId
-      }
-      this.APIRequest('product_attributes/delete', parameter).then(response => {
-        this.$parent.retrieve()
-      })
     },
     update(item){
       if(item.payload_value !== null && item.payload_value !== ''){
