@@ -24,7 +24,7 @@
         <div class="product-item-title">
           <label>Tags</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.tags" placeholder="Separate tags with ,">
+          <input type="text" class="form-control form-control-custom" @change="tagChecker($event)" v-model="data.tags" placeholder="Separate tags with , (add tags in order to add groups)">
         </div>
         <div class="product-item-title">
           <label>SKU</label>
@@ -87,12 +87,12 @@
                     <td>Action</td>
                   </tr>
               </thead>
-              <tbody>
+              <!-- <tbody>
                 <tr v-for="(group, index) in listGroup" :key="index">
                   <td>{{group.group}}</td>
                   <td><button class="btn" @click="removeGroup(index)" style="width:20%; background-color: transparent"><i class="fa fa-trash" style="color: red"></i></button></td>
                 </tr>
-              </tbody>
+              </tbody> -->
           </table>
           </div>
         <div class="product-item-title" style="width: 48%; margin-right: 1%;">
@@ -430,7 +430,8 @@ export default {
             this.listGroup = this.data.details.group != null ? this.data.details.group : []
           }else{
             group.group = this.data.details.group
-            this.listGroup.push(group)
+            group.group !== null ? this.listGroup.push(group) : this.listGroup = []
+            // this.listGroup.push(group.group !== null ? group : null)
           }
           if(Array.isArray(this.data.details.active)){
             this.actives = this.data.details.active
@@ -452,14 +453,31 @@ export default {
       })
     },
     tagChecker(data){
-      if(data.tags.includes('insecticide')){
-        this.groups = GROUP.INSECTICIDE
-      }else if(data.tags.includes('herbicide')){
-        this.groups = GROUP.HERBICIDE
-      }else if(data.tags.includes('fungicide')){
-        this.groups = GROUP.FUNGICIDE
+      console.log(data.tags)
+      if(data.tags !== undefined){
+        if(data.tags.includes('insecticide')){
+          this.groups = GROUP.INSECTICIDE
+        }else if(data.tags.includes('herbicide')){
+          this.groups = GROUP.HERBICIDE
+        }else if(data.tags.includes('fungicide')){
+          this.groups = GROUP.FUNGICIDE
+        }else if(data.target.value.includes('adjuvant')){
+          this.groups = GROUP.ADJUVANT
+        }else{
+          this.groups = []
+        }
       }else{
-        this.groups = GROUP.ADJUVANT
+        if(data.target.value.includes('insecticide')){
+          this.groups = GROUP.INSECTICIDE
+        }else if(data.target.value.includes('herbicide')){
+          this.groups = GROUP.HERBICIDE
+        }else if(data.target.value.includes('fungicide')){
+          this.groups = GROUP.FUNGICIDE
+        }else if(data.target.value.includes('adjuvant')){
+          this.groups = GROUP.ADJUVANT
+        }else{
+          this.groups = []
+        }
       }
     },
     validate(){
@@ -479,17 +497,6 @@ export default {
       if(parseInt(this.data.details.active.value) <= 0 || parseInt(this.data.details.shelf_life) <= 0){
         this.errorMessage = 'Fields should be greater than 0'
         return false
-      }
-      if(this.data.variation !== null){
-        if(this.data.variation[0].payload === '' || this.data.variation[0].payload === null){
-          this.errorMessage = 'Unit is required'
-          return false
-        }
-      }else{
-        if(this.newAttribute.payload === '' || this.newAttribute.payload === null){
-          this.errorMessage = 'Unit is required'
-          return false
-        }
       }
       return true
     },

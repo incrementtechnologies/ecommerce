@@ -233,8 +233,12 @@ export default {
     },
     validate(){
       console.log(this.newData)
-      if(this.newData.batch_number === null || this.manufacturing.date === null || this.manufacturing.month === null || this.manufacturing.year === null || this.newData.product_attribute_id === null){
+      if(this.newData.batch_number === null || this.manufacturing.date === null || this.manufacturing.month === null || this.manufacturing.year === null){
         this.errorMessage = 'All fields are required'
+        return false
+      }
+      if(this.newData.product_attribute_id === null || this.variations === null){
+        this.errorMessage = 'Please add your product variation'
         return false
       }
       if(this.newData.batch_number === '' || this.newData.batch_number === null){
