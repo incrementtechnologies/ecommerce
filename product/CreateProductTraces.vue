@@ -16,12 +16,13 @@
             <br v-if="errorMessage !== null">
             <br>
             <div class="row" v-if="variations !== null">
-              <div class="col-sm-12">
+              <div class="col-sm-12"> 
                 <label>Variations</label>
                 <br>
-                <select class="form-control form-control-custom" v-model="newData.product_attribute_id">
+                <input type="text" class="form-control" :placeholder="`${variations.payload}-${variations.payload_value}`" disabled>
+                <!-- <select class="form-control form-control-custom" v-model="newData.product_attribute_id">
                   <option v-for="(item, index) in variations" :value="item.id">{{item.payload_value}} - {{item.payload}}</option>
-                </select>
+                </select> -->
               </div>
             </div><br>
             <div class="form-group">
@@ -208,6 +209,7 @@ export default {
         this.errorMessage = null
         this.newData.product_id = this.params
         this.newData.account_id = this.user.userID
+        this.newData.product_attribute_id = this.variations.id
         this.newData.manufacturing_date = this.manufacturing.year + '-' + this.manufacturing.month + ((this.manufacturing.date === null || this.manufacturing.date === '') ? '' : '-' + this.manufacturing.date)
         $('#loading').css({'display': 'block'})
         this.APIRequest('product_traces/create', this.newData).then(response => {

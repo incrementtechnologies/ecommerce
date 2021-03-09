@@ -3,7 +3,7 @@
     <div class="error text-danger" v-if="errorMessage !== null">{{errorMessage}}</div>
     <div class="form-group">
       <label for="exampleInputEmail1" style="font-weight: 600;">Variations</label>
-      <div>
+      <div><br>
         <select class="form-control form-control-custom"  style="float: left; width: 40%;" v-model="newAttribute.payload" v-if="item.variation === null">
             <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
         </select>
@@ -16,14 +16,15 @@
     </div>
     <div class="variations-content" v-if="item.variation !== null">
       <div class="attribute-item" v-for="itemVariation, indexVariation in item.variation">
-        <input class="form-control form-control-custom" style="width: 40%; float: left; margin-right: 10px;" v-model="itemVariation.payload" placeholder="Type variation here...">
-        <input type="text" class="form-control form-control-custom" style="float: left; width: 35%;" placeholder="Type variation value here..." v-model="itemVariation.payload_value" @keyup.enter="update(itemVariation)">
+        <input class="form-control form-control-custom" style="width: 40%; float: left; margin-right: 10px;" v-model="itemVariation.payload" placeholder="Type variation here..." disabled>
+        <input type="text" class="form-control form-control-custom" style="float: left; width: 35%;" placeholder="Type variation value here..." v-model="itemVariation.payload_value" @keyup.enter="update(itemVariation)" disabled>
         <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="update(itemVariation)">
           <i class="fa fa-sync"></i>
         </button>
-        <button class="btn btn-danger form-control-custom" style="margin-left: 10px;" @click="deleteConfirm(itemVariation)">
+        <!-- <button class="btn btn-danger form-control-custom" style="margin-left: 10px;" @click="deleteConfirm(itemVariation)">
           <i class="fa fa-trash"></i>
-        </button>
+        </button> -->
+        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="addTraces(itemVariation)" title="Add Inventory">Inventory</button>
       </div>
     </div>
     <Confirmation
@@ -33,6 +34,8 @@
         @onConfirm="deleteItem($event)"
         >
     </Confirmation>
+    <create-modal :property="createProductTraceModal"></create-modal>
+    <create-product-traces-modal ref="addTrace" :params="productId" :variations="selectedVariation"></create-product-traces-modal>
   </div>
 </template>
 <style scoped>
@@ -76,6 +79,7 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
 import axios from 'axios'
+import ProductTrace from './CreateProductTrace.js'
 import Confirmation from 'src/components/increment/generic/modal/Confirmation.vue'
 export default {
   mounted(){
@@ -92,15 +96,30 @@ export default {
         product_id: this.item.id,
         payload: null,
         payload_value: null
-      }
+      },
+      createProductTraceModal: ProductTrace,
+      productId: this.item.id,
+      selectedVariation: null
     }
   },
   components: {
-    Confirmation
+    Confirmation,
+    'create-modal': require('components/increment/generic/modal/Modal.vue'),
+    'create-product-traces-modal': require('./CreateProductTraces.vue')
   },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    addTraces(variation){
+      console.log(variation)
+      console.log(this.$refs.addTrace)
+      // this.$refs.addTrace.errorMessage = null
+      this.productId = this.item.id
+      this.selectedVariation = variation
+      setTimeout(() => {
+        $('#createProductTracesModal').modal('show')
+      }, 100)
     },
     payloadValueExit(newValue){
       console.log(this.item)
