@@ -104,15 +104,17 @@ export default {
     },
     payloadValueExit(newValue){
       console.log(this.item)
-      this.item.variation.map(el => {
-        if(parseInt(newValue) === parseInt(el.payload_value)){
-          this.errorMessage = 'Value is already existed in the list'
-          return true
-        }else{
-          this.errorMessage = null
-          return false
-        }
-      })
+      if(this.item.variation !== null){
+        this.item.variation.map(el => {
+          if(parseInt(newValue) === parseInt(el.payload_value)){
+            this.errorMessage = 'Value is already existed in the list'
+            return true
+          }else{
+            this.errorMessage = null
+            return false
+          }
+        })
+      }
     },
     create(){
       if(this.newAttribute.payload_value !== null && this.newAttribute.payload_value !== ''){
