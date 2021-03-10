@@ -7,24 +7,27 @@
         <select class="form-control form-control-custom"  style="float: left; width: 40%;" v-model="newAttribute.payload" v-if="item.variation === null">
             <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
         </select>
-        <select class="form-control form-control-custom"  style="float: left; width: 40%;" v-model="newAttribute.payload" v-else>
-            <option :value="item.variation[0].payload">{{item.variation[0].payload}}</option>
-        </select>
-        <input type="text" class="form-control form-control-custom" style="float: left; width: 40%; margin-left: 10px;" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup.enter="create()">
-        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="confirmAdd()"><i class="fa fa-plus"></i></button>
+        <input class="form-control form-control-custom"  style="float: left; width: 40%;" :placeholder="`${item.title}(${item.variation[0].payload})`" v-else disabled>
+        <input type="number" class="form-control form-control-custom" style="float: left; width: 40%; margin-left: 10px;" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup.enter="create()" :disabled="isEdit===false">
+        <i class="fa fa-check mt-2" style="color: #cae166; font-size: 30px;" v-if="newAttribute.payload_value !== null && newAttribute.payload_value !== ''"></i>
+        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="confirmAdd()" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
       </div>
     </div>
     <div class="variations-content" v-if="item.variation !== null">
       <div class="attribute-item" v-for="itemVariation, indexVariation in item.variation">
-        <input class="form-control form-control-custom" style="width: 40%; float: left; margin-right: 10px;" v-model="itemVariation.payload" placeholder="Type variation here..." disabled>
+        <input class="form-control form-control-custom" style="width: 40%; float: left; margin-right: 10px;" :placeholder="`${item.title}(${itemVariation.payload})`" disabled>
         <input type="text" class="form-control form-control-custom" style="float: left; width: 35%;" placeholder="Type variation value here..." v-model="itemVariation.payload_value" @keyup.enter="update(itemVariation)" disabled>
-        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="update(itemVariation)">
-          <i class="fa fa-sync"></i>
+         <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" disabled>
+          {{itemVariation.product_trace_qty}}
         </button>
+        <!--  @click="redirect('/traces/' + itemVariation.id + '/' + item.code)" -->
+        <!-- <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="update(itemVariation)">
+          <i class="fa fa-sync"></i>
+        </button> -->
+        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="addTraces(itemVariation)" title="Add Inventory" :disabled="isEdit===false">Inventory</button>
         <!-- <button class="btn btn-danger form-control-custom" style="margin-left: 10px;" @click="deleteConfirm(itemVariation)">
           <i class="fa fa-trash"></i>
         </button> -->
-        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="addTraces(itemVariation)" title="Add Inventory">Inventory</button>
       </div>
     </div>
     <Confirmation
@@ -84,7 +87,7 @@ import Confirmation from 'src/components/increment/generic/modal/Confirmation.vu
 export default {
   mounted(){
   },
-  props: ['item'],
+  props: ['item', 'isEdit'],
   data(){
     return {
       user: AUTH.user,
