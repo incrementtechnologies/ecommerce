@@ -285,6 +285,7 @@ export default {
           column: 'status'
         }],
         code: this.$route.params.code,
+        product_attribute_id: this.$route.params.product_attribute_id,
         sort: sort
       }
       $('#loading').css({'display': 'block'})

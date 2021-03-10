@@ -12,12 +12,12 @@
           </div>
           <div class="col-sm-3" v-else>
               <i class="fa fa-file-pdf-o" :style="file1 === null || errorMessage !== null ? 'color: red' : 'color: #cae166'" @click="showInput('file1')"></i>
-              <input type="file" name="" id="file1" hidden @change="getFile1($event, 'file1')">
+              <input type="file" name="" id="file1" hidden @change="getFile1($event, 'file1')" :disabled="isEditing===false">
           </div>
           <div class="col-sm-3">
               <p>{{item.details.files.label.url !== null && isEdit === false ? item.details.files.label.title : filetitle1}}</p>
           </div>
-          <div class="col-sm-3">
+          <div class="col-sm-3" v-if="isEditing===false">
               <div>
                 <i :class="file1 === null ? null : 'fa fa-check'" v-if="errorMessage === null"></i>
                 <i :class="errorMessage === null ? null : 'fa fa-close'" style="color:red" v-else></i>
@@ -27,7 +27,6 @@
                 <i :class="isEdit === true && file1 !== null ? null : 'fa fa-close'" style="color:red" @click="editFile()" v-else></i>
               </div>
               <div>
-
               </div>
           </div>
       </div>
@@ -42,12 +41,12 @@
           </div>
           <div class="col-sm-3" v-else>
               <i class="fa fa-file-pdf-o" :style="file2 === null || errorMessage !== null ? 'color: red' : 'color: #cae166'" @click="showInput('file2')"></i>
-              <input type="file" name="" id="file2" hidden @change="getFile2($event, 'file2')">
+              <input type="file" name="" id="file2" hidden @change="getFile2($event, 'file2')" :disabled="isEditing===false">
           </div>
           <div class="col-sm-3">
               <p>{{item.details.files.sds.url !== null && isEdit2 === false ? item.details.files.sds.title : filetitle2}}</p>
           </div>
-         <div class="col-sm-3">
+         <div class="col-sm-3" v-if="isEditing===false">
               <div>
                 <i :class="file2 === null ? null : 'fa fa-check'" v-if="errorMessage === null"></i>
                 <i :class="errorMessage === null ? null : 'fa fa-close'" style="color:red" v-else></i>
@@ -71,7 +70,7 @@ import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
 import axios from 'axios'
 export default {
-  props: ['item'],
+  props: ['item', 'isEditing'],
   data: () => ({
     file1: null,
     file2: null,

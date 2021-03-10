@@ -8,6 +8,7 @@
     </div>
     <div class="product-item-holder">
       <div class="product-item-details">
+      <button class="btn btn-primary" style="float:right" @click="isEdit = true" v-if="isEdit === false">Edit</button>
         <div v-if="errorMessage !== null">
           <label class="text-danger">Opps! {{errorMessage}}</label>
         </div>
@@ -19,17 +20,17 @@
         <div class="product-item-title">
           <label>Description <label class="text-danger">*</label></label>
           <br>
-          <textarea class="form-control" rows="20" v-model="data.description" placeholder="Type product description here..."></textarea>
+          <textarea class="form-control" rows="20" v-model="data.description" placeholder="Type product description here..." :disabled="isEdit===false"></textarea>
         </div>
         <div class="product-item-title">
           <label>Tags</label>
           <br>
-          <input type="text" class="form-control form-control-custom" @change="tagChecker($event)" v-model="data.tags" placeholder="Separate tags with , (add tags in order to add groups)">
+          <input type="text" class="form-control form-control-custom" @change="tagChecker($event)" v-model="data.tags" placeholder="Separate tags with , (add tags in order to add groups)" :disabled="isEdit===false">
         </div>
         <div class="product-item-title">
           <label>SKU</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here...">
+          <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here..." :disabled="isEdit===false">
         </div>
         <!-- <div v-if="common.ecommerce.productUnits !== null">
           <div v-if="data.variation !== null">
@@ -64,7 +65,7 @@
         <div class="product-item-title">
           <label>Status</label>
           <br>
-          <select class="form-control form-control-custom" v-model="data.status">
+          <select class="form-control form-control-custom" v-model="data.status" :disabled="isEdit===false">
             <option value="pending">Pending</option>
             <option value="published">Published</option>
           </select>
@@ -72,12 +73,12 @@
         <div class="product-item-title" style="width: 90%">
           <label>Activity Group</label>
           <br>
-          <select class="form-control form-control-custom"  v-model="group">
+          <select class="form-control form-control-custom"  v-model="group" :disabled="isEdit===false">
             <option v-for="(group, index) in groups" :key="index" :value="group">{{group}}</option>
           </select>
         </div>
         <div class="product-item-title pl-4" style="width: 10%; margin-top: 5.5%;">
-              <button class="btn btn-primary" @click="addGroup"><i class="fa fa-plus"></i></button>
+              <button class="btn btn-primary" @click="addGroup" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
         </div>
         <div class="table-responsive">
           <table class="table table-hover table-bordered table-sm w-50" v-if="listGroup.length > 0">
@@ -98,22 +99,22 @@
         <div class="product-item-title" style="width: 48%; margin-right: 1%;">
               <label>Actives</label>
               <br>
-              <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents">
+              <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents" :disabled="isEdit===false">
             </div>
             <div class="product-item-title" style="width: 20%; margin-right: 1%; margin-top: 2.5%;">
               <label></label>
               <br>
-              <input type="number" class="form-control form-control-custom" v-model="active.value" placeholder="value">
+              <input type="number" class="form-control form-control-custom" v-model="active.value" placeholder="value" :disabled="isEdit===false">
             </div>
             <div class="product-item-title" style="width: 20%; margin-top: 2.5%;">
               <label></label>
               <br>
-              <select class="form-control form-control-custom" v-model="active.attribute">
+              <select class="form-control form-control-custom" v-model="active.attribute" :disabled="isEdit===false">
                 <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
               </select>
             </div>
             <div class="product-item-title pl-4" style="width: 10%; margin-top: 5.5%;">
-              <button class="btn btn-primary" @click="addActive"><i class="fa fa-plus"></i></button>
+              <button class="btn btn-primary" @click="addActive" :disabled="isEdit===false"><i class="fa fa-plus" ></i></button>
             </div>
             <div class="table-responsive">
             <table class="table table-hover table-bordered table-sm w-50 " v-if="actives[0].active_name !== null">
@@ -138,22 +139,22 @@
         <div class="product-item-title">
           <label>Solvent (if applicable)</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.solvent" placeholder="Solvent">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.solvent" placeholder="Solvent" :disabled="isEdit===false">
         </div>
          <div class="product-item-title">
           <label>Other scheduled ingredients</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.other_ingredient" placeholder="Other ingredients">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.other_ingredient" placeholder="Other ingredients" :disabled="isEdit===false">
         </div>
          <div class="product-item-title">
           <label>Mixing Order</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.mixing_order" placeholder="Type product sku here...">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.mixing_order" placeholder="Type product sku here..." :disabled="isEdit===false">
         </div>
         <div class="product-item-title">
           <label>Formulation</label>
           <br>
-          <select class="form-control form-control-custom" v-model="data.details.formulation">
+          <select class="form-control form-control-custom" v-model="data.details.formulation" :disabled="isEdit===false">
             <option v-for="(formulation, index) in formulations.FORMULATION" :key="index" :value="formulation">{{formulation}}</option>
           </select>
         </div>
@@ -163,39 +164,39 @@
           <div class="form-check">
             
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment1" value="Cotton overalls buttoned to neck and wrist"><span>Cotton overalls buttoned to neck and wrist</span>
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment1" value="Cotton overalls buttoned to neck and wrist" :disabled="isEdit===false"><span>Cotton overalls buttoned to neck and wrist</span>
             </label>
           </div>
           <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment2" value="A Washable hat "><span>A Washable hat</span> 
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment2" value="A Washable hat " :disabled="isEdit===false"><span>A Washable hat</span> 
             </label>
           </div>
           <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Elbow-lenght PVC gloves"><span>Elbow-lengTH PVC gloves</span>  
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Elbow-lenght PVC gloves" :disabled="isEdit===false"><span>Elbow-lengTH PVC gloves</span>  
             </label>
           </div>
            <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Face shield or googles"><span>Face shield or googles</span>  
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Face shield or googles" :disabled="isEdit===false"><span>Face shield or googles</span>  
             </label>
           </div>
            <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Half facepiece respirator or disposable respirator"><span>Half facepiece respirator or disposable respirator</span>  
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Half facepiece respirator or disposable respirator" :disabled="isEdit===false"><span>Half facepiece respirator or disposable respirator</span>  
             </label>
           </div>
            <div class="form-check">
             <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Full respirator"><span>Full respirator</span>  
+              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Full respirator" :disabled="isEdit===false"><span>Full respirator</span>  
             </label>
           </div>
         </div>
         <div class="product-item-title" style="width: 79%; margin-right: 1%;">
           <label>Shelf Life</label>
           <br>
-          <input type="number" class="form-control form-control-custom" v-model="data.details.shelf_life" placeholder="Type shelf life">
+          <input type="number" class="form-control form-control-custom" v-model="data.details.shelf_life" placeholder="Type shelf life" :disabled="isEdit===false">
         </div>
         <div class="product-item-title" style="width: 20%; margin-top:2.3%">
           <br>
@@ -204,15 +205,16 @@
          <div class="product-item-title">
           <label>APVMA Approval number</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.approval_number" placeholder="Approval number">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.approval_number" placeholder="Approval number" :disabled="isEdit===false">
         </div>
          <div class="product-item-title">
           <label>APVMA Approval date</label>
           <br>
-          <input type="date" class="form-control form-control-custom" v-model="data.details.approval_date" placeholder="Approval date">
+          <input type="date" class="form-control form-control-custom" v-model="data.details.approval_date" placeholder="Approval date" :disabled="isEdit===false">
         </div>
-        <div class="product-item-title">
+        <div class="product-item-title" v-if="isEdit === true">
           <button class="btn btn-danger" @click="showConfirmationModal(data.id)" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'" style="margin-top: 5px;">Delete</button>
+          <button class="btn btn-danger pull-right" @click="isEdit = false" style="margin-right: 2px; margin-top: 5px;">Cancel</button>
           <button class="btn btn-primary pull-right" @click="updateProduct()" style="margin-right: 2px; margin-top: 5px;">Update</button>
           <button class="btn btn-warning pull-right" @click="redirect('/marketplace/product/' + data.code + '/' + 'preview')" style="margin-right: 10px; margin-top: 5px;">Preview</button>
         </div>
@@ -226,7 +228,7 @@
         </ul>
       </div>
       <div class="details-holder" v-if="selectedMenu.title === 'Variation'">
-        <variations :item="data"></variations>
+        <variations :item="data" :isEdit="isEdit"></variations>
       </div>
       <div class="details-holder" v-if="selectedMenu.title === 'Price'">
         <prices :item="data"></prices>
@@ -244,7 +246,7 @@
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Other Details'">
-        <other-details @file1="getFiles($event, 'file1')" @file2="getFiles($event, 'file2')" v-bind:item="data"></other-details>
+        <other-details @file1="getFiles($event, 'file1')" @file2="getFiles($event, 'file2')" v-bind:item="data" :isEditing="isEdit"></other-details>
       </div>
     </div>
     <browse-images-modal></browse-images-modal>
@@ -261,6 +263,7 @@ import axios from 'axios'
 export default {
   mounted(){
     this.retrieve()
+    this.isEdit = false
   },
   data(){
     return {
@@ -305,14 +308,15 @@ export default {
         attribute: null
       },
       group: null,
-      listGroup: []
+      listGroup: [],
+      isEdit: false
     }
   },
   computed: {
     productMenu: function (){
       if(this.data !== null){
         return (this.data.type === 'regular') ? [{title: 'Other Details',
-          flag: false}, {title: 'Variation', flag: false}] : COMMON.ecommerce.editProductMenu
+          flag: true}, {title: 'Variation', flag: false}] : COMMON.ecommerce.editProductMenu
       }
     }
   },
