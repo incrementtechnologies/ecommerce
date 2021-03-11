@@ -25,7 +25,7 @@
         <div class="product-item-title">
           <label>Tags</label>
           <br>
-          <input type="text" class="form-control form-control-custom" @change="tagChecker($event)" v-model="data.tags" placeholder="Separate tags with , (add tags in order to add groups)" :disabled="isEdit===false">
+          <input type="text" class="form-control form-control-custom" @change="tagChecker($event)" v-model="data.tags" placeholder="Separate tags(e.g. herbicide, insecticide, adjuvant, fungicide) with , (add tags in order to add groups)" :disabled="isEdit===false">
         </div>
         <div class="product-item-title">
           <label>SKU</label>
