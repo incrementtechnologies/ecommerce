@@ -10,7 +10,7 @@
         <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image" v-if="selectedImage === null && data.featured !== null">
         <i class="fa fa-image" v-if="selectedImage === null && data.featured === null"></i>
         <label class="remove-image text-danger" id="featured-image-remove" @click="removeImage(data.featured[0].id)" v-if="selectedImage === null && data.featured !== null">
-          <i class="fa fa-times"></i>
+          <i class="fa fa-times" :hidden="isEditing===false"></i>
         </label>``
        <div class="images-holder">
         <div class="product-row" style="text-align: left !important;">
@@ -24,24 +24,24 @@
           <div class="other-image">
           </div>
            <!-- <div class="row"> -->
-             <div class="scrolling-wrapper d-flex">
-               <div style="height:100px !important;width:100px !important; border:2px solid gray" id="imageCont" @click="addImage()">
+             <div class="scrolling-wrapper d-flex" style="height: 150px">
+               <div style="height:100px !important;width:100px !important; border:2px solid gray" id="imageCont" @click="addImage()" :hidden="isEditing===false">
                  <i class="fa fa-plus plusIcon" style="font-size:40px;padding:10px; vertical-align:middle;margin-top: 20px;margin-right:1%"></i>
                  <input type="file" id="Image" accept="image/*" @change="setUpFileUpload($event)">
                  <!-- <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfTMy2AHYJpPh-4Eojkm_s5QX6_emLxwfZeg&usqp=CAU" style="width:100px;height:100px;border:2px solid black"> -->
                </div>
-              <div  v-for="item in images" :key="item.id" style="height:100px;width:100px" class="imageContainer p-10">
-                  <!-- <i class="fa fa-times class text"></i> -->
+              <div  v-for="item in images" :key="item.id" :group="item" style="height:100px;width:100px" :class="isEditing===false ? null : 'imageContainer p-10'">
                   <img :src="config.BACKEND_URL + item.url" class="image" @click="selectImage(item.url)">
                   <label class="middle"  @click="deleteImage(item.id)" v-if="item.status !== 'featured'">
-                    <i class="fa fa-times-circle text" ></i>
+                    <i class="fa fa-times-circle text" :hidden="isEditing===false"></i>
                   </label>
+                  <p style="position:relative;font-weight:bold" :class="{'ImageLabel': item.url !== data.featured[0].url}"><i class="fa fa-check" style="color: #cae166"></i> Featured</p>
               </div>
              <!-- </div> -->
            </div>
            <div style="float:right">
-            <button class="btn btn-danger" @click="cancel()">Cancel</button>
-            <button class="btn btn-primary" @click="apply()">Apply</button>
+            <button class="btn btn-danger" @click="cancel()" :hidden="isEditing===false">Cancel</button>
+            <button class="btn btn-primary" @click="apply()" :hidden="isEditing===false">Apply</button>
            </div>
         </div>
        </div>
@@ -57,7 +57,7 @@ import Image from '../../generic/modal/Image.vue'
 import axios from 'axios'
 export default {
   components: { Image },
-  props: ['data'],
+  props: ['data', 'isEditing'],
   data: () => ({
     user: AUTH.user,
     config: CONFIG,
@@ -72,6 +72,12 @@ export default {
   }),
   mounted(){
     this.retrieveImage()
+    this.images.map(el => {
+      console.log('true')
+      if(el.id === this.data.featured[0].id){
+        $(`.${el.id}image`).removeAttr('hidden')
+      }
+    })
   },
   methods: {
     addImage(){
@@ -198,6 +204,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+    .ImageLabel{
+      display: none;
+    }
     .row:after {
       content: "";
       display: table;
@@ -237,9 +246,6 @@ export default {
       backface-visibility: hidden;
       opacity: 1;
     }
-    // .imageContainer:hover{
-    //   background: #ffaa81;
-    // }
     .imageContainer .image{
       // margin-left: 20px;
     }
@@ -251,10 +257,16 @@ export default {
     .imageContainer:hover .middle {
       opacity: 1;
     }
+
+    .imageContainer:hover .ImageLabel {
+      opacity: 1;
+      position: absolute;
+      bottom: 50px;
+    }
+
     .text {
       color: red;
       cursor: pointer;
-      // display: none;
       font-size: 20px;
       padding: 16px 32px;
     }
@@ -265,8 +277,6 @@ export default {
     .middle {
       transition: .5s ease;
       opacity: 0;
-      // top: 40%;
-      // left: 50%;
       transform: translate(45%, -220%);
       -ms-transform: translate(-50%, -50%);
       text-align: center;

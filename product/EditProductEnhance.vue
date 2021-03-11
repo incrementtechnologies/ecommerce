@@ -219,7 +219,7 @@
           <button class="btn btn-warning pull-right" @click="redirect('/marketplace/product/' + data.code + '/' + 'preview')" style="margin-right: 10px; margin-top: 5px;">Preview</button>
         </div>
       </div>
-      <images :data="data"/>
+      <images :data="data" :isEditing="isEdit"/>
     </div>
     <div class="product-more-details">
       <div class="pagination-holder">
