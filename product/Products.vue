@@ -76,7 +76,7 @@
              <button class="btn btn-warning" title="Total active trace in bundled">{{item.qty_in_bundled}}</button>
           </td>
           <td>
-            <button class="btn btn-primary" @click="redirect('/product/edit/' + item.code)">EDIT</button>
+            <button class="btn btn-primary" @click="redirect('/product/edit/' + item.code)">VIEW DETAILS</button>
             <!-- <button class="btn btn-warning" @click="addProductTraces(item.id)" v-if="item.type === 'regular' && item.status === 'published'">Add Inventory</button> -->
           </td>
         </tr>
