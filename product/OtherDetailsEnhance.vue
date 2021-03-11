@@ -17,13 +17,13 @@
           <div class="col-sm-3">
               <p>{{item.details.files.label.url !== null && isEdit === false ? item.details.files.label.title : filetitle1}}</p>
           </div>
-          <div class="col-sm-3" v-if="isEditing===false">
+          <div class="col-sm-3">
               <div>
                 <i :class="file1 === null ? null : 'fa fa-check'" v-if="errorMessage === null"></i>
                 <i :class="errorMessage === null ? null : 'fa fa-close'" style="color:red" v-else></i>
               </div>
               <div>
-                <i :class="item.details.files.label.url !== null ? 'fa fa-pencil' : null" style="color:black" @click="editFile()" v-if="isEdit === false && file1 === null"></i>
+                <i :class="item.details.files.label.url !== null ? 'fa fa-pencil' : null" style="color:black" @click="editFile()" v-if="isEdit === false && file1 === null" :hidden="isEditing===false"></i>
                 <i :class="isEdit === true && file1 !== null ? null : 'fa fa-close'" style="color:red" @click="editFile()" v-else></i>
               </div>
               <div>
@@ -46,13 +46,13 @@
           <div class="col-sm-3">
               <p>{{item.details.files.sds.url !== null && isEdit2 === false ? item.details.files.sds.title : filetitle2}}</p>
           </div>
-         <div class="col-sm-3" v-if="isEditing===false">
+         <div class="col-sm-3">
               <div>
-                <i :class="file2 === null ? null : 'fa fa-check'" v-if="errorMessage === null"></i>
+                <i :class="file2 === null ? null : 'fa fa-check'" v-if="errorMessage === null" ></i>
                 <i :class="errorMessage === null ? null : 'fa fa-close'" style="color:red" v-else></i>
               </div>
               <div>
-                <i :class="item.details.files.sds.url !== null ? 'fa fa-pencil' : null" style="color:black" @click="editFile2()" v-if="isEdit2 === false"></i>
+                <i :class="item.details.files.sds.url !== null ? 'fa fa-pencil' : null" style="color:black" @click="editFile2()" v-if="isEdit2 === false" :hidden="isEditing===false"></i>
                 <i :class="isEdit2 !== true ? null : 'fa fa-close'" style="color:red" @click="editFile2()" v-else></i>
               </div>
               <div>
@@ -84,7 +84,7 @@ export default {
     isEdit2: false
   }),
   mounted(){
-    console.log('item=================', this.item)
+    console.log('item=================', this.isEditing)
   },
   methods: {
     showInput(id){

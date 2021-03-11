@@ -88,12 +88,12 @@
                     <td>Action</td>
                   </tr>
               </thead>
-              <!-- <tbody>
+              <tbody>
                 <tr v-for="(group, index) in listGroup" :key="index">
                   <td>{{group.group}}</td>
-                  <td><button class="btn" @click="removeGroup(index)" style="width:20%; background-color: transparent"><i class="fa fa-trash" style="color: red"></i></button></td>
+                  <td><button class="btn" @click="removeGroup(index)" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                 </tr>
-              </tbody> -->
+              </tbody>
           </table>
           </div>
         <div class="product-item-title" style="width: 48%; margin-right: 1%;">
@@ -131,7 +131,7 @@
                     <td>{{active.active_name}}</td>
                     <td>{{active.value}}</td>
                     <td>{{active.attribute}}</td>
-                    <td><button class="btn" @click="removeActive(index)" style="width:20%; background-color: transparent"><i class="fa fa-trash" style="color: red"></i></button></td>
+                    <td><button class="btn" @click="removeActive(index)" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                   </tr>
                 </tbody>
             </table>
@@ -456,13 +456,13 @@ export default {
     tagChecker(data){
       console.log(data.tags)
       if(data.tags !== undefined){
-        if(data.tags.includes('insecticide')){
+        if(data.tags.toLowerCase() === 'insecticide'){
           this.groups = GROUP.INSECTICIDE
-        }else if(data.tags.includes('herbicide')){
+        }else if(data.tags.toLowerCase() === 'herbicide'){
           this.groups = GROUP.HERBICIDE
-        }else if(data.tags.includes('fungicide')){
+        }else if(data.tags.toLowerCase() === 'fungicide'){
           this.groups = GROUP.FUNGICIDE
-        }else if(data.target.value.includes('adjuvant')){
+        }else if(data.tags.toLowerCase() === 'adjuvant'){
           this.groups = GROUP.ADJUVANT
         }else{
           this.groups = []
