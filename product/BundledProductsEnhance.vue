@@ -15,7 +15,7 @@
     <div class="variations-content" v-if="item.bundled !== null">
       <div class="attribute-item" v-for="itemVariation, indexVariation in item.bundled[0].variation">
         <input class="form-control form-control-custom" style="width: 40%; float: left; margin-right: 10px;" :placeholder="`${item.bundled[0].qty} X ${item.title}(${itemVariation.payload})`" disabled>
-        <!-- <input type="text" class="form-control form-control-custom" style="float: left; width: 35%;" placeholder="Type variation value here..." v-model="itemVariation.payload_value" disabled> -->
+        <input type="text" class="form-control form-control-custom" style="float: left; width: 35%;" :placeholder="item.bundled[0].qty" disabled>
       </div>
     </div>
     <Confirmation
