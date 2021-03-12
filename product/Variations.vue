@@ -7,7 +7,7 @@
         <select class="form-control form-control-custom"  style="float: left; width: 40%;" v-model="newAttribute.payload" v-if="item.variation === null">
             <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
         </select>
-        <input class="form-control form-control-custom"  style="float: left; width: 40%;" :placeholder="`${item.title}(${item.variation[0].payload})`" v-else disabled>
+        <input class="form-control form-control-custom"  style="float: left; width: 40%;" id="payload" :placeholder="`${item.title}(${item.variation[0].payload})`" :value="item.variation[0].payload" v-else disabled>
         <input type="number" class="form-control form-control-custom" style="float: left; width: 40%; margin-left: 10px;" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup.enter="create()" :disabled="isEdit===false">
         <i class="fa fa-check mt-2" style="color: #cae166; font-size: 30px;" v-if="newAttribute.payload_value !== null && newAttribute.payload_value !== ''"></i>
         <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="confirmAdd()" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
@@ -143,6 +143,10 @@ export default {
         this.payloadValueExit(this.newAttribute.payload_value)
         if(this.errorMessage !== null){
           return
+        }
+        if(this.item.variation !== null){
+          this.newAttribute.payload = $('#payload').val()
+        }else{
         }
         this.APIRequest('product_attributes/create', this.newAttribute).then(response => {
           if(response.data > 0){

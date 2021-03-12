@@ -7,11 +7,11 @@
           </label>
         </div>
         <img :src="config.BACKEND_URL + selectedImage" class="main-image" v-if="selectedImage !== null">
-        <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image" v-if="selectedImage === null && data.featured !== null">
+        <img :src="config.BACKEND_URL + data.featured !== null  ? data.featured[0].url : null" class="main-image" v-if="selectedImage === null && data.featured !== null">
         <i class="fa fa-image" v-if="selectedImage === null && data.featured === null"></i>
-        <label class="remove-image text-danger" id="featured-image-remove" @click="removeImage(data.featured[0].id)" v-if="selectedImage === null && data.featured !== null">
+        <label class="remove-image text-danger" id="featured-image-remove" @click="removeImage(data.featured !== null ? data.featured[0].id : null)" v-if="selectedImage === null && data.featured !== null">
           <i class="fa fa-times" :hidden="isEditing===false"></i>
-        </label>``
+        </label>
        <div class="images-holder">
         <div class="product-row" style="text-align: left !important;">
           <label style="width: 100%">

@@ -71,7 +71,7 @@
             </div>
           </div>
           <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#createProductTracesModal">Cancel</button>
+              <button type="button" class="btn btn-danger" @click="cancel()">Cancel</button>
               <button type="button" class="btn btn-primary" @click="submit()">Create</button>
           </div>
         </div>
@@ -259,6 +259,11 @@ export default {
       for (var i = max; i >= min; i--) {
         this.years.push(i)
       }
+    },
+    cancel(){
+      $('#createProductTracesModal').modal('hide')
+      this.newData.batch_number = null
+      this.manufacturing.date = null
     }
   }
 }
