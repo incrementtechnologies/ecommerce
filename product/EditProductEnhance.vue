@@ -316,7 +316,10 @@ export default {
     productMenu: function (){
       if(this.data !== null){
         return (this.data.type === 'regular') ? [{title: 'Other Details',
-          flag: true}, {title: 'Variation', flag: false}] : COMMON.ecommerce.editProductMenu
+          flag: true}, {title: 'Variation', flag: false}, {
+            title: 'Bundled Products',
+            flag: false
+          }] : COMMON.ecommerce.editProductMenu
       }
     }
   },
@@ -327,7 +330,7 @@ export default {
     'variations': require('components/increment/ecommerce/product/Variations.vue'),
     'inventories': require('components/increment/ecommerce/product/Inventories.vue'),
     'product-trace': require('components/increment/ecommerce/product/ProductTrace.vue'),
-    'bundled-products': require('components/increment/ecommerce/product/BundledProducts.vue'),
+    'bundled-products': require('components/increment/ecommerce/product/BundledProductsEnhance.vue'),
     'prices': require('components/increment/ecommerce/product/Prices.vue'),
     'confirmation': require('components/increment/generic/modal/Confirmation.vue'),
     'images': require('components/increment/ecommerce/product/Images.vue'),
@@ -346,7 +349,7 @@ export default {
       }
     },
     addActive(){
-      if(this.active.active_name === null || (this.active.value === null || this.active.value <= 0) || this.active.attribute === null){
+      if((this.active.active_name === null || this.active.active_name === '') || (this.active.value === null || this.active.value <= 0) || this.active.attribute === null){
         this.errorMessage = 'Empty fields cannot be added'
         return
       }
@@ -368,7 +371,7 @@ export default {
       this.actives.splice(index, 1)
     },
     addGroup(){
-      if(this.group === null){
+      if(this.group === null || this.group === ''){
         this.errorMessage = 'Empty field cannot be added'
         return
       }
