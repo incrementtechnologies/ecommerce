@@ -5,21 +5,30 @@
         <label class="text-primary action-link">Back</label>
       </b> -->
     </div><br>
+    <h3>{{data.title}}</h3>
+    <div class="product-row-merchant" v-if="data.merchant !== null">
+        <label class="product-row-labels">Merchant:</label>
+        <label>&nbsp;&nbsp;{{data.merchant.name}}</label>
+    </div>
     <div class="product-item-holder">
       <div class="product-image">
-        <img :src="config.BACKEND_URL + selectedImage" class="main-image" v-if="selectedImage !== null">
-        <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image" v-if="selectedImage === null && data.featured !== null">
-        <i class="fa fa-image" v-if="selectedImage === null && data.featured === null"></i>
-       <div class="images-holder" v-if="data.images !== null">
-        <div v-for="(item, index) in data.images" :key="index" class="image-item" @click="selectImage(item.url)" style="margin-left:5px">
-          <img :src="config.BACKEND_URL + item.url" class="other-image">
-          <div class="overlay"></div>
+        <div class="product-image-content">
+          <img :src="config.BACKEND_URL + selectedImage" class="main-image" v-if="selectedImage !== null">
+          <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image" v-if="selectedImage === null && data.featured !== null">
+          <i class="fa fa-image" v-if="selectedImage === null && data.featured === null"></i>
+          <div class="images-holder" v-if="data.images !== null">
+            <div v-for="(item, index) in data.images" :key="index" class="image-item" @click="selectImage(item.url)" style="margin-left:5px">
+              <img :src="config.BACKEND_URL + item.url" class="other-image">
+              <div class="overlay"></div>
+            </div>
+          </div>
         </div>
-       </div>
+          <label class="product-row-labels">Description:</label>
+          <label v-html="data.description"></label>
       </div>
       <div class="product-details">
         <div class="product-title">
-          <h3>{{data.title}}</h3>
+          <h4>Details: </h4>
         </div>
         <div class="product-row" v-if="errorMessage !== null">
           <span class="alert alert-danger">
@@ -49,6 +58,198 @@
         </div> -->
         <div class="row">
           <div class="col-sm-6">
+           <div id="accordion">
+              <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#collapseOne">
+                  <a class="card-link">
+                    Sku:
+                  </a>
+                </div>
+                <div id="collapseOne" class="collapse show" data-parent="#accordion">
+                  <div class="card-body">
+                    {{data.sku}}
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#collapseTwo">
+                  <a class="collapsed card-link">
+                  Tags:
+                </a>
+                </div>
+                <div id="collapseTwo" class="collapse" data-parent="#accordion">
+                  <div class="card-body">
+                    {{data.tags}}
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#collapseThree">
+                  <a class="collapsed card-link">
+                   Website:
+                  </a>
+                </div>
+                <div id="collapseThree" class="collapse" data-parent="#accordion">
+                  <div class="card-body">
+                    <a :href="data.merchant.website" target="__blank">{{data.merchant.website}}</a>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#shelfLife">
+                  <a class="collapsed card-link">
+                   Shelf Life:
+                  </a>
+                </div>
+                <div id="shelfLife" class="collapse" data-parent="#accordion">
+                  <div class="card-body">
+                    {{data.details.shelf_life}}
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#actives">
+                  <a class="collapsed card-link">
+                   Active/s:
+                  </a>
+                </div>
+                <div id="actives" class="collapse" data-parent="#accordion">
+                  <div class="card-body">
+                    <ul>
+                      <li v-for="(active, index) in active" :key="index">{{active.active_name}}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#groups">
+                  <a class="collapsed card-link">
+                   Group/s:
+                  </a>
+                </div>
+                <div id="groups" class="collapse" data-parent="#accordion">
+                  <div class="card-body">
+                    <ul>
+                      <li v-for="(group, index) in groups" :key="index">
+                        {{group.group}}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div id="accordion">
+              <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#approvalDate">
+                  <a class="card-link">
+                    Approval Date:
+                  </a>
+                </div>
+                <div id="approvalDate" class="collapse show" data-parent="#accordion">
+                  <div class="card-body">
+                    {{data.details.approval_date}}
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#approvalNumber">
+                  <a class="card-link">
+                    Approval Number:
+                  </a>
+                </div>
+                <div id="approvalNumber" class="collapse show" data-parent="#accordion">
+                  <div class="card-body">
+                    {{data.details.approval_number}}
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#formulation">
+                  <a class="card-link">
+                   Formulation:
+                  </a>
+                </div>
+                <div id="formulation" class="collapse show" data-parent="#accordion">
+                  <div class="card-body">
+                    {{data.details.formulation}}
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#mixingOrder">
+                  <a class="card-link">
+                   Mixing Order:
+                  </a>
+                </div>
+                <div id="mixingOrder" class="collapse show" data-parent="#accordion">
+                  <div class="card-body">
+                    {{data.details.mixing_order}}
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#ingredients">
+                  <a class="card-link">
+                   Other Ingredient:
+                  </a>
+                </div>
+                <div id="ingredients" class="collapse show" data-parent="#accordion">
+                  <div class="card-body">
+                    {{data.details.other_ingredient}}
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" data-toggle="collapse" href="#equipments">
+                  <a class="card-link">
+                   Safety Equipments:
+                  </a>
+                </div>
+                <div id="equipments" class="collapse show" data-parent="#accordion">
+                  <div class="card-body">
+                    <ul>
+                      <li v-for="(equip, index) in data.details.safety_equipment" :key="index">
+                        {{equip}}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-left:2%;margin-top:3%;width:100%">
+            <hr style="width:100%">
+            <h4>Recent Files:</h4>
+            <div class="row" style="margin-left:1%">
+              <div class="col-sm-6">
+                <label class="product-row-labels">Label:</label>
+                <div class="row" style="margin-left:2%">
+                  <div class="col-sm-2" >
+                    <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.label.title !== null ? 'color: #cae166' : 'color: red'" @click="download('data1')"></i>
+                    <a :href="config.BACKEND_URL + data.details.files.label.url" id="data1" target="__blank"></a>
+                  </div>
+                  <div class="col-sm-3">
+                    <label>{{data.details.files.label.title}}</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <label class="product-row-labels">Safety Data(SDS):</label>
+                <div class="row" style="margin-left:2%">
+                  <div class="col-sm-2">
+                    <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.sds.title !== null ? 'color: #cae166' : 'color: red'" @click="download('data2')"></i>
+                    <a :href="config.BACKEND_URL + data.details.files.sds.url" id="data2" target="__blank"></a>
+                  </div>
+                  <div class="col-sm-3">
+                    <label>{{data.details.files.sds.title}}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="col-sm-6">
             <div class="product-row" v-if="data.sku !== null && data.sku !== ''">
               <label class="product-row-labels">Sku:</label>
               <label class="text-danger"><i>&nbsp;&nbsp;{{data.sku}}</i></label>
@@ -57,27 +258,34 @@
               <label class="product-row-labels">Tags:</label>
               <label>&nbsp;&nbsp;&nbsp;{{data.tags}}</label>
             </div>
-            <div class="product-row-merchant" v-if="data.merchant !== null">
+            <div class="product-row" v-if="data.merchant !== null">
               <label class="product-row-labels">Merchant:</label>
               <label>&nbsp;&nbsp;{{data.merchant.name}}</label>
             </div>
             <div class="product-row" v-if="data.merchant !== null">
-              <span class="product-row-labels">Website: &nbsp;&nbsp;<a :href="data.merchant.website" target="__blank">{{data.merchant.website}}</a></span>
-            </div>
-            <div class="product-row" v-if="active[0].active_name !== null">
-              <label class="product-row-labels">Active/s:</label>
-              <label v-for="(active, index) in active" :key="index">&nbsp;&nbsp;&nbsp;{{active.active_name}},</label>
+              <label class="product-row-labels">Website:</label> &nbsp;&nbsp;
+              <a :href="data.merchant.website" target="__blank">{{data.merchant.website}}</a>
             </div>
             <div class="product-row" v-if="data.details.shelf_life !== null">
               <label class="product-row-labels">Shelf Life:</label>
               <label>&nbsp;&nbsp;&nbsp;{{data.details.shelf_life}}</label>
             </div>
-             <div class="product-row" v-if="groups.length > 0">
-              <label class="product-row-labels">Group/s:</label>
-              <label v-for="(group, index) in groups" :key="index">&nbsp;&nbsp;&nbsp;{{group.group}},</label>
+            <div class="product-row" v-if="active[0].active_name !== null">
+              <label class="product-row-labels">Active/s:</label>
+              <ul>
+                <li v-for="(active, index) in active" :key="index">{{active.active_name}}</li>
+              </ul>
             </div>
-          </div>
-          <div class="col-sm-6">
+            <div class="product-row" v-if="groups.length > 0">
+              <label class="product-row-labels">Group/s:</label>
+              <ul>
+                <li v-for="(group, index) in groups" :key="index">
+                  {{group.group}}
+                </li>
+              </ul>
+            </div>
+          </div> -->
+          <!-- <div class="col-sm-6">
             <div class="product-row" v-if="data.details.approval_date !== null">
               <label class="product-row-labels">Approval Date:</label>
               <label>&nbsp;&nbsp;&nbsp;{{data.details.approval_date}}</label>
@@ -102,13 +310,13 @@
               <label class="product-row-labels">Safety Equipment:</label>
               <label v-for="(el, index) in data.details.safety_equipment" :key="index">&nbsp;&nbsp;&nbsp;{{el}}</label>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div><br>
-    <div class="product-more-details">
+    <!-- <div class="product-more-details">
       <div class="pagination-holder">
-        <ul class="product-menu"> <!--  do dis --> 
+        <ul class="product-menu">
           <li v-for="(item, index) in productMenu" :key="index" v-bind:class="{'menu-active': item.flag === true}" class="" @click="selectMenu(index)">{{item.title}}</li>
         </ul>
       </div>
@@ -117,9 +325,6 @@
           <label v-html="data.description"></label>
         </label>
       </div>
-      <!-- <div class="details-holder" v-if="prevMenuIndex === 1">
-        <label>Shippings</label>
-      </div> -->
       <div class="details-holder" v-if="prevMenuIndex === 1">
         <div class="row">
           <div class="col-sm-3">
@@ -149,10 +354,20 @@
       <div class="details-holder" v-if="prevMenuIndex === 2">
         <product-comments :payloadValue="data.id" :payload="'product'" :load="true"></product-comments>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <style scoped>
+  .card-header{
+    cursor: pointer;
+  }
+  .card-header:hover{
+    background-color: #cae166;
+  }
+  ul{
+    margin-bottom: 0px;
+    /* margin-top: -5%; */
+  }
   #icon{
     font-size: 30px;
     cursor: pointer;
@@ -174,26 +389,39 @@
     min-height: 410px;
     overflow-y: hidden;
     text-align: center;
+    
   }
-  .product-image .main-image{
+  .product-image-content{
+    width: 90%;
+    margin-left:2%;
+    float: left;
+    min-height: 410px;
+    overflow-y: hidden;
+    text-align: center;
+    background: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding-bottom: 2%;
+    padding-top: 2%;
+  }
+  .product-image-content .main-image{
     height: 350px;
     max-width: 100%;
   }
-  .product-image .fa-image{
+  .product-image-content .fa-image{
     font-size: 250px;
     line-height: 350px;
   }
-  .product-image .image-item{
+  .product-image-content .image-item{
     height: 60px;
     float: left;
     width: 80px;
     text-align: center;
   }
-  .product-image .other-image{
+  .product-image-content .other-image{
     height: 60px;
     max-width: 80px;
   }
-  .product-image .image-item:hover{
+  .product-image-content .image-item:hover{
     cursor: pointer;
     background: #ffaa81;
   }
@@ -230,7 +458,7 @@
   .product-row{
     width: 100%;
     float: left;
-    min-height: 40px;
+    min-height: 30px;
     overflow-y: hidden;
     font-size: 16px;
     line-height: 50px;
@@ -262,6 +490,7 @@
     /* width: 5%; */
     margin-top: 0px;
     margin-bottom: 0px;
+    margin-left: 2%;
   }
   .qty-input{
     width: 50px;
