@@ -62,7 +62,7 @@
               <div class="card">
                 <div class="card-header" role="tab" data-toggle="collapse" href="#sku" aria-expanded="true" id="skus" aria-controls="sku" @click="collapsed('skus', transform)">
                   <a class="card-link">
-                    Sku:
+                    Sku
                   </a>
                 </div>
                 <div id="sku" class="collapse" data-parent="#accordion">
@@ -74,7 +74,7 @@
               <div class="card">
                 <div class="card-header" data-toggle="collapse" href="#tags" id="tag" @click="collapsed('tag', transform)">
                   <a class="collapsed card-link">
-                  Tags:
+                  Tags
                 </a>
                 </div>
                 <div id="tags" class="collapse" data-parent="#accordion">
@@ -86,7 +86,7 @@
               <div class="card">
                 <div class="card-header" data-toggle="collapse" href="#website" id="websites" @click="collapsed('websites', transform)">
                   <a class="collapsed card-link">
-                   Website:
+                   Website
                   </a>
                 </div>
                 <div id="website" class="collapse" data-parent="#accordion">
@@ -98,7 +98,7 @@
               <div class="card">
                 <div class="card-header" data-toggle="collapse" href="#shelfLife" id="life" @click="collapsed('life', transform)">
                   <a class="collapsed card-link">
-                   Shelf Life:
+                   Shelf Life
                   </a>
                 </div>
                 <div id="shelfLife" class="collapse" data-parent="#accordion">
@@ -110,7 +110,7 @@
               <div class="card">
                 <div class="card-header" data-toggle="collapse" href="#actives" id="active" @click="collapsed('active', transform)">
                   <a class="collapsed card-link">
-                   Active/s:
+                   Active/s
                   </a>
                 </div>
                 <div id="actives" class="collapse" data-parent="#accordion">
@@ -124,7 +124,7 @@
               <div class="card">
                 <div class="card-header" data-toggle="collapse" href="#groups" id="group" @click="collapsed('group', transform)">
                   <a class="collapsed card-link">
-                   Group/s:
+                   Group/s
                   </a>
                 </div>
                 <div id="groups" class="collapse" data-parent="#accordion">
@@ -144,7 +144,7 @@
               <div class="card">
                 <div class="card-header" data-toggle="collapse" href="#approvalDate" id="date" @click="collapsed('date', transform)">
                   <a class="card-link">
-                    Approval Date:
+                    Approval Date
                   </a>
                 </div>
                 <div id="approvalDate" class="collapse" data-parent="#accordion2">
@@ -156,7 +156,7 @@
               <div class="card">
                 <div class="card-header" data-toggle="collapse" href="#approvalNumber" id="number" @click="collapsed('number', transform)">
                   <a class="card-link">
-                    Approval Number:
+                    Approval Number
                   </a>
                 </div>
                 <div id="approvalNumber" class="collapse" data-parent="#accordion2">
@@ -168,7 +168,7 @@
               <div class="card">
                 <div class="card-header" data-toggle="collapse" href="#formulation" id="formulations" @click="collapsed('formulations', transform)">
                   <a class="card-link">
-                   Formulation:
+                   Formulation
                   </a>
                 </div>
                 <div id="formulation" class="collapse" data-parent="#accordion2">
@@ -180,7 +180,7 @@
               <div class="card">
                 <div class="card-header" data-toggle="collapse" href="#mixingOrder" id="mixing" @click="collapsed('mixing', transform)">
                   <a class="card-link">
-                   Mixing Order:
+                   Mixing Order
                   </a>
                 </div>
                 <div id="mixingOrder" class="collapse" data-parent="#accordion2">
@@ -192,7 +192,7 @@
               <div class="card">
                 <div class="card-header" data-toggle="collapse" href="#ingredients" id="ingredient" @click="collapsed('ingredient'), transform">
                   <a class="card-link">
-                   Other Ingredient:
+                   Other Ingredient
                   </a>
                 </div>
                 <div id="ingredients" class="collapse" data-parent="#accordion2">
@@ -204,7 +204,7 @@
               <div class="card">
                 <div class="card-header" data-toggle="collapse" href="#equipments" id="equipment" @click="collapsed('equipment', transform)">
                   <a class="card-link">
-                   Safety Equipments:
+                   Safety Equipments
                   </a>
                 </div>
                 <div id="equipments" class="collapse" data-parent="#accordion2">
