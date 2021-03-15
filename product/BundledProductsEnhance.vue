@@ -136,18 +136,28 @@ export default {
           merchant_id: this.user.subAccount.merchant.id
         }
         $('#loading').css({display: 'block'})
-        this.APIRequest('products/create', parameter).then(response => {
-          $('#loading').css({display: 'none'})
-          if(response.data > 0){
-            this.newAttribute.bundled = response.data
-            this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
-              if(response.data > 0){
-                this.errorMessage = null
-                this.$parent.retrieve()
-              }
-            })
-          }
-        })
+        if(this.item.type.toLowerCase() !== 'bundled'){
+          this.APIRequest('products/create', parameter).then(response => {
+            $('#loading').css({display: 'none'})
+            if(response.data > 0){
+              this.newAttribute.bundled = response.data
+              this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
+                if(response.data > 0){
+                  this.errorMessage = null
+                  this.$parent.retrieve()
+                }
+              })
+            }
+          })
+        }else{
+          this.newAttribute.bundled = this.item.id
+          this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
+            if(response.data > 0){
+              this.errorMessage = null
+              this.$parent.retrieve()
+            }
+          })
+        }
       }else{
         this.errorMessage = 'Fill up the required fields.'
       }

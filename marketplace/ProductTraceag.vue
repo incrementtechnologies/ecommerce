@@ -18,7 +18,7 @@
           <i class="fa fa-image" v-if="selectedImage === null && data.featured === null"></i>
           <div class="images-holder" v-if="data.images !== null">
             <div v-for="(item, index) in data.images" :key="index" class="image-item" @click="selectImage(item.url)" style="margin-left:5px">
-              <img :src="config.BACKEND_URL + item.url" class="other-image">
+              <!-- <img :src="config.BACKEND_URL + item.url" class="other-image"> -->
               <div class="overlay"></div>
             </div>
           </div>
@@ -60,43 +60,43 @@
           <div class="col-sm-6">
            <div id="accordion">
               <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#collapseOne">
+                <div class="card-header" role="tab" data-toggle="collapse" href="#sku" aria-expanded="true" id="skus" aria-controls="sku" @click="collapsed('skus', transform)">
                   <a class="card-link">
                     Sku:
                   </a>
                 </div>
-                <div id="collapseOne" class="collapse show" data-parent="#accordion">
+                <div id="sku" class="collapse" data-parent="#accordion">
                   <div class="card-body">
                     {{data.sku}}
                   </div>
                 </div>
               </div>
               <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#collapseTwo">
+                <div class="card-header" data-toggle="collapse" href="#tags" id="tag" @click="collapsed('tag', transform)">
                   <a class="collapsed card-link">
                   Tags:
                 </a>
                 </div>
-                <div id="collapseTwo" class="collapse" data-parent="#accordion">
+                <div id="tags" class="collapse" data-parent="#accordion">
                   <div class="card-body">
                     {{data.tags}}
                   </div>
                 </div>
               </div>
               <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#collapseThree">
+                <div class="card-header" data-toggle="collapse" href="#website" id="websites" @click="collapsed('websites', transform)">
                   <a class="collapsed card-link">
                    Website:
                   </a>
                 </div>
-                <div id="collapseThree" class="collapse" data-parent="#accordion">
+                <div id="website" class="collapse" data-parent="#accordion">
                   <div class="card-body">
                     <a :href="data.merchant.website" target="__blank">{{data.merchant.website}}</a>
                   </div>
                 </div>
               </div>
               <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#shelfLife">
+                <div class="card-header" data-toggle="collapse" href="#shelfLife" id="life" @click="collapsed('life', transform)">
                   <a class="collapsed card-link">
                    Shelf Life:
                   </a>
@@ -108,7 +108,7 @@
                 </div>
               </div>
               <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#actives">
+                <div class="card-header" data-toggle="collapse" href="#actives" id="active" @click="collapsed('active', transform)">
                   <a class="collapsed card-link">
                    Active/s:
                   </a>
@@ -122,7 +122,7 @@
                 </div>
               </div>
               <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#groups">
+                <div class="card-header" data-toggle="collapse" href="#groups" id="group" @click="collapsed('group', transform)">
                   <a class="collapsed card-link">
                    Group/s:
                   </a>
@@ -140,74 +140,74 @@
             </div>
           </div>
           <div class="col-sm-6">
-            <div id="accordion">
+            <div id="accordion2">
               <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#approvalDate">
+                <div class="card-header" data-toggle="collapse" href="#approvalDate" id="date" @click="collapsed('date', transform)">
                   <a class="card-link">
                     Approval Date:
                   </a>
                 </div>
-                <div id="approvalDate" class="collapse show" data-parent="#accordion">
+                <div id="approvalDate" class="collapse" data-parent="#accordion2">
                   <div class="card-body">
                     {{data.details.approval_date}}
                   </div>
                 </div>
               </div>
               <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#approvalNumber">
+                <div class="card-header" data-toggle="collapse" href="#approvalNumber" id="number" @click="collapsed('number', transform)">
                   <a class="card-link">
                     Approval Number:
                   </a>
                 </div>
-                <div id="approvalNumber" class="collapse show" data-parent="#accordion">
+                <div id="approvalNumber" class="collapse" data-parent="#accordion2">
                   <div class="card-body">
                     {{data.details.approval_number}}
                   </div>
                 </div>
               </div>
               <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#formulation">
+                <div class="card-header" data-toggle="collapse" href="#formulation" id="formulations" @click="collapsed('formulations', transform)">
                   <a class="card-link">
                    Formulation:
                   </a>
                 </div>
-                <div id="formulation" class="collapse show" data-parent="#accordion">
+                <div id="formulation" class="collapse" data-parent="#accordion2">
                   <div class="card-body">
                     {{data.details.formulation}}
                   </div>
                 </div>
               </div>
               <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#mixingOrder">
+                <div class="card-header" data-toggle="collapse" href="#mixingOrder" id="mixing" @click="collapsed('mixing', transform)">
                   <a class="card-link">
                    Mixing Order:
                   </a>
                 </div>
-                <div id="mixingOrder" class="collapse show" data-parent="#accordion">
+                <div id="mixingOrder" class="collapse" data-parent="#accordion2">
                   <div class="card-body">
                     {{data.details.mixing_order}}
                   </div>
                 </div>
               </div>
               <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#ingredients">
+                <div class="card-header" data-toggle="collapse" href="#ingredients" id="ingredient" @click="collapsed('ingredient'), transform">
                   <a class="card-link">
                    Other Ingredient:
                   </a>
                 </div>
-                <div id="ingredients" class="collapse show" data-parent="#accordion">
+                <div id="ingredients" class="collapse" data-parent="#accordion2">
                   <div class="card-body">
                     {{data.details.other_ingredient}}
                   </div>
                 </div>
               </div>
               <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#equipments">
+                <div class="card-header" data-toggle="collapse" href="#equipments" id="equipment" @click="collapsed('equipment', transform)">
                   <a class="card-link">
                    Safety Equipments:
                   </a>
                 </div>
-                <div id="equipments" class="collapse show" data-parent="#accordion">
+                <div id="equipments" class="collapse" data-parent="#accordion2">
                   <div class="card-body">
                     <ul>
                       <li v-for="(equip, index) in data.details.safety_equipment" :key="index">
@@ -364,6 +364,16 @@
   .card-header:hover{
     background-color: #cae166;
   }
+  .card-header.active a:before{
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    transform: rotate(180deg);
+  }
+  .card-header a:before{
+    content: "\25BC"; /*25B2 */
+    float: right;
+    transition: all 0.5s;
+  }
   ul{
     margin-bottom: 0px;
     /* margin-top: -5%; */
@@ -399,7 +409,7 @@
     overflow-y: hidden;
     text-align: center;
     background: white;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
     padding-bottom: 2%;
     padding-top: 2%;
   }
@@ -637,7 +647,8 @@ export default {
       currency: CURRENCY,
       productCode: null,
       groups: [],
-      active: []
+      active: [],
+      transform: false
     }
   },
   components: {
@@ -647,6 +658,14 @@ export default {
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    collapsed(id){
+      this.transform = !this.transform
+      if(this.transform === true){
+        $(`#${id}`).addClass('active')
+      }else{
+        $(`#${id}`).removeClass('active')
+      }
     },
     redirectBack(){
       ROUTER.go(-1)
