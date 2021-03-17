@@ -30,12 +30,14 @@
                  <input type="file" id="Image" accept="image/*" @change="setUpFileUpload($event)">
                  <!-- <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfTMy2AHYJpPh-4Eojkm_s5QX6_emLxwfZeg&usqp=CAU" style="width:100px;height:100px;border:2px solid black"> -->
                </div>
-              <div  v-for="item in images" :key="item.id" :group="item" style="height:100px;width:100px" :class="isEditing===false ? null : 'imageContainer p-10'">
+              <div  v-for="item in returnImageList" :key="item.id" :group="item" style="height:100px;width:100px" :class="isEditing===false ? null : 'imageContainer p-10'">
                   <img :src="config.BACKEND_URL + item.url" class="image" @click="selectImage(item.url)">
                   <label class="middle"  @click="deleteImage(item.id)" v-if="item.status !== 'featured'">
                     <i class="fa fa-times-circle text" :hidden="isEditing===false"></i>
                   </label>
-                  <p style="position:relative;font-weight:bold" :class="{'ImageLabel': item.url !== data.featured[0].url}"><i class="fa fa-check" style="color: #cae166"></i> Featured</p>
+                  <div v-if="data.featured !== null">
+                    <p style="position:relative;font-weight:bold" :class="{'ImageLabel': item.url !== data.featured[0].url}"><i class="fa fa-check" style="color: #cae166"></i> Featured</p>
+                  </div>
               </div>
              <!-- </div> -->
            </div>
@@ -63,7 +65,7 @@ export default {
     config: CONFIG,
     common: COMMON,
     selectedImage: null,
-    images: [],
+    imagesList: [],
     errorMessage: null,
     idImage: null,
     file: null,
@@ -72,12 +74,19 @@ export default {
   }),
   mounted(){
     this.retrieveImage()
-    this.images.map(el => {
-      console.log('true')
-      if(el.id === this.data.featured[0].id){
-        $(`.${el.id}image`).removeAttr('hidden')
-      }
-    })
+    if(this.imagesList.length > 0){
+      this.imagesList.map(el => {
+        console.log('true')
+        if(el.id === this.data.featured[0].id){
+          $(`.${el.id}image`).removeAttr('hidden')
+        }
+      })
+    }
+  },
+  computed: {
+    returnImageList(){
+      return this.imagesList
+    }
   },
   methods: {
     addImage(){
@@ -139,8 +148,10 @@ export default {
         $('#loading').css({'display': 'none'})
         this.hasError = false
         this.retrieveImage()
+        this.$parent.retrieve()
         if(response.data.data !== null){
           this.retrieveImage()
+          this.$parent.retrieve()
         }
       })
       this.prevIndex = null
@@ -150,7 +161,8 @@ export default {
         id: id
       }
       this.APIRequest('product_images/delete', parameter).then(response => {
-        // this.retrieve()
+        this.retrieveImage()
+        this.$parent.retrieve()
         this.selectedImage = null
       })
     },
@@ -162,6 +174,7 @@ export default {
       axios.post(this.config.BACKEND_URL + '/images/delete?token=' + AUTH.tokenData.token, params).then(response => {
         $('#loading').css({display: 'none'})
         this.retrieveImage()
+        this.$parent.retrieve()
       })
     },
     retrieveImage(){
@@ -181,8 +194,7 @@ export default {
       this.APIRequest('images/retrieve_with_category', parameter).done(response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
-          // console.log(response.data)
-          this.images = response.data
+          this.imagesList = response.data
           this.filteredData = response.data
         }else{
           this.data = null
@@ -191,7 +203,7 @@ export default {
       })
     },
     validateImage(imageName){
-      this.images.map(el => {
+      this.imagesList.map(el => {
         console.log('efdsafdsfsd', el)
         let name = el.url.substring(el.url.lastIndexOf('_') + 1)
         if(imageName === name){
