@@ -1,16 +1,17 @@
 <template>
-  <div v-if="data !== null">
+<div class="row">
+  <div v-if="data !== null" class="col-sm-7">
     <div class="title">
-      <!-- <b @click="redirectBack()">
-        <label class="text-primary action-link">Back</label>
-      </b> -->
-    </div><br>
+    <br>
     <h3>{{data.title}}</h3>
     <div class="product-row-merchant" v-if="data.merchant !== null">
         <label class="product-row-labels">Merchant:</label>
-        <label>&nbsp;&nbsp;{{data.merchant.name}}</label>
-    </div>
-    <div class="product-item-holder">
+        <label>&nbsp;{{data.merchant.name}}&nbsp;</label>
+        <label class="product-row-labels">SKU:</label>
+        <label>&nbsp;{{data.sku}} &nbsp;</label>
+        <label class="product-row-labels">Tags:</label>
+        <label>&nbsp;{{data.tags}}</label>
+        <div>
       <div class="product-image">
         <div class="product-image-content">
           <img :src="config.BACKEND_URL + selectedImage" class="main-image" v-if="selectedImage !== null">
@@ -22,209 +23,51 @@
               <div class="overlay"></div>
             </div>
           </div>
-        </div>
-          <label class="product-row-labels">Description:</label>
-          <label v-html="data.description"></label>
       </div>
       <div class="product-details">
         <div class="product-title">
-          <h4>Details: </h4>
         </div>
         <div class="product-row" v-if="errorMessage !== null">
           <span class="alert alert-danger">
             {{errorMessage}}
           </span>
         </div>
-<!--         <div class="product-row" v-if="data.price !== null && data.price.length > 1 && priceFlag === true">
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <td>Minimum</td>
-                <td>Maximum</td>
-                <td>Price</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, index) in data.price" :key="index">
-                <td>{{item.minimum}}</td>
-                <td>{{item.maximum}}</td>
-                <td>PHP {{item.price}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div> -->
-        <!-- <div class="product-row" v-if="data.variation !== null">
-          <span>{{data.variation[0].payload_value}} {{data.variation[0].payload}}</span>
-        </div> -->
-        <div class="row">
-          <div class="col-sm-6">
+        </div>
+      </div>
+    </div><br>
+  </div>
+  </div>
+          </div>
+            <div class="col-sm-5" style="margin-top:60px;">
            <div id="accordion">
-              <div class="card">
-                <div class="card-header" role="tab" data-toggle="collapse" href="#sku" aria-expanded="true" id="skus" aria-controls="sku" @click="collapsed('skus', transform)">
-                  <a class="card-link">
-                    Sku
-                  </a>
-                </div>
-                <div id="sku" class="collapse" data-parent="#accordion">
-                  <div class="card-body">
-                    {{data.sku}}
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#tags" id="tag" @click="collapsed('tag', transform)">
-                  <a class="collapsed card-link">
-                  Tags
-                </a>
-                </div>
-                <div id="tags" class="collapse" data-parent="#accordion">
-                  <div class="card-body">
-                    {{data.tags}}
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#website" id="websites" @click="collapsed('websites', transform)">
-                  <a class="collapsed card-link">
-                   Website
-                  </a>
-                </div>
-                <div id="website" class="collapse" data-parent="#accordion">
-                  <div class="card-body">
-                    <a :href="data.merchant.website" target="__blank">{{data.merchant.website}}</a>
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#shelfLife" id="life" @click="collapsed('life', transform)">
-                  <a class="collapsed card-link">
-                   Shelf Life
-                  </a>
-                </div>
-                <div id="shelfLife" class="collapse" data-parent="#accordion">
-                  <div class="card-body">
-                    {{data.details.shelf_life}}
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#actives" id="active" @click="collapsed('active', transform)">
-                  <a class="collapsed card-link">
-                   Active/s
-                  </a>
-                </div>
-                <div id="actives" class="collapse" data-parent="#accordion">
-                  <div class="card-body">
+              <p v-if="!readMoreActive">{{data.description.slice(0, 1000)}}</p>
+              <button v-if="!readMoreActive"  @click="readMoreActive=true">See More...,</button>
+              <p v-if="readMoreActive" v-html="data.description"></p>
+              <p ><b>Website:</b>&nbsp;&nbsp;&nbsp;<span>{{data.merchant.website}}</span></p>
+              <p ><b>Shelf Life:</b>&nbsp;&nbsp;&nbsp;<span>{{data.details.shelf_life}}</span></p>
+                   <p><b>Active/s:</b>&nbsp;&nbsp;&nbsp;
                     <ul>
                       <li v-for="(active, index) in active" :key="index">{{active.active_name}}</li>
                     </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#groups" id="group" @click="collapsed('group', transform)">
-                  <a class="collapsed card-link">
-                   Group/s
-                  </a>
-                </div>
-                <div id="groups" class="collapse" data-parent="#accordion">
-                  <div class="card-body">
+                    </p>
+                   <p><b>Group/s:</b>&nbsp;&nbsp;&nbsp;
                     <ul>
-                      <li v-for="(group, index) in groups" :key="index">
-                        {{group.group}}
-                      </li>
+                      <li v-for="(group, index) in groups" :key="index">{{group.group}}</li>
                     </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6">
-            <div id="accordion2">
-              <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#approvalDate" id="date" @click="collapsed('date', transform)">
-                  <a class="card-link">
-                    Approval Date
-                  </a>
-                </div>
-                <div id="approvalDate" class="collapse" data-parent="#accordion2">
-                  <div class="card-body">
-                    {{data.details.approval_date}}
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#approvalNumber" id="number" @click="collapsed('number', transform)">
-                  <a class="card-link">
-                    Approval Number
-                  </a>
-                </div>
-                <div id="approvalNumber" class="collapse" data-parent="#accordion2">
-                  <div class="card-body">
-                    {{data.details.approval_number}}
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#formulation" id="formulations" @click="collapsed('formulations', transform)">
-                  <a class="card-link">
-                   Formulation
-                  </a>
-                </div>
-                <div id="formulation" class="collapse" data-parent="#accordion2">
-                  <div class="card-body">
-                    {{data.details.formulation}}
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#mixingOrder" id="mixing" @click="collapsed('mixing', transform)">
-                  <a class="card-link">
-                   Mixing Order
-                  </a>
-                </div>
-                <div id="mixingOrder" class="collapse" data-parent="#accordion2">
-                  <div class="card-body">
-                    {{data.details.mixing_order}}
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#ingredients" id="ingredient" @click="collapsed('ingredient'), transform">
-                  <a class="card-link">
-                   Other Ingredient
-                  </a>
-                </div>
-                <div id="ingredients" class="collapse" data-parent="#accordion2">
-                  <div class="card-body">
-                    {{data.details.other_ingredient}}
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header" data-toggle="collapse" href="#equipments" id="equipment" @click="collapsed('equipment', transform)">
-                  <a class="card-link">
-                   Safety Equipments
-                  </a>
-                </div>
-                <div id="equipments" class="collapse" data-parent="#accordion2">
-                  <div class="card-body">
+                  </p>
+                 <p><b>Approval Date:</b>&nbsp;&nbsp;&nbsp;<span>{{data.details.approval_date}}</span></p>
+                 <p><b>Approval Number:</b>&nbsp;&nbsp;&nbsp;<span>{{data.details.approval_number}}</span></p>
+                 <p><b>Formulation:</b>&nbsp;&nbsp;&nbsp;<span>{{data.details.formulation}}</span></p>
+                 <p><b>Mixing Order:</b>&nbsp;&nbsp;&nbsp;<span>{{data.details.mixing_order}}</span></p>
+                 <p><b>Other Ingredient:</b>&nbsp;&nbsp;&nbsp;<span>{{data.details.other_ingredient}}</span></p>
+                   <p><b>Safety Equipment:</b>&nbsp;&nbsp;&nbsp;
                     <ul>
-                      <li v-for="(equip, index) in data.details.safety_equipment" :key="index">
-                        {{equip}}
-                      </li>
+                      <li v-for="(equip, index) in data.details.safety_equipment" :key="index">{{equip}}</li>
                     </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div style="margin-left:2%;margin-top:3%;width:100%">
-            <hr style="width:100%">
-            <h4>Recent Files:</h4>
-            <div class="row" style="margin-left:1%">
+                    </p>
+                  <div class="row">
               <div class="col-sm-6">
-                <label class="product-row-labels">Label:</label>
+                <label class="product-row-labels"><b>Label:</b></label>
                 <div class="row" style="margin-left:2%">
                   <div class="col-sm-2" >
                     <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.label.title !== null ? 'color: #cae166' : 'color: red'" @click="download('data1')"></i>
@@ -236,7 +79,7 @@
                 </div>
               </div>
               <div class="col-sm-6">
-                <label class="product-row-labels">Safety Data(SDS):</label>
+                <label class="product-row-labels"><b>Safety Data(SDS):</b></label>
                 <div class="row" style="margin-left:2%">
                   <div class="col-sm-2">
                     <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.sds.title !== null ? 'color: #cae166' : 'color: red'" @click="download('data2')"></i>
@@ -248,113 +91,9 @@
                 </div>
               </div>
             </div>
-          </div>
-          <!-- <div class="col-sm-6">
-            <div class="product-row" v-if="data.sku !== null && data.sku !== ''">
-              <label class="product-row-labels">Sku:</label>
-              <label class="text-danger"><i>&nbsp;&nbsp;{{data.sku}}</i></label>
             </div>
-            <div class="product-row" v-if="data.tags !== null">
-              <label class="product-row-labels">Tags:</label>
-              <label>&nbsp;&nbsp;&nbsp;{{data.tags}}</label>
-            </div>
-            <div class="product-row" v-if="data.merchant !== null">
-              <label class="product-row-labels">Merchant:</label>
-              <label>&nbsp;&nbsp;{{data.merchant.name}}</label>
-            </div>
-            <div class="product-row" v-if="data.merchant !== null">
-              <label class="product-row-labels">Website:</label> &nbsp;&nbsp;
-              <a :href="data.merchant.website" target="__blank">{{data.merchant.website}}</a>
-            </div>
-            <div class="product-row" v-if="data.details.shelf_life !== null">
-              <label class="product-row-labels">Shelf Life:</label>
-              <label>&nbsp;&nbsp;&nbsp;{{data.details.shelf_life}}</label>
-            </div>
-            <div class="product-row" v-if="active[0].active_name !== null">
-              <label class="product-row-labels">Active/s:</label>
-              <ul>
-                <li v-for="(active, index) in active" :key="index">{{active.active_name}}</li>
-              </ul>
-            </div>
-            <div class="product-row" v-if="groups.length > 0">
-              <label class="product-row-labels">Group/s:</label>
-              <ul>
-                <li v-for="(group, index) in groups" :key="index">
-                  {{group.group}}
-                </li>
-              </ul>
-            </div>
-          </div> -->
-          <!-- <div class="col-sm-6">
-            <div class="product-row" v-if="data.details.approval_date !== null">
-              <label class="product-row-labels">Approval Date:</label>
-              <label>&nbsp;&nbsp;&nbsp;{{data.details.approval_date}}</label>
-            </div>
-            <div class="product-row" v-if="data.details.approval_number !== null">
-              <label class="product-row-labels">Approval Number:</label>
-              <label>&nbsp;&nbsp;&nbsp;{{data.details.approval_number}}</label>
-            </div>
-            <div class="product-row" v-if="data.details.formulation !== null">
-              <label class="product-row-labels">Formulation:</label>
-              <label>&nbsp;&nbsp;&nbsp;{{data.details.formulation}}</label>
-            </div>
-            <div class="product-row" v-if="data.details.mixing_order !== null">
-              <label class="product-row-labels">Mixing Order:</label>
-              <label>&nbsp;&nbsp;&nbsp;{{data.details.mixing_order}}</label>
-            </div>
-            <div class="product-row" v-if="data.details.other_ingredient !== null">
-              <label class="product-row-labels">Other Ingredient:</label>
-              <label>&nbsp;&nbsp;&nbsp;{{data.details.other_ingredient}}</label>
-            </div>
-            <div class="product-row" v-if="data.details.safety_equipment.length > 0">
-              <label class="product-row-labels">Safety Equipment:</label>
-              <label v-for="(el, index) in data.details.safety_equipment" :key="index">&nbsp;&nbsp;&nbsp;{{el}}</label>
-            </div>
-          </div> -->
-        </div>
-      </div>
-    </div><br>
-    <!-- <div class="product-more-details">
-      <div class="pagination-holder">
-        <ul class="product-menu">
-          <li v-for="(item, index) in productMenu" :key="index" v-bind:class="{'menu-active': item.flag === true}" class="" @click="selectMenu(index)">{{item.title}}</li>
-        </ul>
-      </div>
-      <div class="details-holder" v-if="prevMenuIndex === 0">
-        <label>
-          <label v-html="data.description"></label>
-        </label>
-      </div>
-      <div class="details-holder" v-if="prevMenuIndex === 1">
-        <div class="row">
-          <div class="col-sm-3">
-            <label>Label</label>
-          </div>
-          <div class="col-sm-3" >
-            <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.label.title !== null ? 'color: #cae166' : 'color: red'" @click="download('data1')"></i>
-            <a :href="config.BACKEND_URL + data.details.files.label.url" id="data1" target="__blank"></a>
-          </div>
-          <div class="col-sm-3">
-            <label>{{data.details.files.label.title}}</label>
-          </div>
-        </div><hr>
-        <div class="row">
-          <div class="col-sm-3">
-            <label>SDS</label>
-          </div>
-          <div class="col-sm-3">
-            <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.sds.title !== null ? 'color: #cae166' : 'color: red'" @click="download('data2')"></i>
-            <a :href="config.BACKEND_URL + data.details.files.sds.url" id="data2" target="__blank"></a>
-          </div>
-          <div class="col-sm-3">
-            <label>{{data.details.files.sds.title}}</label>
           </div>
         </div>
-      </div>
-      <div class="details-holder" v-if="prevMenuIndex === 2">
-        <product-comments :payloadValue="data.id" :payload="'product'" :load="true"></product-comments>
-      </div>
-    </div> -->
   </div>
 </template>
 <style scoped>
@@ -376,7 +115,16 @@
   }
   ul{
     margin-bottom: 0px;
+    padding-left:100px;
+    display:inline;
+    list-style-type:none;
     /* margin-top: -5%; */
+  }
+  p{
+    display:flex;
+  }
+  span{
+    padding-left:100px;
   }
   #icon{
     font-size: 30px;
@@ -385,7 +133,7 @@
   .title{
     width: 100%;
     float: left;
-    font-size: 16px;
+    font-size: 20px;
   }
   .product-item-holder{
     width: 100%;
@@ -394,18 +142,18 @@
     overflow-y: hidden;
   }
   .product-image{
-    width: 40%;
+    width: auto;
     float: left;
-    min-height: 410px;
+    min-height: auto;
     overflow-y: hidden;
     text-align: center;
     
   }
   .product-image-content{
-    width: 90%;
+    width: auto;
     margin-left:2%;
     float: left;
-    min-height: 410px;
+    min-height: auto;
     overflow-y: hidden;
     text-align: center;
     background: white;
@@ -476,10 +224,9 @@
 
     .product-row-merchant{
     float: left;
-    min-height: 40px;
     overflow-y: hidden;
-    font-size: 16px;
-    line-height: 50px;
+    font-size: 14px;
+    line-height: 25px;
   }
   .product-row-tags{
     float: left;
@@ -648,7 +395,8 @@ export default {
       productCode: null,
       groups: [],
       active: [],
-      transform: false
+      transform: false,
+      readMoreActive: false
     }
   },
   components: {
