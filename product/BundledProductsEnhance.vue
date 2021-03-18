@@ -106,24 +106,25 @@ export default {
     getAttribute(data){
       this.newAttribute.product_attribute_id = data.target.value
     },
-    payloadValueExit(newValue){
+    payloadValueExit(newValue, newAttribute){
       console.log(this.item)
-      if(this.item.variation !== null){
-        this.item.variation.map(el => {
-          if(parseInt(newValue) === parseInt(el.id)){
+      if(this.item.bundled !== null){
+        this.item.bundled.map(el => {
+          if(parseInt(newValue) === el.qty && parseInt(newAttribute) === el.product_attribute_id){
             this.errorMessage = 'Value is already existed in the list'
             return true
           }else{
             this.errorMessage = null
-            return false
+            return true
           }
         })
       }
     },
     create(){
+      console.log('updateed 18-03-2021 2:16')
       console.log(this.newAttribute.product_attribute_id, this.newAttribute.qty)
       if(this.newAttribute.product_attribute_id !== null && this.newAttribute.qty !== null){
-        this.payloadValueExit(this.newAttribute.product_attribute_id)
+        this.payloadValueExit(this.newAttribute.qty, this.newAttribute.product_attribute_id)
         if(this.errorMessage !== null){
           return
         }
@@ -136,7 +137,7 @@ export default {
           merchant_id: this.user.subAccount.merchant.id
         }
         $('#loading').css({display: 'block'})
-        if(this.item.type.toLowerCase() !== 'bundled'){
+        if(this.item.bundled === null){
           this.APIRequest('products/create', parameter).then(response => {
             $('#loading').css({display: 'none'})
             if(response.data > 0){
@@ -154,6 +155,7 @@ export default {
           this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
             if(response.data > 0){
               this.errorMessage = null
+              this.newAttribute.qty = null
               this.$parent.retrieve()
             }
           })
