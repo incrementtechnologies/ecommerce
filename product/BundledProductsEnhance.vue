@@ -4,8 +4,8 @@
     <div class="form-group">
       <label for="exampleInputEmail1" style="font-weight: 600;">Create Bundled</label>
       <div><br>
-        <select class="form-control form-control-custom"  style="float: left; width: 40%;" @change="getAttribute($event)" v-model="selectedVariation">
-            <option v-for="itemVariation, indexVariation in item.variation" :value="itemVariation.id">{{itemVariation.payload}}({{itemVariation.payload_value}})</option>
+        <select class="form-control form-control-custom"  style="float: left; width: 40%;" @change="getAttribute($event)" v-model="selectedVariation" :disabled="isEdit===false">
+            <option v-for="itemVariation, indexVariation in item.variation" :value="itemVariation.id" >{{itemVariation.payload}}({{itemVariation.payload_value}})</option>
         </select>
         <input type="number" class="form-control form-control-custom" style="float: left; width: 40%; margin-left: 10px;" placeholder="Qty" v-model="newAttribute.qty" @keyup.enter="create()" :disabled="isEdit===false">
         <i class="fa fa-check mt-2" style="color: #cae166; font-size: 30px;" v-if="newAttribute.product_attribute_id !== null && newAttribute.qty !== null"></i>
