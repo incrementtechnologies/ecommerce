@@ -72,6 +72,7 @@
         </div>
         <div class="product-item-title" style="width: 90%">
           <label>Activity Group</label>
+          <label class="text-danger">{{errorMessageGroups}}</label>
           <br>
           <select class="form-control form-control-custom"  v-model="group" :disabled="isEdit===false">
             <option v-for="(group, index) in groups" :key="index" :value="group">{{group}}</option>
@@ -303,6 +304,7 @@ export default {
       selectedMenu: COMMON.ecommerce.editProductMenu[0],
       selectedImage: null,
       errorMessageActives: null,
+      errorMessageGroups: null,
       qty: 1,
       priceFlag: false,
       newImage: {
@@ -404,8 +406,12 @@ export default {
       let group = {
         group: this.group
       }
-      this.listGroup.push(group)
-      this.group = null
+      if(this.listGroup.length < 3){
+        this.listGroup.push(group)
+        this.group = null
+      }else{
+        this.errorMessageGroups = 'Groups already reach max number(3)'
+      }
     },
     removeGroup(index){
       this.listGroup.splice(index, 1)
