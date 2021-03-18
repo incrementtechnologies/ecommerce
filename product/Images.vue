@@ -73,6 +73,7 @@ export default {
     hasError: false
   }),
   mounted(){
+    console.log('images updateed 18-03-2021 2:16')
     this.retrieveImage()
     if(this.imagesList.length > 0){
       this.imagesList.map(el => {
