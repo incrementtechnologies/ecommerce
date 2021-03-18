@@ -96,8 +96,32 @@
               </tbody>
           </table>
           </div>
-        <div class="product-item-title" style="width: 48%; margin-right: 1%;">
+          <div class="row">
+            <div class="col-sm-5 product-item-title">
               <label>Actives</label>
+              <label class="text-danger">{{errorMessageActives}}</label>
+              <br>
+              <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents" :disabled="isEdit===false">
+            </div>
+            <div class="col-sm-3 product-item-title mt-4">
+              <label></label>
+              <br>
+              <input type="number" class="form-control form-control-custom" v-model="active.value" placeholder="value" :disabled="isEdit===false">
+            </div>
+            <div class="col-sm-3 product-item-title mt-4">
+              <label></label>
+              <br>
+              <select class="form-control form-control-custom" v-model="active.attribute" :disabled="isEdit===false">
+                <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
+              </select>
+            </div>
+            <div class="col-sm-1 product-item-title pl-2" style="margin-top: 5.5%;">
+              <button class="btn btn-primary" @click="addActive" :disabled="isEdit===false"><i class="fa fa-plus" ></i></button>
+            </div>
+          </div>
+            <!-- <div class="product-item-title" style="width: 50%; margin-right: 1%;">
+              <label>Actives</label>
+              <label class="text-danger">{{errorMessageActives}}</label>
               <br>
               <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents" :disabled="isEdit===false">
             </div>
@@ -115,26 +139,27 @@
             </div>
             <div class="product-item-title pl-4" style="width: 10%; margin-top: 5.5%;">
               <button class="btn btn-primary" @click="addActive" :disabled="isEdit===false"><i class="fa fa-plus" ></i></button>
-            </div>
+            </div> -->
+            
             <div class="table-responsive">
-            <table class="table table-hover table-bordered table-sm w-50 " v-if="actives[0].active_name !== null">
-              <thead>
-                  <tr>
-                    <td>Active Constituent</td>
-                    <td>Value</td>
-                    <td>Attribute</td>
-                    <td>Action</td>
-                  </tr>
-              </thead>
-                <tbody v-if="actives === null || actives.length > 0">
-                  <tr v-for="(active, index) in actives" :key="index">
-                    <td>{{active.active_name}}</td>
-                    <td>{{active.value}}</td>
-                    <td>{{active.attribute}}</td>
-                    <td><button class="btn" @click="removeActive(index)" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
-                  </tr>
-                </tbody>
-            </table>
+              <table class="table table-hover table-bordered table-sm w-50 " style="float: left" v-if="actives[0].active_name !== null">
+                <thead>
+                    <tr>
+                      <td>Active Constituent</td>
+                      <td>Value</td>
+                      <td>Attribute</td>
+                      <td>Action</td>
+                    </tr>
+                </thead>
+                  <tbody v-if="actives === null || actives.length > 0">
+                    <tr v-for="(active, index) in actives" :key="index">
+                      <td>{{active.active_name}}</td>
+                      <td>{{active.value}}</td>
+                      <td>{{active.attribute}}</td>
+                      <td><button class="btn" @click="removeActive(index)" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
+                    </tr>
+                  </tbody>
+              </table>
             </div>
         <div class="product-item-title">
           <label>Solvent (if applicable)</label>
@@ -242,7 +267,7 @@
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Bundled Products'">
-        <bundled-products :item="data"></bundled-products>
+        <bundled-products :item="data" :isEdit="isEdit"></bundled-products>
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Other Details'">
@@ -277,6 +302,7 @@ export default {
       prevMenuIndex: 0,
       selectedMenu: COMMON.ecommerce.editProductMenu[0],
       selectedImage: null,
+      errorMessageActives: null,
       qty: 1,
       priceFlag: false,
       newImage: {
@@ -364,7 +390,7 @@ export default {
         this.active.value = null
         this.active.attribute = null
       }else{
-        this.errorMessage = 'Active already reach max number(3)'
+        this.errorMessageActives = 'Active already reach max number(3)'
       }
     },
     removeActive(index){
