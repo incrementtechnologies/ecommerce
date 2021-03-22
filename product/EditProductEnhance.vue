@@ -25,12 +25,9 @@
         <div class="product-item-title">
           <label>Tags</label>
           <br>
-          <input type="text" class="form-control form-control-custom" @change="tagChecker($event)" v-model="data.tags" placeholder="Separate tags(e.g. herbicide, insecticide, adjuvant, fungicide) with , (add tags in order to add groups)" :disabled="isEdit===false">
-        </div>
-        <div class="product-item-title">
-          <label>SKU</label>
-          <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here..." :disabled="isEdit===false">
+         <select class="form-control form-control-custom" :disabled="isEdit===false" @change="tagChecker($event)">
+            <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag" :selected="data.tags === tag.toLowerCase() ? true : false">{{tag}}</option>
+          </select>
         </div>
         <!-- <div v-if="common.ecommerce.productUnits !== null">
           <div v-if="data.variation !== null">
@@ -62,28 +59,23 @@
             </div>
           </div>
         </div> -->
-        <div class="product-item-title">
-          <label>Status</label>
-          <br>
-          <select class="form-control form-control-custom" v-model="data.status" :disabled="isEdit===false">
-            <option value="pending">Pending</option>
-            <option value="published">Published</option>
-          </select>
-        </div>
-        <div class="product-item-title" style="width: 90%">
-          <label>Activity Group</label>
-          <label class="text-danger">{{errorMessageGroups}}</label>
-          <br>
-          <select class="form-control form-control-custom"  v-model="group" :disabled="isEdit===false">
-            <option v-for="(group, index) in groups" :key="index" :value="group">{{group}}</option>
-          </select>
-        </div>
-        <div class="product-item-title pl-4" style="width: 10%; margin-top: 5.5%;">
-              <button class="btn btn-primary" @click="addGroup" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
+        <div :hidden="isEdit===false">
+          <div class="product-item-title" style="width: 90%" >
+            <label :hidden="isEdit===false">Activity Group</label>
+            <label class="text-danger">{{errorMessageGroups}}</label>
+            <br>
+            <select class="form-control form-control-custom"  v-model="group" :hidden="isEdit===false">
+              <option v-for="(group, index) in groups" :key="index" :value="group">{{group}}</option>
+            </select>
+          </div>
+          <div class="product-item-title pl-4" style="width: 10%; margin-top: 5.5%;">
+              <button class="btn btn-primary" @click="addGroup" :hidden="isEdit===false"><i class="fa fa-plus"></i></button>
+          </div>
         </div>
         <div class="table-responsive">
+          <label style="margin-top: 1%" :hidden="isEdit===true"><strong>Activity Group</strong></label>      
           <table class="table table-hover table-bordered table-sm w-50" v-if="listGroup.length > 0">
-              <thead >
+              <thead>
                   <tr>
                     <td>Group</td>
                     <td>Action</td>
@@ -92,57 +84,67 @@
               <tbody>
                 <tr v-for="(group, index) in listGroup" :key="index">
                   <td>{{group.group}}</td>
-                  <td><button class="btn" @click="removeGroup(index)" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
+                  <td><button class="btn" @click="showConfirmationModal(index, 'groups')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                 </tr>
               </tbody>
           </table>
+           <label v-else>No Groups Available</label>
           </div>
-          <div class="row">
-            <div class="col-sm-5 product-item-title">
-              <label>Actives</label>
-              <label class="text-danger">{{errorMessageActives}}</label>
+          <div v-if="showHrac">
+            <div class="product-item-title" style="width: 90%">
+              <label>HRAC Mode of Action</label>
+              <label class="text-danger">{{errorMessageHracs}}</label>
               <br>
-              <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents" :disabled="isEdit===false">
-            </div>
-            <div class="col-sm-3 product-item-title mt-4">
-              <label></label>
-              <br>
-              <input type="number" class="form-control form-control-custom" v-model="active.value" placeholder="value" :disabled="isEdit===false">
-            </div>
-            <div class="col-sm-3 product-item-title mt-4">
-              <label></label>
-              <br>
-              <select class="form-control form-control-custom" v-model="active.attribute" :disabled="isEdit===false">
-                <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
-              </select>
-            </div>
-            <div class="col-sm-1 product-item-title pl-2" style="margin-top: 5.5%;">
-              <button class="btn btn-primary" @click="addActive" :disabled="isEdit===false"><i class="fa fa-plus" ></i></button>
-            </div>
-          </div>
-            <!-- <div class="product-item-title" style="width: 50%; margin-right: 1%;">
-              <label>Actives</label>
-              <label class="text-danger">{{errorMessageActives}}</label>
-              <br>
-              <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents" :disabled="isEdit===false">
-            </div>
-            <div class="product-item-title" style="width: 20%; margin-right: 1%; margin-top: 2.5%;">
-              <label></label>
-              <br>
-              <input type="number" class="form-control form-control-custom" v-model="active.value" placeholder="value" :disabled="isEdit===false">
-            </div>
-            <div class="product-item-title" style="width: 20%; margin-top: 2.5%;">
-              <label></label>
-              <br>
-              <select class="form-control form-control-custom" v-model="active.attribute" :disabled="isEdit===false">
-                <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
-              </select>
+            <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="isEdit===false">
+                <option v-for="(el, index) in formulations.HRAC" :key="index" :value="el" >{{el}}</option>
+            </select>
             </div>
             <div class="product-item-title pl-4" style="width: 10%; margin-top: 5.5%;">
-              <button class="btn btn-primary" @click="addActive" :disabled="isEdit===false"><i class="fa fa-plus" ></i></button>
-            </div> -->
-            
+                <button class="btn btn-primary" @click="addHrac" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
+            </div>
             <div class="table-responsive">
+            <table class="table table-hover table-bordered table-sm w-50" v-if="listOfHracs.length > 0">
+                <thead >
+                    <tr>
+                      <td>HRACS</td>
+                      <td>Action</td>
+                    </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(el, index) in listOfHracs" :key="index">
+                    <td>{{el}}</td>
+                    <td><button class="btn" @click="showConfirmationModal(index, 'hrac')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
+                  </tr>
+                </tbody>
+            </table>
+            <label v-else>No HRAC Available</label>
+          </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-5 product-item-title" :hidden="isEdit===false">
+              <label>Actives</label>
+              <label class="text-danger">{{errorMessageActives}}</label>
+              <br>
+              <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents">
+            </div>
+            <div class="col-sm-3 product-item-title mt-4" :hidden="isEdit===false">
+              <label></label>
+              <br>
+              <input type="number" class="form-control form-control-custom" v-model="active.value" placeholder="value" >
+            </div>
+            <div class="col-sm-3 product-item-title mt-4"  :hidden="isEdit===false">
+              <label></label>
+              <br>
+              <select class="form-control form-control-custom" v-model="active.attribute">
+                <option v-for="(item, index) in formulations.ACTIVE_UNITS" :value="item">{{item}}</option>
+              </select>
+            </div>
+            <div class="col-sm-1 product-item-title pl-2" style="margin-top: 5.5%;" :hidden="isEdit===false"> 
+              <button class="btn btn-primary" @click="addActive"><i class="fa fa-plus" ></i></button>
+            </div>
+          </div>
+            <div class="table-responsive">
+              <label style="margin-top: 1%" :hidden="isEdit===true"><strong>Actives</strong></label>    
               <table class="table table-hover table-bordered table-sm w-50 " style="float: left" v-if="actives[0].active_name !== null">
                 <thead>
                     <tr>
@@ -157,10 +159,11 @@
                       <td>{{active.active_name}}</td>
                       <td>{{active.value}}</td>
                       <td>{{active.attribute}}</td>
-                      <td><button class="btn" @click="removeActive(index)" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
+                      <td><button class="btn" @click="showConfirmationModal(index, 'active')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                     </tr>
                   </tbody>
               </table>
+              <label v-else>No Actives Available</label>
             </div>
         <div class="product-item-title">
           <label>Solvent (if applicable)</label>
@@ -187,36 +190,17 @@
         <div class="product-item-title">
           <label>Application Safety Equipment</label>
           <br>
-          <div class="form-check">
-            
-            <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment1" value="Cotton overalls buttoned to neck and wrist" :disabled="isEdit===false"><span>Cotton overalls buttoned to neck and wrist</span>
-            </label>
-          </div>
-          <div class="form-check">
-            <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment2" value="A Washable hat " :disabled="isEdit===false"><span>A Washable hat</span> 
-            </label>
-          </div>
-          <div class="form-check">
-            <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Elbow-lenght PVC gloves" :disabled="isEdit===false"><span>Elbow-lengTH PVC gloves</span>  
-            </label>
-          </div>
-           <div class="form-check">
-            <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Face shield or googles" :disabled="isEdit===false"><span>Face shield or googles</span>  
-            </label>
-          </div>
-           <div class="form-check">
-            <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Half facepiece respirator or disposable respirator" :disabled="isEdit===false"><span>Half facepiece respirator or disposable respirator</span>  
-            </label>
-          </div>
-           <div class="form-check">
-            <label class="form-check-label">
-              <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" id="equipment3" value="Full respirator" :disabled="isEdit===false"><span>Full respirator</span>  
-            </label>
+          <div class="form-check" v-for="(equip, index) in formulations.SAFETY_EQUIPMENTS" :key="index">
+            <div v-if="isEdit === false">
+              <label class="form-check-label" v-if="data.details.safety_equipment.includes(equip)">
+                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="isEdit===false"><span>{{equip}}</span>
+              </label>
+            </div>
+            <div v-else>
+              <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="isEdit===false"><span>{{equip}}</span>
+              </label>
+            </div>
           </div>
         </div>
         <div class="product-item-title" style="width: 79%; margin-right: 1%;">
@@ -238,8 +222,21 @@
           <br>
           <input type="date" class="form-control form-control-custom" v-model="data.details.approval_date" placeholder="Approval date" :disabled="isEdit===false">
         </div>
+        <div class="product-item-title">
+          <label>SKU</label>
+          <br>
+          <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here..." :disabled="isEdit===false">
+        </div>
+        <div class="product-item-title">
+          <label>Status</label>
+          <br>
+          <select class="form-control form-control-custom" v-model="data.status" :disabled="isEdit===false">
+            <option value="pending">Pending</option>
+            <option value="published">Published</option>
+          </select>
+        </div>
         <div class="product-item-title" v-if="isEdit === true">
-          <button class="btn btn-danger" @click="showConfirmationModal(data.id)" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'" style="margin-top: 5px;">Delete</button>
+          <button class="btn btn-danger" @click="showConfirmationModal(data.id, 'products')" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'" style="margin-top: 5px;">Delete</button>
           <button class="btn btn-danger pull-right" @click="isEdit = false" style="margin-right: 2px; margin-top: 5px;">Cancel</button>
           <button class="btn btn-primary pull-right" @click="updateProduct()" style="margin-right: 2px; margin-top: 5px;">Update</button>
           <button class="btn btn-warning pull-right" @click="redirect('/marketplace/product/' + data.code + '/' + 'preview')" style="margin-right: 10px; margin-top: 5px;">Preview</button>
@@ -271,12 +268,12 @@
         <bundled-products :item="data" :isEdit="isEdit"></bundled-products>
       </div>
 
-      <div class="details-holder" v-if="selectedMenu.title === 'Other Details'">
+      <div class="details-holder" v-if="selectedMenu.title === 'Documentation'">
         <other-details @file1="getFiles($event, 'file1')" @file2="getFiles($event, 'file2')" v-bind:item="data" :isEditing="isEdit"></other-details>
       </div>
     </div>
     <browse-images-modal></browse-images-modal>
-    <confirmation ref="confirmationModal" :title="'Confirmation Message'" :message="'Are you sure you want delete this product?'" @onConfirm="deleteProduct($event.id)"></confirmation>
+    <confirmation ref="confirmationModal" :title="'Confirmation Message'" :message="confirmationMessage" @onConfirm="removeBySplice($event.id, $event)"></confirmation>
   </div>
 </template>
 <script>
@@ -301,7 +298,7 @@ export default {
       formulations: GROUP,
       code: this.$route.params.code,
       prevMenuIndex: 0,
-      selectedMenu: COMMON.ecommerce.editProductMenu[0],
+      selectedMenu: COMMON.ecommerce.editProductMenu[2],
       selectedImage: null,
       errorMessageActives: null,
       errorMessageGroups: null,
@@ -337,13 +334,20 @@ export default {
       },
       group: null,
       listGroup: [],
-      isEdit: false
+      isEdit: false,
+      tags: null,
+      showHrac: false,
+      selectedHracs: null,
+      listOfHracs: [],
+      errorMessageHracs: null,
+      idxToBeDeleted: null,
+      confirmationMessage: null
     }
   },
   computed: {
     productMenu: function (){
       if(this.data !== null){
-        return (this.data.type === 'regular') ? [{title: 'Other Details',
+        return (this.data.type === 'regular') ? [{title: 'Documentation',
           flag: true}, {title: 'Variation', flag: false}, {
             title: 'Bundled Products',
             flag: false
@@ -395,9 +399,6 @@ export default {
         this.errorMessageActives = 'Active already reach max number(3)'
       }
     },
-    removeActive(index){
-      this.actives.splice(index, 1)
-    },
     addGroup(){
       if(this.group === null || this.group === ''){
         this.errorMessage = 'Empty field cannot be added'
@@ -413,11 +414,40 @@ export default {
         this.errorMessageGroups = 'Groups already reach max number(3)'
       }
     },
-    removeGroup(index){
-      this.listGroup.splice(index, 1)
+    addHrac(){
+      if(this.selectedHracs === null || this.selectedHracs === ''){
+        this.errorMessage = 'Empty field cannot be added'
+        return
+      }
+      if(this.listOfHracs.includes(this.selectedHracs)){
+        this.errorMessageHracs = 'HRACS is already existed'
+      }else if(this.listOfHracs.length === 3){
+        this.errorMessageHracs = 'HRACS already reach max number(3)'
+      }else{
+        this.listOfHracs.push(this.selectedHracs)
+        this.selectedHracs = null
+        this.errorMessageHracs = null
+      }
     },
-    showConfirmationModal(id){
-      this.$refs.confirmationModal.show(id)
+    removeBySplice(index){
+      console.log(index)
+      if(index.array === 'active'){
+        this.actives.splice(index.id, 1)
+      }else if(index.array === 'groups'){
+        this.listGroup.splice(index.id, 1)
+      }else if(index.array === 'hrac'){
+        this.listOfHracs.splice(index.id, 1)
+      }else{
+        this.deleteProduct(index.id)
+      }
+    },
+    showConfirmationModal(id, array){
+      let parameter = {
+        id: id,
+        array: array
+      }
+      this.confirmationMessage = 'Are you sure you want to delete this ' + array + '?'
+      this.$refs.confirmationModal.show(parameter)
     },
     selectImage(url){
       this.selectedImage = url
@@ -474,7 +504,11 @@ export default {
           }else{
             this.actives.push(this.data.details.active)
           }
-          this.tagChecker(this.data)
+          if(this.data.details.hracs !== undefined){
+            this.listOfHracs = this.data.details.hracs
+            this.showHrac = true
+          }
+          this.tagChecker(null)
         }
       })
     },
@@ -489,30 +523,41 @@ export default {
       })
     },
     tagChecker(data){
-      console.log(data.tags)
-      if(data.tags !== undefined){
-        if(data.tags.toLowerCase() === 'insecticide'){
+      // console.log('[DATA]', data === null)
+      this.tags = data !== null ? data.target.value : this.data.tags
+      if(data === null){
+        if(this.data.tags.toLowerCase() === 'insecticide'){
           this.groups = GROUP.INSECTICIDE
-        }else if(data.tags.toLowerCase() === 'herbicide'){
+          this.showHrac = false
+        }else if(this.data.tags.toLowerCase() === 'herbicide'){
           this.groups = GROUP.HERBICIDE
-        }else if(data.tags.toLowerCase() === 'fungicide'){
+          this.showHrac = true
+        }else if(this.data.tags.toLowerCase() === 'fungicide'){
           this.groups = GROUP.FUNGICIDE
-        }else if(data.tags.toLowerCase() === 'adjuvant'){
+          this.showHrac = false
+        }else if(this.data.tags.toLowerCase() === 'others'){
           this.groups = GROUP.ADJUVANT
+          this.showHrac = false
         }else{
           this.groups = []
+          this.showHrac = false
         }
       }else{
-        if(data.target.value.includes('insecticide')){
+        if(data.target.value.toLowerCase().includes('insecticide')){
           this.groups = GROUP.INSECTICIDE
-        }else if(data.target.value.includes('herbicide')){
+          this.showHrac = false
+        }else if(data.target.value.toLowerCase().includes('herbicide')){
           this.groups = GROUP.HERBICIDE
-        }else if(data.target.value.includes('fungicide')){
+          this.showHrac = true
+        }else if(data.target.value.toLowerCase().includes('fungicide')){
           this.groups = GROUP.FUNGICIDE
-        }else if(data.target.value.includes('adjuvant')){
-          this.groups = GROUP.ADJUVANT
+          this.showHrac = false
+        }else if(data.target.value.toLowerCase().includes('others')){
+          this.groups = GROUP.OTHERS
+          this.showHrac = false
         }else{
           this.groups = []
+          this.showHrac = false
         }
       }
     },
@@ -540,8 +585,12 @@ export default {
       if(this.validate() === false){
         return
       }
+      if(this.data.details.hrac === undefined){
+        this.data.details['hracs'] = this.listOfHracs
+      }
       this.data.details.group = this.listGroup
       this.data.details.active = this.actives
+      this.data.tags = this.tags
       this.data.details = JSON.stringify(this.data.details)
       console.log(this.data.details)
       $('#loading').css({display: 'block'})

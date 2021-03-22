@@ -19,7 +19,7 @@
               <div class="col-sm-12"> 
                 <label>Variations</label>
                 <br>
-                <input type="text" class="form-control" :placeholder="`${variations.payload}-${variations.payload_value}`" disabled>
+                <input type="text" class="form-control" :placeholder="`${variations.product} ${variations.variation.payload}-${variations.variation.payload_value}`" disabled>
                 <!-- <select class="form-control form-control-custom" v-model="newData.product_attribute_id">
                   <option v-for="(item, index) in variations" :value="item.id">{{item.payload_value}} - {{item.payload}}</option>
                 </select> -->
@@ -31,7 +31,7 @@
             </div>
 
             <div class="form-group form-group-three margin-right">
-              <label for="exampleInputEmail1">Date <b class="text-danger">*</b></label>
+              <label for="exampleInputEmail1">Date</label>
               <select class="form-control" v-model="manufacturing.date">
                 <option v-for="i in 31" :key="i" :value="i">{{i}}</option>
               </select>
@@ -209,7 +209,7 @@ export default {
         this.errorMessage = null
         this.newData.product_id = this.params
         this.newData.account_id = this.user.userID
-        this.newData.product_attribute_id = this.variations.id
+        this.newData.product_attribute_id = this.variations.variation.id
         this.newData.manufacturing_date = this.manufacturing.year + '-' + this.manufacturing.month + ((this.manufacturing.date === null || this.manufacturing.date === '') ? '' : '-' + this.manufacturing.date)
         $('#loading').css({'display': 'block'})
         this.APIRequest('product_traces/create', this.newData).then(response => {
@@ -235,12 +235,8 @@ export default {
     },
     validate(){
       console.log(this.newData)
-      if(this.newData.batch_number === null || this.manufacturing.date === null || this.manufacturing.month === null || this.manufacturing.year === null){
+      if(this.newData.batch_number === null || this.manufacturing.month === null || this.manufacturing.year === null){
         this.errorMessage = 'All fields are required'
-        return false
-      }
-      if(this.newData.product_attribute_id === null || this.variations === null){
-        this.errorMessage = 'Please add your product variation'
         return false
       }
       if(this.newData.batch_number === '' || this.newData.batch_number === null){
