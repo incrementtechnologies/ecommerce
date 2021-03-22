@@ -3,19 +3,10 @@
     <div class="error text-danger" v-if="errorMessage !== null">{{errorMessage}}</div>
     <div class="form-group">
       <label for="exampleInputEmail1" style="font-weight: 600;">Variations</label>
-      <div><br>
-        <select class="form-control form-control-custom"  style="float: left; width: 40%;" v-model="newAttribute.payload" v-if="item.variation === null">
-            <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
-        </select>
-        <input class="form-control form-control-custom"  style="float: left; width: 40%;" id="payload" :placeholder="`${item.title}(${item.variation[0].payload})`" :value="item.variation[0].payload" v-else disabled>
-        <input type="number" class="form-control form-control-custom" style="float: left; width: 40%; margin-left: 10px;" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup.enter="create()" :disabled="isEdit===false">
-        <!-- <i class="fa fa-check mt-2" style="color: #cae166; font-size: 30px;" v-if="newAttribute.payload_value !== null && newAttribute.payload_value !== ''"></i> -->
-        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="confirmAdd()" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
-      </div>
     </div>
     <div class="variations-content" v-if="item.variation !== null">
       <div class="attribute-item" v-for="itemVariation, indexVariation in item.variation">
-        <input class="form-control form-control-custom" style="width: 40%; float: left; margin-right: 10px;" :placeholder="`${item.title}(${itemVariation.payload})`" disabled>
+        <input class="form-control form-control-custom" style="width: 40%; float: left; margin-right: 10px;" :placeholder="`${item.title}-${itemVariation.payload_value}${itemVariation.payload.substring(itemVariation.payload.lastIndexOf('s') + 1)}`" disabled>
         <input type="text" class="form-control form-control-custom" style="float: left; width: 35%;" placeholder="Type variation value here..." v-model="itemVariation.payload_value" @keyup.enter="update(itemVariation)" disabled>
          <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" disabled>
           {{itemVariation.product_trace_qty}}
@@ -30,6 +21,16 @@
         </button> -->
       </div>
     </div>
+    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo">Create new product variation</button>
+    <div id="demo" class="collapse"><br>
+        <select class="form-control form-control-custom"  style="float: left; width: 40%;" v-model="newAttribute.payload" v-if="item.variation === null">
+            <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
+        </select>
+        <input class="form-control form-control-custom"  style="float: left; width: 40%;" id="payload" :placeholder="`${item.title}(${item.variation[0].payload.substring(item.variation[0].payload.lastIndexOf('s') + 1)})`" :value="item.variation[0].payload" v-else disabled>
+        <input type="number" class="form-control form-control-custom" style="float: left; width: 40%; margin-left: 10px;" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup.enter="create()" :disabled="isEdit===false">
+        <!-- <i class="fa fa-check mt-2" style="color: #cae166; font-size: 30px;" v-if="newAttribute.payload_value !== null && newAttribute.payload_value !== ''"></i> -->
+        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="confirmAdd()" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
+      </div>
     <Confirmation
         :title="'Confirmation Modal'"
         :message="'Are you sure you want to add this variation?'"
@@ -119,7 +120,12 @@ export default {
       console.log(this.$refs.addTrace)
       // this.$refs.addTrace.errorMessage = null
       this.productId = this.item.id
-      this.selectedVariation = variation
+      let fullVariation = {
+        variation: variation,
+        product: this.item.title
+      }
+      console.log(fullVariation)
+      this.selectedVariation = fullVariation
       setTimeout(() => {
         $('#createProductTracesModal').modal('show')
       }, 100)
