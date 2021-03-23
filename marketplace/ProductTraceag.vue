@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
 <div class="row p-0 m-0">
   <div class="col-sm-7">
     <div v-if="data !== null" class="">
@@ -21,22 +22,105 @@
                   <div v-for="(item, index) in imagesList" :key="index" class="image-item" @click="selectImage(item.url)" style="margin-left:5px">
                     <img :src="config.BACKEND_URL + item.url" :style="[ selectedImage === item.url ? { 'border': '3px solid grey'} : {'border':'1px solid grey'}]" class="other-image">
                     <div class="overlay"></div>
+=======
+<div class="row">
+  <div v-if="data !== null" class="col-sm-7">
+    <div class="title">
+    <br>
+    <h3>{{data.title}}</h3>
+    <div class="product-row-merchant" v-if="data.merchant !== null">
+        <label class="product-row-labels">Merchant:</label>
+        <label>&nbsp;{{data.merchant.name}}&nbsp;</label>
+        <label class="product-row-labels">SKU:</label>
+        <label>&nbsp;{{data.sku}} &nbsp;</label>
+        <label class="product-row-labels">Tags:</label>
+        <label>&nbsp;{{data.tags}}</label>
+        <div>
+      <div class="product-image">
+        <div class="product-image-content">
+          <img :src="config.BACKEND_URL + selectedImage" class="main-image" v-if="selectedImage !== null">
+          <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image" v-if="selectedImage === null && data.featured !== null">
+          <i class="fa fa-image" v-if="selectedImage === null && data.featured === null"></i>
+          <div class="images-holder" v-if="data.images !== null">
+            <div v-for="(item, index) in data.images" :key="index" class="image-item" @click="selectImage(item.url)" style="margin-left:5px">
+              <!-- <img :src="config.BACKEND_URL + item.url" class="other-image"> -->
+              <div class="overlay"></div>
+            </div>
+          </div>
+      </div>
+      <div class="product-details">
+        <div class="product-title">
+        </div>
+        <div class="product-row" v-if="errorMessage !== null">
+          <span class="alert alert-danger">
+            {{errorMessage}}
+          </span>
+        </div>
+        </div>
+      </div>
+    </div><br>
+  </div>
+  </div>
+          </div>
+            <div class="col-sm-5" style="margin-top:60px;">
+           <div id="accordion">
+                <p v-if="!readMoreActive">{{data.description.slice(0, 1000)}}</p>
+                <button v-if="!readMoreActive"  @click="readMoreActive=true">See More...,</button>
+              <p v-if="readMoreActive" v-html="data.description"></p>
+              <p ><b>Website:</b>&nbsp;&nbsp;&nbsp;<span>{{data.merchant.website}}</span></p>
+              <p ><b>Shelf Life:</b>&nbsp;&nbsp;&nbsp;<span>{{data.details.shelf_life}}</span></p>
+                   <p><b>Active/s:</b>&nbsp;&nbsp;&nbsp;
+                    <ul>
+                      <li v-for="(active, index) in active" :key="index">{{active.active_name}}</li>
+                    </ul>
+                    </p>
+                   <p><b>Group/s:</b>&nbsp;&nbsp;&nbsp;
+                    <ul>
+                      <li v-for="(group, index) in groups" :key="index">{{group.group}}</li>
+                    </ul>
+                  </p>
+                 <p><b>Approval Date:</b>&nbsp;&nbsp;&nbsp;<span>{{data.details.approval_date}}</span></p>
+                 <p><b>Approval Number:</b>&nbsp;&nbsp;&nbsp;<span>{{data.details.approval_number}}</span></p>
+                 <p><b>Formulation:</b>&nbsp;&nbsp;&nbsp;<span>{{data.details.formulation}}</span></p>
+                 <p><b>Mixing Order:</b>&nbsp;&nbsp;&nbsp;<span>{{data.details.mixing_order}}</span></p>
+                 <p><b>Other Ingredient:</b>&nbsp;&nbsp;&nbsp;<span>{{data.details.other_ingredient}}</span></p>
+                   <p><b>Safety Equipment:</b>&nbsp;&nbsp;&nbsp;
+                    <ul>
+                      <li v-for="(equip, index) in data.details.safety_equipment" :key="index">{{equip}}</li>
+                    </ul>
+                    </p>
+                  <div class="row">
+              <div class="col-sm-6">
+                <label class="product-row-labels"><b>Label:</b></label>
+                <div class="row" style="margin-left:2%">
+                  <div class="col-sm-2" >
+                    <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.label.title !== null ? 'color: #cae166' : 'color: red'" @click="download('data1')"></i>
+                    <a :href="config.BACKEND_URL + data.details.files.label.url" id="data1" target="__blank"></a>
+                  </div>
+                  <div class="col-sm-3">
+                    <label>{{data.details.files.label.title}}</label>
+>>>>>>> 1c2258cd6c1035fbe3bbfa09057ea3b4d8854da5
                   </div>
                 </div>
               </div>
-              <div class="product-details">
-                <div class="product-title"></div>
-                <div class="product-row" v-if="errorMessage !== null">
-                  <span class="alert alert-danger">
-                    {{errorMessage}}
-                  </span>
+              <div class="col-sm-6">
+                <label class="product-row-labels"><b>Safety Data(SDS):</b></label>
+                <div class="row" style="margin-left:2%">
+                  <div class="col-sm-2">
+                    <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.sds.title !== null ? 'color: #cae166' : 'color: red'" @click="download('data2')"></i>
+                    <a :href="config.BACKEND_URL + data.details.files.sds.url" id="data2" target="__blank"></a>
+                  </div>
+                  <div class="col-sm-3">
+                    <label>{{data.details.files.sds.title}}</label>
+                  </div>
                 </div>
               </div>
             </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
   </div>
+<<<<<<< HEAD
   <div class="col-sm-5">
     <div style="margin-top: 12.5%;">
       <div v-if="seeMore">
@@ -213,6 +297,8 @@
     </div>
   </div>
 </div>
+=======
+>>>>>>> 1c2258cd6c1035fbe3bbfa09057ea3b4d8854da5
 </template>
 <style scoped>
   .card-header{
@@ -515,9 +601,7 @@ export default {
       groups: [],
       active: [],
       transform: false,
-      readMoreActive: false,
-      seeMore: false,
-      imagesList: null
+      readMoreActive: false
     }
   },
   components: {
@@ -527,9 +611,6 @@ export default {
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
-    },
-    seeMore(){
-      this.seeMore = !this.seeMore
     },
     collapsed(id){
       this.transform = !this.transform
@@ -554,30 +635,6 @@ export default {
     },
     selectImage(url){
       this.selectedImage = url
-    },
-    retrieveImage(){
-      this.productId = this.data.id
-      const parameter = {
-        condition: [{
-          value: this.data.account_id,
-          column: 'account_id',
-          clause: '='
-        }],
-        sort: {
-          created_at: 'desc'
-        },
-        category: `product${this.data.id}`
-      }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('images/retrieve_with_category', parameter).done(response => {
-        $('#loading').css({display: 'none'})
-        if(response.data.length > 0){
-          console.log('RESPONSE IMAGE', response.data)
-          this.imagesList = response.data
-          this.selectedImage = this.imagesList[0].url
-          console.log('[IMAGE LIST]', this.imagesList)
-        }
-      })
     },
     retrieve(){
       let parameter = null
@@ -627,7 +684,6 @@ export default {
             this.groups.push(group)
           }
         }
-        this.retrieveImage()
       })
     }
   }
