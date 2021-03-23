@@ -121,30 +121,32 @@
           </div>
           </div>
           <div class="row">
+              <div class="product-item-title ml-4" :hidden="isEdit===false" style="margin-bottom:-5%">
+                <label>Actives <span class="text-danger">{{errorMessageActives}}</span></label>
+              </div>
             <div class="col-sm-5 product-item-title" :hidden="isEdit===false">
-              <label>Actives</label>
-              <label class="text-danger">{{errorMessageActives}}</label>
+              <label></label>
               <br>
               <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents">
             </div>
-            <div class="col-sm-3 product-item-title mt-4" :hidden="isEdit===false">
+            <div class="col-sm-3 product-item-title" :hidden="isEdit===false">
               <label></label>
               <br>
               <input type="number" class="form-control form-control-custom" v-model="active.value" placeholder="value" >
             </div>
-            <div class="col-sm-3 product-item-title mt-4"  :hidden="isEdit===false">
+            <div class="col-sm-3 product-item-title"  :hidden="isEdit===false">
               <label></label>
               <br>
               <select class="form-control form-control-custom" v-model="active.attribute">
                 <option v-for="(item, index) in formulations.ACTIVE_UNITS" :value="item">{{item}}</option>
               </select>
             </div>
-            <div class="col-sm-1 product-item-title pl-2" style="margin-top: 5.5%;" :hidden="isEdit===false"> 
+            <div class="col-sm-1 product-item-title pl-2" style="margin-top: 5%;" :hidden="isEdit===false"> 
               <button class="btn btn-primary" @click="addActive"><i class="fa fa-plus" ></i></button>
             </div>
           </div>
-            <div class="table-responsive">
               <label style="margin-top: 1%" :hidden="isEdit===true"><strong>Actives</strong></label>
+            <div class="table-responsive">
               <table class="table table-hover table-bordered table-sm w-50 " style="float: left" v-if="actives.length > 0">
                 <thead>
                     <tr>
