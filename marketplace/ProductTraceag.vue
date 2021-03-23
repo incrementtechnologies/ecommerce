@@ -1,25 +1,25 @@
 <template>
 <div class="row p-0 m-0">
-  <div class="col-sm-6">
+  <div class="col-sm-7">
     <div v-if="data !== null" class="">
       <div class="title">
         <br>
         <h3>{{data.title}}</h3>
         <div class="product-row-merchant" v-if="data.merchant !== null">
             <label class="product-row-labels">Merchant:</label>
-            <label>&nbsp;{{data.merchant.name}}&nbsp;</label>
+            <label style="color:grey;">&nbsp;{{data.merchant.name}}&nbsp;</label>
             <label class="product-row-labels">SKU:</label>
-            <label>&nbsp;{{data.sku}} &nbsp;</label>
+            <label style="color:grey;">&nbsp;{{data.sku}} &nbsp;</label>
             <label class="product-row-labels">Tags:</label>
-            <label>&nbsp;{{data.tags}}</label>
+            <label style="color:grey;">&nbsp;{{data.tags}}</label>
             <div class="col-sm-12 product-image">
               <div class="product-image-content">
-                <img :src="config.BACKEND_URL + selectedImage" class="main-image mb-2" v-if="imagesList !== null">
-                <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image mb-2" v-if="imagesList === null && data.featured !== null">
-                <i class="fa fa-image mb-2" v-if="imagesList === null && data.featured === null"></i>
-                <div class="images-holder mb-2" v-if="imagesList !== null">
+                <img :src="config.BACKEND_URL + selectedImage" class="main-image mb-4" v-if="imagesList !== null">
+                <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image mb-4" v-if="imagesList === null && data.featured !== null">
+                <i class="fa fa-image mb-4" v-if="imagesList === null && data.featured === null"></i>
+                <div class="images-holder" style="margin-top: 20%;" v-if="imagesList !== null">
                   <div v-for="(item, index) in imagesList" :key="index" class="image-item" @click="selectImage(item.url)" style="margin-left:5px">
-                    <img :src="config.BACKEND_URL + item.url" class="other-image">
+                    <img :src="config.BACKEND_URL + item.url" :style="[ selectedImage === item.url ? { 'border': '3px solid grey'} : {'border':'1px solid grey'}]" class="other-image">
                     <div class="overlay"></div>
                   </div>
                 </div>
@@ -37,45 +37,27 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-6">
+  <div class="col-sm-5">
     <div style="margin-top: 12.5%;">
       <div v-if="seeMore">
-        <span class="p-0" >{{data.description}}...<a @click="seeMore = !seeMore" style="text-decoration:underline;cursor:pointer;">See Less</a></span>
+        <span class="p-0" style="color:grey;">{{data.description}}...<a @click="seeMore = !seeMore" style="text-decoration:underline;cursor:pointer;">See Less</a></span>
       </div>
       <div v-else>
-        <div v-if="data.description.length < 1000">
-          <p>{{data.description}}</p>
+        <div v-if="data.description.length < 300">
+          <p style="color:grey;">{{data.description}}</p>
         </div>
-        <div class="p-0" v-if="data.description.length > 1000">
-          <span class="p-0" >{{data.description.substring(0,999)}}...<a @click="seeMore = !seeMore" style="text-decoration:underline;cursor:pointer;">See More</a></span>
+        <div class="p-0" v-if="data.description.length > 300">
+          <span class="p-0" style="color:grey;">{{data.description.substring(0,299)}}...<a @click="seeMore = !seeMore" style="text-decoration:underline;cursor:pointer;">See More</a></span>
         </div>
       </div>
     </div>
-
     <div class="row mt-4">
       <div class="col-sm-5">
         <p><b>Website:</b></p>
       </div>
       <div class="col-sm-7 p-0" style="color: grey;">
-        <p>{{data.merchant.website}}</p>
-      </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-sm-5">
-        <p><b>Shelf Life:</b></p>
-      </div>
-      <div class="col-sm-7 p-0" style="color: grey;">
-        <p>{{data.details.shelf_life}}</p>
-      </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-sm-5">
-        <p><b>Active/s:</b></p>
-      </div>
-      <div class="col-sm-7 p-0" style="color: grey;">
-        <ul class="p-0" style="list-style:none;">
-          <li v-for="(active, index) in active" :key="index">{{active.active_name}}</li>
-        </ul>
+        <p v-if="data.merchant.website === null">No Data</p>
+        <p v-else>{{data.merchant.website}}</p>
       </div>
     </div>
     <div class="row mt-3">
@@ -83,33 +65,50 @@
         <p><b>Group/s:</b></p>
       </div>
       <div class="col-sm-7 p-0" style="color: grey;">
-        <ul class="p-0" style="list-style:none;">
+        <p v-if="groups.length === 0">No Data</p>
+        <ul v-else class="p-0" style="list-style:none;">
           <li v-for="(group, index) in groups" :key="index">{{group.group}}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="row mt-4" v-if="data.tags === 'Herbicide' || data.tags === 'herbicide'">
+      <div class="col-sm-5">
+        <p><b>HRAC Mode of Action:</b></p>
+      </div>
+      <div class="col-sm-7 p-0" style="color: grey;">
+          <li style="list-style: none" v-for="(hracs, index) in data.details.hracs" :key="index">{{hracs}}</li>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-sm-5">
+        <p><b>Active/s:</b></p>
+      </div>
+      <div class="col-sm-7 p-0" style="color: grey;">
+        <p v-if="active.length === 0">No Data</p>
+        <ul v-else class="p-0" style="list-style:none;">
+          <li v-for="(actives, index) in active" :key="index">
+            <p v-if="actives.active_name !== null">{{actives.active_name}}</p>
+            <p v-else>No Data</p>
+          </li>
         </ul>
       </div>
     </div>
     <div class="row mt-3">
       <div class="col-sm-5">
-        <p><b>Approval Date:</b></p>
+        <p><b>Solvent:</b></p>
       </div>
       <div class="col-sm-7 p-0" style="color:grey;">
-        <p>{{data.details.approval_date}}</p>
+        <p v-if="data.details.solvent === null || !data.details.solvent">No Data</p>
+        <p v-else>{{data.details.solvent}}</p>
       </div>
     </div>
     <div class="row mt-3">
       <div class="col-sm-5">
-        <p><b>Approval Number:</b></p>
+        <p><b>Other scheduled ingredients:</b></p>
       </div>
       <div class="col-sm-7 p-0" style="color:grey;">
-        <p>{{data.details.approval_number}}</p>
-      </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-sm-5">
-        <p><b>Formulation:</b></p>
-      </div>
-      <div class="col-sm-7 p-0" style="color:grey;">
-        <p>{{data.details.formulation}}</p>
+        <p v-if="data.details.other_ingredient === null">No Data</p>
+        <p v-else>{{data.details.other_ingredient}}</p>
       </div>
     </div>
     <div class="row mt-3">
@@ -117,15 +116,17 @@
         <p><b>Mixing Order:</b></p>
       </div>
       <div class="col-sm-7 p-0" style="color:grey;">
-        <p>{{data.details.mixing_order}}</p>
+        <p v-if="data.details.mixing_order === null">No Data</p>
+        <p v-else>{{data.details.mixing_order}}</p>
       </div>
     </div>
     <div class="row mt-3">
       <div class="col-sm-5">
-        <p><b>Other Ingredients:</b></p>
+        <p><b>Formulation:</b></p>
       </div>
       <div class="col-sm-7 p-0" style="color:grey;">
-        <p>{{data.details.other_ingredient}}</p>
+        <p v-if="data.details.formulation === null">No Data</p>
+        <p v-else>{{data.details.formulation}}</p>
       </div>
     </div>
     <div class="row mt-3">
@@ -133,8 +134,60 @@
         <p><b>Safety Equipment:</b></p>
       </div>
       <div class="col-sm-7 p-0" style="color:grey;">
-        <ul class="p-0" style="list-style:none;">
+        <p v-if="data.details.safety_equipment === null || data.details.safety_equipment.length === 0">No Data</p>
+        <ul v-else class="p-0" style="list-style:none;">
           <li v-for="(equip, index) in data.details.safety_equipment" :key="index">{{equip}}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-sm-5">
+        <p><b>Shelf Life:</b></p>
+      </div>
+      <div class="col-sm-7 p-0" style="color: grey;">
+        <p v-if="data.details.shelf_life === null">No Data</p>
+        <p v-else>{{data.details.shelf_life}}</p>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-sm-5">
+        <p><b>Approval Number:</b></p>
+      </div>
+      <div class="col-sm-7 p-0" style="color:grey;">
+        <p v-if="data.details.approval_number === null">No Data</p>
+        <p v-else>{{data.details.approval_number}}</p>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-sm-5">
+        <p><b>Approval Date:</b></p>
+      </div>
+      <div class="col-sm-7 p-0" style="color:grey;">
+        <p v-if="data.details.approval_date === null">No Data</p>
+        <p v-else>{{data.details.approval_date}}</p>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-sm-5">
+        <p><b>Variations:</b></p>
+      </div>
+      <div class="col-sm-7 p-0" style="color: grey;">
+        <p v-if="data.variation === null">No Data</p>
+        <ul v-else class="p-0" style="list-style:none;">
+          <li v-for="(variation, index) in data.variation" :key="index">{{data.title}}-{{variation.payload_value}}&nbsp;{{variation.payload}}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-sm-5">
+        <p><b>Bundled Products:</b></p>
+      </div>
+      <div class="col-sm-7 p-0" style="color: grey;">
+        <p v-if="data.bundled === null || data.bundled.length === 0">No Data</p>
+        <ul v-else class="p-0" style="list-style:none;">
+          <li v-for="(bundle, index) in data.bundled" :key="index">
+            {{bundle.qty}}&nbsp;X&nbsp;{{data.title}}{{bundle.variation[0].payload}}-{{bundle.variation[0].payload_value}}
+          </li>
         </ul>
       </div>
     </div>
@@ -227,8 +280,9 @@
     padding-top: 2%;
   }
   .product-image-content .main-image{
-    height: 350px;
-    max-width: 100%;
+    min-height: auto;
+    max-width: 500px;
+    width: 100%;
   }
   .product-image-content .fa-image{
     font-size: 250px;
@@ -556,6 +610,7 @@ export default {
       this.APIRequest('products/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
+          console.log('[DATAS]', response.data)
           this.data = response.data[0]
           let group = {
             group: null
