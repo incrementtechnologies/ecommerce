@@ -143,7 +143,7 @@ export default {
         }
         let parameter = {
           account_id: this.user.userID,
-          title: this.item.title,
+          title: `${this.newAttribute.qty} X ${this.item.title}(${this.variantPayload}${this.variantPayloadValue})`,
           description: this.item.description,
           status: 'pending',
           type: 'bundled',
