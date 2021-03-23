@@ -15,7 +15,7 @@
         <div class="product-item-title">
           <label>Title <label class="text-danger">*</label></label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.title" placeholder="Type product title here..." :disabled="data.status === 'published'">
+          <input type="text" class="form-control form-control-custom" v-model="data.title" placeholder="Type product title here..." :disabled="data.status === 'published' || isEdit === false">
         </div>
         <div class="product-item-title">
           <label>Description <label class="text-danger">*</label></label>
@@ -144,8 +144,8 @@
             </div>
           </div>
             <div class="table-responsive">
-              <label style="margin-top: 1%" :hidden="isEdit===true"><strong>Actives</strong></label>    
-              <table class="table table-hover table-bordered table-sm w-50 " style="float: left" v-if="actives[0].active_name !== null">
+              <label style="margin-top: 1%" :hidden="isEdit===true"><strong>Actives</strong></label>
+              <table class="table table-hover table-bordered table-sm w-50 " style="float: left" v-if="actives.length > 0">
                 <thead>
                     <tr>
                       <td>Active Constituent</td>
@@ -395,6 +395,7 @@ export default {
         this.active.active_name = null
         this.active.value = null
         this.active.attribute = null
+        console.log(this.actives)
       }else{
         this.errorMessageActives = 'Active already reach max number(3)'
       }
@@ -500,9 +501,17 @@ export default {
             // this.listGroup.push(group.group !== null ? group : null)
           }
           if(Array.isArray(this.data.details.active)){
-            this.actives = this.data.details.active
+            if(this.data.details.active[0].active_name !== null){
+              this.actives = this.data.details.active
+            }else{
+              this.actives = []
+            }
           }else{
-            this.actives.push(this.data.details.active)
+            if(this.data.details.active.active_name !== null){
+              this.actives.push(this.data.details.active)
+            }else{
+              this.actives = []
+            }
           }
           if(this.data.details.hracs !== undefined){
             this.listOfHracs = this.data.details.hracs
