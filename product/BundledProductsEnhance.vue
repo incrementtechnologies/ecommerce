@@ -115,18 +115,19 @@ export default {
       this.variantPayload = this.selectedVariation.payload
       this.variantPayloadValue = this.selectedVariation.payload_value
     },
-    payloadValueExit(newValue, newAttribute){
+    payloadValueExit(newValue, payload, payloadValue){
       console.log(this.item)
       if(this.item.bundled !== null){
         this.item.bundled.map(el => {
-          console.log(parseInt(newValue) === el.qty, parseInt(newAttribute), el.product_attribute_id)
-          if(parseInt(newValue) === el.qty && parseInt(newAttribute) === el.product_attribute_id){
-            this.errorMessage = 'Value is already existed in the list'
-            return true
-          }else{
-            this.errorMessage = null
-            return true
-          }
+          console.log(el.qty, el.payload, el.payload_value)
+          console.log(newValue, payload, payloadValue)
+          // if(parseInt(newValue) === el.qty && parseInt(newAttribute) === el.product_attribute_id){
+          //   this.errorMessage = 'Value is already existed in the list'
+          //   return true
+          // }else{
+          //   this.errorMessage = null
+          //   return true
+          // }
         })
       }
     },
@@ -134,7 +135,7 @@ export default {
       console.log('updateed 18-03-2021 2:16')
       console.log(this.newAttribute.product_attribute_id, this.newAttribute.qty)
       if(this.selectedVariation !== null && this.newAttribute.qty !== null){
-        this.payloadValueExit(this.newAttribute.qty, this.variantId)
+        this.payloadValueExit(this.newAttribute.qty, this.variantPayload, this.variantPayloadValue)
         // if(this.errorMessage !== null){
         //   return
         // }
