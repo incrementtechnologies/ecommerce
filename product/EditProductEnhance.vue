@@ -434,10 +434,13 @@ export default {
       console.log(index)
       if(index.array === 'active'){
         this.actives.splice(index.id, 1)
+        this.errorMessageActives = null
       }else if(index.array === 'groups'){
         this.listGroup.splice(index.id, 1)
+        this.errorMessageGroups = null
       }else if(index.array === 'hrac'){
         this.listOfHracs.splice(index.id, 1)
+        this.errorMessageHracs = null
       }else{
         this.deleteProduct(index.id)
       }
@@ -545,7 +548,7 @@ export default {
         }else if(this.data.tags.toLowerCase() === 'fungicide'){
           this.groups = GROUP.FUNGICIDE
           this.showHrac = false
-        }else if(this.data.tags.toLowerCase() === 'others'){
+        }else if(this.data.tags.toLowerCase() === 'other'){
           this.groups = GROUP.ADJUVANT
           this.showHrac = false
         }else{
@@ -562,7 +565,7 @@ export default {
         }else if(data.target.value.toLowerCase().includes('fungicide')){
           this.groups = GROUP.FUNGICIDE
           this.showHrac = false
-        }else if(data.target.value.toLowerCase().includes('others')){
+        }else if(data.target.value.toLowerCase().includes('other')){
           this.groups = GROUP.OTHERS
           this.showHrac = false
         }else{
