@@ -487,6 +487,7 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('products/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
+        this.isEdit = false
         console.log(response.data)
         if(response.data.length > 0){
           this.data = response.data[0]

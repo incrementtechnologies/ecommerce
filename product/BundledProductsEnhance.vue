@@ -162,6 +162,7 @@ export default {
               this.newAttribute.product_attribute_id = res.data
               this.newAttribute.bundled = response.data
               this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
+                this.$parent.retrieve()
                 if(response.data > 0){
                   this.errorMessage = null
                   this.$parent.retrieve()
