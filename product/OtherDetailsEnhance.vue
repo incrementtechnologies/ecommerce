@@ -10,7 +10,7 @@
               <i class="fa fa-file-pdf-o" style="color: #cae166" @click="download('data1')" title="View Document"></i>
               <a :href="config.BACKEND_URL + item.details.files.label.url" id="data1" target="__blank"></a>
           </div>
-          <div class="col-sm-3" v-else>
+          <div class="col-sm-2" v-else>
               <i class="fa fa-file-pdf-o" :style="file1 === null || errorMessage !== null ? 'color: red' : 'color: #cae166'"></i>
           </div>
           <div class="col-sm-2">

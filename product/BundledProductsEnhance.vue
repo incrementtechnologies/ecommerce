@@ -5,9 +5,9 @@
       <label for="exampleInputEmail1" style="font-weight: 600;">Create Bundled</label>
     </div>
     <div class="variations-content" v-if="item.bundled !== null">
-      <div class="attribute-item" v-for="itemVariation, indexVariation in item.bundled[0].variation">
-        <input class="form-control form-control-custom" style="width: 40%; float: left; margin-right: 10px;" :placeholder="`${item.bundled[0].qty} X ${item.title}(${itemVariation.payload})`" disabled>
-        <input type="text" class="form-control form-control-custom" style="float: left; width: 35%;" :placeholder="item.bundled[0].qty" disabled>
+      <div class="attribute-item" v-for="itemVariation, indexVariation in item.bundled">
+        <input class="form-control form-control-custom" style="width: 40%; float: left; margin-right: 10px;" :placeholder="`${itemVariation.qty} X ${item.title}(${itemVariation.variation[0].payload}-${itemVariation.variation[0].payload_value})`" disabled>
+        <input type="text" class="form-control form-control-custom" style="float: left; width: 35%;" :placeholder="itemVariation.qty" disabled>
       </div>
     </div>
     <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo">Create new product variation</button>
@@ -119,15 +119,17 @@ export default {
       console.log(this.item)
       if(this.item.bundled !== null){
         this.item.bundled.map(el => {
-          console.log(el.qty, el.payload, el.payload_value)
-          console.log(newValue, payload, payloadValue)
-          // if(parseInt(newValue) === el.qty && parseInt(newAttribute) === el.product_attribute_id){
-          //   this.errorMessage = 'Value is already existed in the list'
-          //   return true
-          // }else{
-          //   this.errorMessage = null
-          //   return true
-          // }
+          if(el.variation !== null){
+            el.variation.map(each => {
+              if(parseInt(newValue) === el.qty && each.payload === payload && each.payload_value === payloadValue){
+                this.errorMessage = 'Value is already existed in the list'
+                return true
+              }else{
+                this.errorMessage = null
+                return false
+              }
+            })
+          }
         })
       }
     },
@@ -136,59 +138,38 @@ export default {
       console.log(this.newAttribute.product_attribute_id, this.newAttribute.qty)
       if(this.selectedVariation !== null && this.newAttribute.qty !== null){
         this.payloadValueExit(this.newAttribute.qty, this.variantPayload, this.variantPayloadValue)
-        // if(this.errorMessage !== null){
-        //   return
-        // }
-        // let parameter = {
-        //   account_id: this.user.userID,
-        //   title: this.item.title,
-        //   description: this.item.description,
-        //   status: 'pending',
-        //   type: 'bundled',
-        //   merchant_id: this.user.subAccount.merchant.id
-        // }
-        // $('#loading').css({display: 'block'})
-        // if(this.item.bundled === null){
-        //   this.APIRequest('products/create', parameter).then(response => {
-        //     $('#loading').css({display: 'none'})
-        //     if(response.data > 0){
-        //       let varParams = {
-        //         payload: this.variantPayload,
-        //         payload_value: this.variantPayloadValue,
-        //         product_id: response.data
-        //       }
-        //       this.APIRequest('product_attributes/create', varParams).then(res => {
-        //         this.newAttribute.product_attribute_id = res.data
-        //         this.newAttribute.bundled = response.data
-        //         this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
-        //           if(response.data > 0){
-        //             this.errorMessage = null
-        //             this.$parent.retrieve()
-        //           }
-        //         })
-        //       })
-        //     }
-        //   })
-        // }else{
-        //   let varParams = {
-        //     payload: this.variantPayload,
-        //     payload_value: this.variantPayloadValue,
-        //     product_id: this.item.id
-        //   }
-        //   this.APIRequest('product_attributes/create', varParams).then(res => {
-        //     this.newAttribute.product_attribute_id = res.data
-        //     this.newAttribute.bundled = this.item.id
-        //     this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
-        //       if(response.data > 0){
-        //         this.errorMessage = null
-        //         this.newAttribute.qty = null
-        //         this.$parent.retrieve()
-        //       }
-        //     }).catch(err => {
-        //       this.errorMessage = err
-        //     })
-        //   })
-        // }
+        if(this.errorMessage !== null){
+          return
+        }
+        let parameter = {
+          account_id: this.user.userID,
+          title: this.item.title,
+          description: this.item.description,
+          status: 'pending',
+          type: 'bundled',
+          merchant_id: this.user.subAccount.merchant.id
+        }
+        $('#loading').css({display: 'block'})
+        this.APIRequest('products/create', parameter).then(response => {
+          $('#loading').css({display: 'none'})
+          if(response.data > 0){
+            let varParams = {
+              payload: this.variantPayload,
+              payload_value: this.variantPayloadValue,
+              product_id: response.data
+            }
+            this.APIRequest('product_attributes/create', varParams).then(res => {
+              this.newAttribute.product_attribute_id = res.data
+              this.newAttribute.bundled = response.data
+              this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
+                if(response.data > 0){
+                  this.errorMessage = null
+                  this.$parent.retrieve()
+                }
+              })
+            })
+          }
+        })
       }else{
         this.errorMessage = 'Fill up the required fields.'
       }

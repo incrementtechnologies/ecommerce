@@ -23,7 +23,7 @@
     </div>
     <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo">Create new product variation</button>
     <div id="demo" class="collapse"><br>
-        <select class="form-control form-control-custom"  style="float: left; width: 40%;" v-model="newAttribute.payload" v-if="item.variation === null">
+        <select class="form-control form-control-custom"  style="float: left; width: 40%;" v-model="newAttribute.payload" v-if="item.variation === null" :disabled="isEdit===false">
             <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
         </select>
         <input class="form-control form-control-custom"  style="float: left; width: 40%;" id="payload" :placeholder="`${item.title}(${item.variation[0].payload.substring(item.variation[0].payload.lastIndexOf('s') + 1)})`" :value="item.variation[0].payload" v-else disabled>
