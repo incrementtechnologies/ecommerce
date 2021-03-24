@@ -2,7 +2,7 @@
   <div class="variations-holder">
     <div class="error text-danger" v-if="errorMessage !== null">{{errorMessage}}</div>
     <div class="form-group">
-      <label for="exampleInputEmail1" style="font-weight: 600;">Create Bundled</label>
+      <label for="exampleInputEmail1" style="font-weight: 600;">Created Bundles</label>
     </div>
     <div class="variations-content" v-if="item.bundled !== null">
       <!-- <div class="attribute-item"> -->
