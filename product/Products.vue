@@ -57,10 +57,10 @@
             <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayTitle('asc')" v-if="activeSortTitle === 'desc'"></i>
           </td>
           <td>Tags</td>
-          <td>Inventory
+          <!-- <td>Inventory
             <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayInventory('desc')" v-if="activeSortInventory === 'asc'"></i>
             <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayInventory('asc')" v-if="activeSortInventory === 'desc'"></i>
-          </td>
+          </td> -->
           <td>Action</td>
         </tr>
       </thead>
@@ -71,10 +71,10 @@
             {{item.title}}
           </td>
           <td>{{item.tags}}</td>
-          <td>
+          <!-- <td>
              <button class="btn btn-primary" @click="redirect('/traces/' + item.code)" title="Total active trace">{{parseFloat(item.qty)}}</button>
              <button class="btn btn-warning" title="Total active trace in bundled">{{item.qty_in_bundled}}</button>
-          </td>
+          </td> -->
           <td>
             <button class="btn btn-primary" @click="redirect('/product/edit/' + item.code)">VIEW DETAILS</button>
             <!-- <button class="btn btn-warning" @click="addProductTraces(item.id)" v-if="item.type === 'regular' && item.status === 'published'">Add Inventory</button> -->
