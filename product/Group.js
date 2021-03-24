@@ -59,5 +59,12 @@ export default {
   ACTIVE_UNITS: [
     'Grams (g)',
     'Milligrams (mg)'
+  ],
+
+  ACTIVE_UNITS2: [
+    'Kilograms (kg)',
+    'Grams (g)',
+    'Liters (L)',
+    'Milliliters (mL)'
   ]
 }

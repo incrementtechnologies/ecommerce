@@ -19,7 +19,7 @@
               <div class="col-sm-12"> 
                 <label>Variations</label>
                 <br>
-                <input type="text" class="form-control" :placeholder="`${variations.product} ${variations.variation.payload}-${variations.variation.payload_value}`" disabled>
+                <input type="text" class="form-control" :placeholder="`${variations.product}(${variations.variation.payload_value} ${convertion.getUnitsAbbreviation(variations.variation.payload)})`" disabled>
                 <!-- <select class="form-control form-control-custom" v-model="newData.product_attribute_id">
                   <option v-for="(item, index) in variations" :value="item.id">{{item.payload_value}} - {{item.payload}}</option>
                 </select> -->
@@ -30,9 +30,15 @@
               <input type="text" class="form-control" placeholder="Type batch number here..." v-model="newData.batch_number">
             </div>
 
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" @change="isCheck($event)"> Month/Year only
+              </label>
+            </div>
+
             <div class="form-group form-group-three margin-right">
               <label for="exampleInputEmail1">Date</label>
-              <select class="form-control" v-model="manufacturing.date">
+              <select class="form-control" v-model="manufacturing.date" :disabled="allowDate">
                 <option v-for="i in 31" :key="i" :value="i">{{i}}</option>
               </select>
             </div>
@@ -128,6 +134,7 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
 import DatePicker from 'vue2-datepicker'
+import Convertion from 'src/services/conversion.js'
 import 'vue2-datepicker/index.css'
 export default {
   mounted(){
@@ -139,6 +146,7 @@ export default {
   data(){
     return {
       user: AUTH.user,
+      convertion: Convertion,
       config: CONFIG,
       common: COMMON,
       errorMessage: null,
@@ -193,7 +201,8 @@ export default {
         account_id: null,
         inventory_type: COMMON.ecommerce.inventoryType,
         product_attribute_id: null
-      }
+      },
+      allowDate: false
     }
   },
   components: {
@@ -203,6 +212,11 @@ export default {
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    isCheck(event){
+      console.log('[EVENT]', event.target.checked)
+      this.allowDate = !this.allowDate
+      this.manufacturing.date = event.target.checked === true ? null : this.manufacturing.date
     },
     submit(){
       if(this.validate()){

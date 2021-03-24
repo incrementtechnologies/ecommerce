@@ -5,16 +5,30 @@
       <label for="exampleInputEmail1" style="font-weight: 600;">Create Bundled</label>
     </div>
     <div class="variations-content" v-if="item.bundled !== null">
-      <div class="attribute-item" v-for="itemVariation, indexVariation in item.bundled">
-        <input class="form-control form-control-custom" style="width: 40%; float: left; margin-right: 10px;" :placeholder="`${itemVariation.qty} X ${item.title}(${itemVariation.variation[0].payload}-${itemVariation.variation[0].payload_value})`" disabled>
-        <input type="text" class="form-control form-control-custom" style="float: left; width: 35%;" :placeholder="itemVariation.qty" disabled>
-      </div>
+      <!-- <div class="attribute-item"> -->
+        <div class="table-responsive"> 
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <td><b>Bundled Name</b></td>
+                <td><b>Qty</b></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr  v-for="itemVariation, indexVariation in item.bundled">
+                <td>{{`${itemVariation.qty} X ${item.title}(${itemVariation.variation[0].payload_value}${convertion.getUnitsAbbreviation(itemVariation.variation[0].payload)})`}}</td>
+                <td>{{itemVariation.scanned_qty}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      <!-- </div> -->
     </div>
     <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo">Create new product variation</button>
     <div id="demo" class="collapse">
       <div><br>
           <select class="form-control form-control-custom"  style="float: left; width: 40%;" @change="getAttribute($event)" v-model="selectedVariation" :disabled="isEdit===false">
-              <option v-for="itemVariation, indexVariation in item.variation" :value="{id: itemVariation.id, payload: itemVariation.payload, payload_value: itemVariation.payload_value}" >{{itemVariation.payload}}({{itemVariation.payload_value}})</option>
+              <option v-for="itemVariation, indexVariation in item.variation" :value="{id: itemVariation.id, payload: itemVariation.payload, payload_value: itemVariation.payload_value}" >{{itemVariation.payload_value}}{{convertion.getUnitsAbbreviation(itemVariation.payload)}}</option>
           </select>
           <input type="number" class="form-control form-control-custom" style="float: left; width: 40%; margin-left: 10px;" placeholder="Qty" v-model="newAttribute.qty" @keyup.enter="create()" :disabled="isEdit===false">
           <i class="fa fa-check mt-2" style="color: #cae166; font-size: 30px;" v-if="newAttribute.product_attribute_id !== null && newAttribute.qty !== null"></i>
@@ -74,6 +88,7 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
 import axios from 'axios'
+import Convertion from 'src/services/conversion.js'
 import ProductTrace from './CreateProductTrace.js'
 import Confirmation from 'src/components/increment/generic/modal/Confirmation.vue'
 export default {
@@ -83,6 +98,7 @@ export default {
   data(){
     return {
       user: AUTH.user,
+      convertion: Convertion,
       config: CONFIG,
       common: COMMON,
       errorMessage: null,
@@ -143,7 +159,7 @@ export default {
         }
         let parameter = {
           account_id: this.user.userID,
-          title: this.item.title,
+          title: `${this.newAttribute.qty} X ${this.item.title}(${this.convertion.getUnitsAbbreviation(this.variantPayload)}${this.variantPayloadValue})`,
           description: this.item.description,
           status: 'pending',
           type: 'bundled',
