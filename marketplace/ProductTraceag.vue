@@ -1,16 +1,14 @@
 <template>
 <div class="row p-0 m-0">
-  <div class="col-sm-7">
+  <div class="col-sm-6">
     <div v-if="data !== null" class="">
       <div class="title">
         <br>
         <h3>{{data.title}}</h3>
         <div class="product-row-merchant" v-if="data.merchant !== null">
-            <label class="product-row-labels">Merchant:</label>
+            <label class="product-row-labels">Manufacturer:</label>
             <label style="color:grey;">&nbsp;{{data.merchant.name}}&nbsp;</label>
-            <label class="product-row-labels">SKU:</label>
-            <label style="color:grey;">&nbsp;{{data.sku}} &nbsp;</label>
-            <label class="product-row-labels">Tags:</label>
+            <label class="product-row-labels">Classification:</label>
             <label style="color:grey;">&nbsp;{{data.tags}}</label>
             <div class="col-sm-12 product-image">
               <div class="product-image-content">
@@ -37,7 +35,7 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-5">
+  <div class="col-sm-6">
     <div style="margin-top: 12.5%;">
       <div v-if="seeMore">
         <span class="p-0" style="color:grey;">{{data.description}}...<a @click="seeMore = !seeMore" style="text-decoration:underline;cursor:pointer;">See Less</a></span>
@@ -51,18 +49,42 @@
         </div>
       </div>
     </div>
-    <div class="row mt-4">
+    
+    <div class="row mt-3">
       <div class="col-sm-5">
-        <p><b>Website:</b></p>
+        <p><b>Active/s:</b></p>
       </div>
       <div class="col-sm-7 p-0" style="color: grey;">
-        <p v-if="data.merchant.website === null">No Data</p>
-        <p v-else>{{data.merchant.website}}</p>
+        <p v-if="active.length === 0">No Data</p>
+        <ul v-else class="p-0" style="list-style:none;">
+          <li v-for="(actives, index) in active" :key="index">
+            <p v-if="actives.active_name !== null">{{actives.active_name}}-{{actives.attribute}}</p>
+            <p v-else>No Data</p>
+          </li>
+        </ul>
       </div>
     </div>
     <div class="row mt-3">
       <div class="col-sm-5">
-        <p><b>Group/s:</b></p>
+        <p><b>Solvent:</b></p>
+      </div>
+      <div class="col-sm-7 p-0" style="color:grey;">
+        <p v-if="data.details.solvent === null || !data.details.solvent">No Data</p>
+        <p v-else>{{data.details.solvent}}</p>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-sm-5">
+        <p><b>Other Scheduled Ingredients:</b></p>
+      </div>
+      <div class="col-sm-7 p-0" style="color:grey;">
+        <p v-if="data.details.other_ingredient === null">No Data</p>
+        <p v-else>{{data.details.other_ingredient}}</p>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-sm-5">
+        <p><b>Activity Group/s:</b></p>
       </div>
       <div class="col-sm-7 p-0" style="color: grey;">
         <p v-if="groups.length === 0">No Data</p>
@@ -81,34 +103,11 @@
     </div>
     <div class="row mt-3">
       <div class="col-sm-5">
-        <p><b>Active/s:</b></p>
-      </div>
-      <div class="col-sm-7 p-0" style="color: grey;">
-        <p v-if="active.length === 0">No Data</p>
-        <ul v-else class="p-0" style="list-style:none;">
-          <li v-for="(actives, index) in active" :key="index">
-            <p v-if="actives.active_name !== null">{{actives.active_name}}</p>
-            <p v-else>No Data</p>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-sm-5">
-        <p><b>Solvent:</b></p>
+        <p><b>Formulation:</b></p>
       </div>
       <div class="col-sm-7 p-0" style="color:grey;">
-        <p v-if="data.details.solvent === null || !data.details.solvent">No Data</p>
-        <p v-else>{{data.details.solvent}}</p>
-      </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-sm-5">
-        <p><b>Other scheduled ingredients:</b></p>
-      </div>
-      <div class="col-sm-7 p-0" style="color:grey;">
-        <p v-if="data.details.other_ingredient === null">No Data</p>
-        <p v-else>{{data.details.other_ingredient}}</p>
+        <p v-if="data.details.formulation === null">No Data</p>
+        <p v-else>{{data.details.formulation}}</p>
       </div>
     </div>
     <div class="row mt-3">
@@ -118,15 +117,6 @@
       <div class="col-sm-7 p-0" style="color:grey;">
         <p v-if="data.details.mixing_order === null">No Data</p>
         <p v-else>{{data.details.mixing_order}}</p>
-      </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-sm-5">
-        <p><b>Formulation:</b></p>
-      </div>
-      <div class="col-sm-7 p-0" style="color:grey;">
-        <p v-if="data.details.formulation === null">No Data</p>
-        <p v-else>{{data.details.formulation}}</p>
       </div>
     </div>
     <div class="row mt-3">
@@ -142,20 +132,11 @@
     </div>
     <div class="row mt-3">
       <div class="col-sm-5">
-        <p><b>Shelf Life:</b></p>
-      </div>
-      <div class="col-sm-7 p-0" style="color: grey;">
-        <p v-if="data.details.shelf_life === null">No Data</p>
-        <p v-else>{{data.details.shelf_life}}</p>
-      </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-sm-5">
         <p><b>Approval Number:</b></p>
       </div>
       <div class="col-sm-7 p-0" style="color:grey;">
         <p v-if="data.details.approval_number === null">No Data</p>
-        <p v-else>{{data.details.approval_number}}</p>
+        <p v-else>APVMA&nbsp;{{data.details.approval_number}}</p>
       </div>
     </div>
     <div class="row mt-3">
@@ -164,10 +145,19 @@
       </div>
       <div class="col-sm-7 p-0" style="color:grey;">
         <p v-if="data.details.approval_date === null">No Data</p>
-        <p v-else>{{data.details.approval_date}}</p>
+        <p v-else>APVMA&nbsp;{{data.details.approval_date}}</p>
       </div>
     </div>
     <div class="row mt-3">
+      <div class="col-sm-5">
+        <p><b>Shelf Life:</b></p>
+      </div>
+      <div class="col-sm-7 p-0" style="color: grey;">
+        <p v-if="data.details.shelf_life === null">No Data</p>
+        <p v-else>{{data.details.shelf_life}}&nbsp;Months</p>
+      </div>
+    </div>
+    <!-- <div class="row mt-3">
       <div class="col-sm-5">
         <p><b>Variations:</b></p>
       </div>
@@ -190,7 +180,7 @@
           </li>
         </ul>
       </div>
-    </div>
+    </div> -->
     <div class="row mt-3">
       <div class="col-sm-6">
         <p><b>Label:</b></p>
@@ -209,6 +199,24 @@
         <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.sds.title !== null ? 'color: #cae166' : 'color: red'" @click="download('data2')"></i>
         <a :href="config.BACKEND_URL + data.details.files.sds.url" id="data2" target="__blank"></a>
         <label>&nbsp;{{data.details.files.sds.title}}</label>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-sm-5">
+        <p><b>SKU:</b></p>
+      </div>
+      <div class="col-sm-7 p-0" style="color: grey;">
+        <p v-if="data.sku === null">No Data</p>
+        <p v-else>{{data.sku}}</p>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col-sm-5">
+        <p><b>Website:</b></p>
+      </div>
+      <div class="col-sm-7 p-0" style="color: grey;">
+        <p v-if="data.merchant.website === null">No Data</p>
+        <p v-else>{{data.merchant.website}}</p>
       </div>
     </div>
   </div>
@@ -313,6 +321,9 @@
   .images-holder{
     width: 100%;
     float: left;
+    display:flex;
+    text-align:center;
+    justify-content: center;
     min-height: 60px;
     overflow-y: hidden;
   }
