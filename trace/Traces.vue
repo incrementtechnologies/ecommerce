@@ -287,6 +287,9 @@ export default {
         code: this.$route.params.code,
         sort: sort
       }
+      if(this.$route.params.product_attribute_id !== undefined){
+        parameter['product_attribute_id'] = this.$route.params.product_attribute_id
+      }else{}
       $('#loading').css({'display': 'block'})
       this.APIRequest('product_traces/retrieve', parameter).then(response => {
         $('#loading').css({'display': 'none'})

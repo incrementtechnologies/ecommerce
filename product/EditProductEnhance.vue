@@ -129,23 +129,30 @@
               <br>
               <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents">
             </div>
-            <div class="col-sm-3 product-item-title" :hidden="isEdit===false">
+            <div class="col-sm-2 product-item-title" :hidden="isEdit===false">
               <label></label>
               <br>
               <input type="number" class="form-control form-control-custom" v-model="active.value" placeholder="value" >
             </div>
-            <div class="col-sm-3 product-item-title"  :hidden="isEdit===false">
+            <div class="col-sm-2 product-item-title"  :hidden="isEdit===false">
               <label></label>
               <br>
               <select class="form-control form-control-custom" v-model="active.attribute">
                 <option v-for="(item, index) in formulations.ACTIVE_UNITS" :value="item">{{item}}</option>
               </select>
             </div>
+             <div class="col-sm-2 product-item-title"  :hidden="isEdit===false">
+              <label></label>
+              <br>
+              <select class="form-control form-control-custom" v-model="active.attribute2">
+                <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :value="item">{{item}}</option>
+              </select>
+            </div>
             <div class="col-sm-1 product-item-title pl-2" style="margin-top: 5%;" :hidden="isEdit===false"> 
               <button class="btn btn-primary" @click="addActive"><i class="fa fa-plus" ></i></button>
             </div>
           </div>
-              <label style="margin-top: 1%" :hidden="isEdit===true"><strong>Actives</strong></label>
+            <label style="margin-top: 1%" :hidden="isEdit===true"><strong>Actives</strong></label>
             <div class="table-responsive">
               <table class="table table-hover table-bordered table-sm w-50 " style="float: left" v-if="actives.length > 0">
                 <thead>
@@ -160,7 +167,7 @@
                     <tr v-for="(active, index) in actives" :key="index">
                       <td>{{active.active_name}}</td>
                       <td>{{active.value}}</td>
-                      <td>{{active.attribute}}</td>
+                      <td>{{conversion.getUnitsAbbreviation(active.attribute)}}/{{conversion.getUnitsAbbreviation(active.attribute2)}}</td>
                       <td><button class="btn" @click="showConfirmationModal(index, 'active')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                     </tr>
                   </tbody>
@@ -284,6 +291,7 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
 import GROUP from './Group.js'
+import Conversion from 'src/services/conversion.js'
 import axios from 'axios'
 export default {
   mounted(){
@@ -294,6 +302,7 @@ export default {
     return {
       user: AUTH.user,
       config: CONFIG,
+      conversion: Conversion,
       sample: [],
       errorMessage: null,
       data: null,
@@ -383,20 +392,22 @@ export default {
       }
     },
     addActive(){
-      if((this.active.active_name === null || this.active.active_name === '') || (this.active.value === null || this.active.value <= 0) || this.active.attribute === null){
+      if((this.active.active_name === null || this.active.active_name === '') || (this.active.value === null || this.active.value <= 0) || this.active.attribute === null || this.active.attribute2 === null){
         this.errorMessage = 'Empty fields cannot be added'
         return
       }
       let active = {
         active_name: this.active.active_name,
         value: this.active.value,
-        attribute: this.active.attribute
+        attribute: this.active.attribute,
+        attribute2: this.active.attribute2
       }
       if(this.actives.length < 3){
         this.actives.push(active)
         this.active.active_name = null
         this.active.value = null
         this.active.attribute = null
+        this.active.attribute2 = null
         console.log(this.actives)
       }else{
         this.errorMessageActives = 'Active already reach max number(3)'
@@ -508,13 +519,22 @@ export default {
           }
           if(Array.isArray(this.data.details.active)){
             if(this.data.details.active[0].active_name !== null){
+              if(this.data.details.active[0].attribute2 === undefined){
+                this.data.details.active[0]['attribute2'] = null
+                this.actives = this.data.details.active
+              }
               this.actives = this.data.details.active
             }else{
               this.actives = []
             }
           }else{
             if(this.data.details.active.active_name !== null){
-              this.actives.push(this.data.details.active)
+              if(this.data.details.active.attribute2 === undefined){
+                this.data.details.active['attribute2'] = null
+                this.actives.push(this.data.details.active)
+              }else{
+                this.actives.push(this.data.details.active)
+              }
             }else{
               this.actives = []
             }

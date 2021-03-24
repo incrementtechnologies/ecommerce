@@ -2,24 +2,47 @@
   <div class="variations-holder">
     <div class="error text-danger" v-if="errorMessage !== null">{{errorMessage}}</div>
     <div class="form-group">
-      <label for="exampleInputEmail1" style="font-weight: 600;">Variations</label>
+      <label for="exampleInputEmail1" style="font-weight: 600;">Product Variations</label>
     </div>
     <div class="variations-content" v-if="item.variation !== null">
-      <div class="attribute-item" v-for="itemVariation, indexVariation in item.variation">
-        <input class="form-control form-control-custom" style="width: 40%; float: left; margin-right: 10px;" :placeholder="`${item.title}-${itemVariation.payload_value}${itemVariation.payload.substring(itemVariation.payload.lastIndexOf('s') + 1)}`" disabled>
+      <!-- <div class="attribute-item"> -->
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <td><b>Product Name</b></td>
+                <td><b>Size</b></td>
+                <td><b>Available</b></td>
+                <td></td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="itemVariation, indexVariation in item.variation">
+                <td>{{item.title}}({{itemVariation.payload_value}} {{convertion.getUnitsAbbreviation(itemVariation.payload)}})</td>
+                <td>{{itemVariation.payload_value}}{{convertion.getUnitsAbbreviation(itemVariation.payload)}}</td>
+                <td><button class="btn btn-primary" style="margin-left: 10px;" @click="redirect('/traces/' + itemVariation.id + '/' + item.code)">
+                      {{itemVariation.product_trace_qty}}
+                    </button>
+                </td>
+                <td><button class="btn btn-primary" style="margin-left: 10px;" @click="addTraces(itemVariation)" title="Add Inventory" :disabled="isEdit===false">Inventory</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- <input class="form-control form-control-custom" style="width: 40%; float: left; margin-right: 10px;" :placeholder="`${item.title}-${itemVariation.payload_value}${itemVariation.payload.substring(itemVariation.payload.lastIndexOf('s') + 1)}`" disabled>
         <input type="text" class="form-control form-control-custom" style="float: left; width: 35%;" placeholder="Type variation value here..." v-model="itemVariation.payload_value" @keyup.enter="update(itemVariation)" disabled>
          <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" disabled>
           {{itemVariation.product_trace_qty}}
-        </button>
+        </button> -->
         <!--  @click="redirect('/traces/' + itemVariation.id + '/' + item.code)" -->
         <!-- <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="update(itemVariation)">
           <i class="fa fa-sync"></i>
         </button> -->
-        <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="addTraces(itemVariation)" title="Add Inventory" :disabled="isEdit===false">Inventory</button>
+        <!-- <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="addTraces(itemVariation)" title="Add Inventory" :disabled="isEdit===false">Inventory</button> -->
         <!-- <button class="btn btn-danger form-control-custom" style="margin-left: 10px;" @click="deleteConfirm(itemVariation)">
           <i class="fa fa-trash"></i>
         </button> -->
-      </div>
+      <!-- </div> -->
     </div>
     <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo">Create new product variation</button>
     <div id="demo" class="collapse"><br>
@@ -84,6 +107,7 @@ import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
 import axios from 'axios'
 import ProductTrace from './CreateProductTrace.js'
+import Convertion from 'src/services/conversion.js'
 import Confirmation from 'src/components/increment/generic/modal/Confirmation.vue'
 export default {
   mounted(){
@@ -92,6 +116,7 @@ export default {
   data(){
     return {
       user: AUTH.user,
+      convertion: Convertion,
       config: CONFIG,
       common: COMMON,
       errorMessage: null,
