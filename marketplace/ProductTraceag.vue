@@ -1,6 +1,6 @@
 <template>
 <div class="row p-0 m-0">
-  <div class="col-sm-6">
+  <div class="col-sm-6 m-0 p-0">
     <div v-if="data !== null" class="">
       <div class="title">
         <br>
@@ -10,13 +10,13 @@
             <label style="color:grey;">&nbsp;{{data.merchant.name}}&nbsp;</label>
             <label class="product-row-labels">Classification:</label>
             <label style="color:grey;">&nbsp;{{data.tags}}</label>
-            <div class="col-sm-12 product-image">
+            <div class="col-sm-12 product-image m-0 p-0">
               <div class="product-image-content">
-                <img :src="config.BACKEND_URL + selectedImage" class="main-image mb-4" v-if="imagesList !== null">
-                <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image mb-4" v-if="imagesList === null && data.featured !== null">
+                <img :src="config.BACKEND_URL + selectedImage" class="main-image mb-3" v-if="imagesList !== null">
+                <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image mb-3" v-if="imagesList === null && data.featured !== null">
                 <i class="fa fa-image mb-4" v-if="imagesList === null && data.featured === null"></i>
-                <div class="images-holder" style="margin-top: 20%;" v-if="imagesList !== null">
-                  <div v-for="(item, index) in imagesList" :key="index" class="image-item" @click="selectImage(item.url)" style="margin-left:5px">
+                <div class="images-holder d-flex p-0 m-0" style="margin-top: 15%;" v-if="imagesList !== null">
+                  <div v-for="(item, index) in imagesList" :key="index" class="image-item" @click="selectImage(item.url)">
                     <img :src="config.BACKEND_URL + item.url" :style="[ selectedImage === item.url ? { 'border': '3px solid grey'} : {'border':'1px solid grey'}]" class="other-image">
                     <div class="overlay"></div>
                   </div>
@@ -58,7 +58,16 @@
         <p v-if="active.length === 0">No Data</p>
         <ul v-else class="p-0" style="list-style:none;">
           <li v-for="(actives, index) in active" :key="index">
-            <p v-if="actives.active_name !== null">{{actives.active_name}}-{{actives.attribute}}</p>
+            <div v-if="actives.active_name !== null">
+              <span style="padding: 0px 0px 0px 0px;display:flex;">{{actives.active_name}}&nbsp;{{actives.value}}
+                <span style="padding: 0px 0px 0px 0px;" v-if="actives.attribute[0] === 'G'">g/</span>
+                <span style="padding: 0px 0px 0px 0px;" v-else>mg/</span>
+                <span style="padding: 0px 0px 0px 0px;" v-if="actives.attribute2[0] === 'K'">kg</span>
+                <span style="padding: 0px 0px 0px 0px;" v-if="actives.attribute2[0] === 'G'">g</span>
+                <span style="padding: 0px 0px 0px 0px;" v-if="actives.attribute2[0] === 'L'">L</span>
+                <span style="padding: 0px 0px 0px 0px;" v-if="actives.attribute2[0] === 'M'">mL</span>
+              </span>
+            </div>
             <p v-else>No Data</p>
           </li>
         </ul>
@@ -98,7 +107,8 @@
         <p><b>HRAC Mode of Action:</b></p>
       </div>
       <div class="col-sm-7 p-0" style="color: grey;">
-          <li style="list-style: none" v-for="(hracs, index) in data.details.hracs" :key="index">{{hracs}}</li>
+          <li style="list-style: none" v-if="data.details.hracs.length === 0 || data.details.hracs === null">No Data</li>
+          <li v-else style="list-style: none" v-for="(hracs, index) in data.details.hracs" :key="index">{{hracs}}</li>
       </div>
     </div>
     <div class="row mt-3">
@@ -132,20 +142,20 @@
     </div>
     <div class="row mt-3">
       <div class="col-sm-5">
-        <p><b>Approval Number:</b></p>
+        <p><b>APVMA&nbsp;Approval Number:</b></p>
       </div>
       <div class="col-sm-7 p-0" style="color:grey;">
         <p v-if="data.details.approval_number === null">No Data</p>
-        <p v-else>APVMA&nbsp;{{data.details.approval_number}}</p>
+        <p v-else>{{data.details.approval_number}}</p>
       </div>
     </div>
     <div class="row mt-3">
       <div class="col-sm-5">
-        <p><b>Approval Date:</b></p>
+        <p><b>APVMA&nbsp;Approval Date:</b></p>
       </div>
       <div class="col-sm-7 p-0" style="color:grey;">
         <p v-if="data.details.approval_date === null">No Data</p>
-        <p v-else>APVMA&nbsp;{{data.details.approval_date}}</p>
+        <p v-else>{{data.details.approval_date}}</p>
       </div>
     </div>
     <div class="row mt-3">
@@ -186,7 +196,7 @@
         <p><b>Label:</b></p>
       </div>
       <div class="col-sm-6">
-        <p><b>Safety Date (SDS):</b></p>
+        <p><b>Safety Data Sheet (SDS):</b></p>
       </div>
     </div>
     <div class="row mt-3">
@@ -277,7 +287,6 @@
   }
   .product-image-content{
     width: auto;
-    margin-left:2%;
     float: left;
     min-height: auto;
     overflow-y: hidden;
@@ -286,9 +295,10 @@
     /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
     padding-bottom: 2%;
     padding-top: 2%;
+    margin-left: -5%;
   }
   .product-image-content .main-image{
-    min-height: auto;
+    min-height: 500px;
     max-width: 500px;
     width: 100%;
   }
@@ -299,7 +309,7 @@
   .product-image-content .image-item{
     height: 60px;
     float: left;
-    width: 80px;
+    width: 75px;
     text-align: center;
   }
   .product-image-content .other-image{
