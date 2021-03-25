@@ -299,6 +299,7 @@ export default {
       float: left;
       margin-left: 2%;
       margin-right: 2%;
+      margin-top: 2%;
       min-height: 410px;
       overflow-y: hidden;
       text-align: center;
@@ -312,7 +313,7 @@ export default {
       line-height: 350px;
     }
     .product-image .other-image{
-      height: 60px;
+      height: 0px;
       max-width: 100%;
     }
     .images .overlay{
@@ -353,12 +354,12 @@ export default {
   }
   .product-row{
     width: 100%;
-    float: left;
+    // float: left;
     min-height: 40px;
     overflow-y: hidden;
     font-weight: 600;
-    font-size: 16px;
-    line-height: 40px;
+    // font-size: 16px;
+    // line-height: 40px;
   }
   .product-row-tags{
     width: 100%;
@@ -494,4 +495,11 @@ export default {
       width: 100%;
     }
   }
+
+  @media (max-width: 1200px){
+    .product-row{
+
+    }
+  }
+
 </style>
