@@ -73,7 +73,7 @@
           </div>
         </div>
         <div class="table-responsive">
-          <label style="margin-top: 1%" :hidden="isEdit===true"><strong>Activity Group</strong></label>      
+          <label style="margin-top: 5%" :hidden="isEdit===true"><strong>Activity Group</strong></label>      
           <table class="table table-hover table-bordered table-sm w-50" v-if="listGroup.length > 0">
               <thead>
                   <tr>
