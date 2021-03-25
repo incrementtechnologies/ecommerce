@@ -46,11 +46,12 @@
     </div>
     <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo">Create new product variation</button>
     <div id="demo" class="collapse"><br>
-        <select class="form-control form-control-custom"  style="float: left; width: 40%;" v-model="newAttribute.payload" v-if="item.variation === null" :disabled="isEdit===false">
+        <input type="number" class="form-control form-control-custom" style="float: left; width: 30%; " placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup.enter="getVariationName()" :disabled="isEdit===false">
+        <select class="form-control form-control-custom"  style="float: left; width: 30%;margin-left: 10px;" v-model="newAttribute.payload" v-if="item.variation === null" :disabled="isEdit===false" @change="getVariationName()">
             <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
         </select>
-        <input class="form-control form-control-custom"  style="float: left; width: 40%;" id="payload" :placeholder="`${item.title}(${item.variation[0].payload.substring(item.variation[0].payload.lastIndexOf('s') + 1)})`" :value="item.variation[0].payload" v-else disabled>
-        <input type="number" class="form-control form-control-custom" style="float: left; width: 40%; margin-left: 10px;" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup.enter="create()" :disabled="isEdit===false">
+        <input class="form-control form-control-custom"  style="float: left; width: 30%;margin-left: 10px;" id="payload" :placeholder="`${item.title}(${convertion.getUnitsAbbreviation(item.variation[0].payload)})`" :value="item.variation[0].payload" v-else disabled>
+        <input type="text" class="form-control form-control-custom" style="float: left; width: 30%; margin-left: 10px;" placeholder='Variation name' v-model="variationName" disabled>
         <!-- <i class="fa fa-check mt-2" style="color: #cae166; font-size: 30px;" v-if="newAttribute.payload_value !== null && newAttribute.payload_value !== ''"></i> -->
         <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="confirmAdd()" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
       </div>
@@ -128,7 +129,8 @@ export default {
       },
       createProductTraceModal: ProductTrace,
       productId: this.item.id,
-      selectedVariation: null
+      selectedVariation: null,
+      variationName: null
     }
   },
   components: {
@@ -139,6 +141,14 @@ export default {
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    getVariationName(){
+      console.log('[VARIATION NAME]', this.newAttribute.payload_value, this.newAttribute.payload)
+      if(this.newAttribute.payload !== null){
+        this.variationName = `${this.item.title}(${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.newAttribute.payload)})`
+      }else{
+        this.variationName = `${this.item.title}(${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.item.variation[0].payload)})`
+      }
     },
     addTraces(variation){
       console.log(variation)

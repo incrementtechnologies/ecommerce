@@ -137,14 +137,14 @@
             <div class="col-sm-2 product-item-title"  :hidden="isEdit===false">
               <label></label>
               <br>
-              <select class="form-control form-control-custom" v-model="active.attribute">
+              <select class="form-control form-control-custom" v-model="active.attribute" @change="getValue($event, 'attribute1')">
                 <option v-for="(item, index) in formulations.ACTIVE_UNITS" :value="item">{{item}}</option>
               </select>
             </div>
              <div class="col-sm-2 product-item-title"  :hidden="isEdit===false">
               <label></label>
               <br>
-              <select class="form-control form-control-custom" v-model="active.attribute2">
+              <select class="form-control form-control-custom" v-model="active.attribute2" @change="getValue($event, 'attribute2')">
                 <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :value="item">{{item}}</option>
               </select>
             </div>
@@ -391,6 +391,16 @@ export default {
         this.selectedMenu = this.productMenu[index]
       }
     },
+    getValue(event, attribute){
+      if(attribute === 'attribute1'){
+        console.log('[GET_VALUE]', this.formulations.ACTIVE_UNITS.indexOf(event.target.value))
+        if(event.target.value === 'Grams (g)'){
+          let index = this.formulations.ACTIVE_UNITS.indexOf('Grams (g)')
+          this.formulations.ACTIVE_UNITS2.splice(index, 1)
+          console.log(this.formulations)
+        }
+      }
+    },
     addActive(){
       if((this.active.active_name === null || this.active.active_name === '') || (this.active.value === null || this.active.value <= 0) || this.active.attribute === null || this.active.attribute2 === null){
         this.errorMessage = 'Empty fields cannot be added'
@@ -503,7 +513,6 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('products/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        this.isEdit = false
         console.log(response.data)
         if(response.data.length > 0){
           this.data = response.data[0]
