@@ -24,7 +24,8 @@
                       {{itemVariation.product_trace_qty}}
                     </button>
                 </td>
-                <td><button class="btn btn-primary" style="margin-left: 10px;" @click="addTraces(itemVariation)" title="Add Inventory" :disabled="isEdit===false">Inventory</button></td>
+                <!-- <td><button class="btn btn-primary" style="margin-left: 10px;" @click="addTraces(itemVariation)" title="Add Inventory" :disabled="isEdit===false">Inventory</button></td> -->
+                <td><button class="btn btn-primary" style="margin-left: 10px;" @click="addTraces(itemVariation)" title="Add Inventory" :disabled="isEdit===false">View Batches</button></td>
               </tr>
             </tbody>
           </table>
