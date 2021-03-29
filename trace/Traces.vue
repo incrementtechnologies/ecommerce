@@ -1,5 +1,7 @@
 <template>
   <div class="holder">
+    <h4>Batches</h4>
+    <h4 v-if="data">Product: {{data[0].product.title}}({{data[0].variation[0].payload_value}}{{conversion.getUnitsAbbreviation(data[0].variation[0].payload)}})</h4>
     <div>
       <button class="btn btn-primary pull-left" style="margin-bottom: 10px;" v-if="viewInactive === false" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'inactive'), viewInactive = !viewInactive">Show Inactive</button>
       <button class="btn btn-primary pull-left" v-if="viewInactive === true" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'active'), viewInactive = !viewInactive">Show Active</button>
@@ -15,7 +17,7 @@
     <table class="table table-bordered" v-if="data !== null">
       <thead>
         <tr>
-          <td>Trace ID</td>
+          <!-- <td>Trace ID</td> -->
           <td>Batch Number
             <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayBatch('desc')" v-if="activeSortBatch === 'asc'"></i>
             <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayBatch('asc')" v-if="activeSortBatch === 'desc'"></i>
@@ -24,17 +26,21 @@
             <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayDate('desc')" v-if="activeSortDate === 'asc'"></i>
             <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayDate('asc')" v-if="activeSortDate === 'desc'"></i>
           </td>
+          <td>Quantity</td>
           <td>Status</td>
           <td>Created At</td>
+          <td>Actions</td>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td>{{item.code}}</td>
+          <!-- <td>{{item.code}}</td> -->
           <td>{{item.batch_number}}</td>
           <td>{{item.manufacturing_date}}</td>
+          <td>{{item.qty}}</td>
           <td style="text-transform: UPPERCASE">{{item.status}}</td>
           <td>{{item.created_at_human}}</td>
+          <td><button class="btn btn-warning" @click="item.status === 'inactive' ? showModal(item) : ''">{{item.status === 'inactive' ? 'Order Labels' : 'View Inventory'}}</button></td>
   <!--         <td>
             <label class="text-primary action-link" @click="redirect('/product/edit/' + item.code)">EDIT</label> / 
             <label class="text-danger action-link">DELETE</label>
@@ -43,6 +49,44 @@
       </tbody>
     </table>
     <empty v-if="data === null" :title="'Looks like you have not added a product!'" :action="'Click the New Product Button to get started.'"></empty>
+    <!-- The Modal -->
+    <div class="modal fade" id="myModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Order Smart Labels</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            <label v-if="data[0].product !== null">Product:{{selectedBatch.product.title}}({{selectedBatch.variation[0].payload_value}}{{conversion.getUnitsAbbreviation(selectedBatch.variation[0].payload)}})</label><br>
+            <label>Batch Number: {{selectedBatch.batch_number}}</label><br>
+            <label>Manufacture Date: {{selectedBatch.manufacturing_date}}</label><br>
+            <div class="row">
+              <div class="col-sm-5">
+                <label>Label Quantity: {{selectedBatch.qty}}</label>  
+              </div>
+              <div class="col-sm-7">
+                <select class="form-control custom-form-control">
+                  <option value=""></option>
+                </select>
+              </div>
+            </div>
+            <span style="font-size: 12px">All Agricord labels include lifetim traceability through Agricord platform</span>
+            <center><button class="btn btn-warning" style="width:50%; margin-top:2%" @click="exportTraces(selectedBatch)">Export Order</button></center>
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <style>
@@ -163,6 +207,7 @@ import AUTH from 'src/services/auth'
 import CONFIG from 'src/config.js'
 import axios from 'axios'
 import COMMON from 'src/common.js'
+import Conversion from 'src/services/conversion.js'
 import { ExportToCsv } from 'export-to-csv'
 export default {
   mounted(){
@@ -172,11 +217,13 @@ export default {
     return {
       user: AUTH.user,
       config: CONFIG,
+      conversion: Conversion,
       errorMessage: null,
       data: null,
       selectedItem: null,
       selectedIndex: null,
       listStyle: 'list',
+      selectedBatch: [],
       category: [{
         title: 'Product Traces',
         sorting: [{
@@ -267,6 +314,11 @@ export default {
         })
       }
     },
+    showModal(item){
+      this.selectedBatch = item
+      console.log(item)
+      $('#myModal').modal('show')
+    },
     redirect(parameter){
       ROUTER.push(parameter)
     },
@@ -289,22 +341,38 @@ export default {
       }
       if(this.$route.params.product_attribute_id !== undefined){
         parameter['product_attribute_id'] = this.$route.params.product_attribute_id
-      }else{}
-      $('#loading').css({'display': 'block'})
-      this.APIRequest('product_traces/retrieve', parameter).then(response => {
-        $('#loading').css({'display': 'none'})
-        if(response.data.length > 0){
-          this.data = response.data
-          this.date = response.request_timestamp
-          if(this.selectedItem !== null){
-            this.selectedItem = this.data[this.selectedIndex]
+        $('#loading').css({'display': 'block'})
+        this.APIRequest('product_traces/retrieve_with_attribute', parameter).then(response => {
+          $('#loading').css({'display': 'none'})
+          if(response.data.length > 0){
+            this.data = response.data
+            this.date = response.request_timestamp
+            if(this.selectedItem !== null){
+              this.selectedItem = this.data[this.selectedIndex]
+            }
+          }else{
+            this.data = null
+            this.selectedIndex = null
+            this.selectedItem = null
           }
-        }else{
-          this.data = null
-          this.selectedIndex = null
-          this.selectedItem = null
-        }
-      })
+        })
+      }else{
+        $('#loading').css({'display': 'block'})
+        this.APIRequest('product_traces/retrieve', parameter).then(response => {
+          $('#loading').css({'display': 'none'})
+          if(response.data.length > 0){
+            this.data = response.data
+            this.date = response.request_timestamp
+            if(this.selectedItem !== null){
+              this.selectedItem = this.data[this.selectedIndex]
+            }
+          }else{
+            this.data = null
+            this.selectedIndex = null
+            this.selectedItem = null
+          }
+        })
+      }
     },
     editModal(item, index){
       for (var i = 0; i < this.$children.length; i++) {
@@ -320,6 +388,44 @@ export default {
         case 'list': this.listStyle = 'list'
           break
       }
+    },
+    exportTraces(selectedBatch){
+      let options = {
+        fieldSeparator: ',',
+        quoteStrings: '"',
+        decimalSeparator: '.',
+        showLabels: true,
+        showTitle: true,
+        title: 'Trackr',
+        useTextFile: false,
+        useBom: true,
+        // useKeysAsHeaders: true,
+        filename: COMMON.APP_NAME + ' - ' + this.date,
+        headers: ['trace_code', 'batch_number', 'manufacturing_date', 'status', 'created_at', 'nfc']
+      }
+      var exportData = []
+      if(this.data !== null){
+        for (let i = 0; i < selectedBatch.qty; i++) {
+          console.log(selectedBatch)
+          var code = selectedBatch.product.title + '<>' + selectedBatch.product.merchant.name + '<>' + selectedBatch.batch_number + '<>' + selectedBatch.manufacturing_date + '<>' + selectedBatch.code + '<>' + selectedBatch.product.merchant.website
+          if(selectedBatch.status === 'inactive'){
+            var object = {
+              trace_code: selectedBatch.code,
+              batch_number: selectedBatch.batch_number,
+              manufacturing_date: selectedBatch.manufacturing_date,
+              status: selectedBatch.status,
+              created_at: selectedBatch.created_at_human,
+              nfc: code
+            }
+            exportData.push(object)
+          }
+        }
+      }
+      if(exportData.length > 0){
+        var csvExporter = new ExportToCsv(options)
+        csvExporter.generateCsv(exportData)
+      }
+      $('#loading').css({'display': 'none'})
     },
     exportData(){
       $('#loading').css({'display': 'block'})
