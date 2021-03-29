@@ -294,6 +294,7 @@ export default {
       this.APIRequest('product_traces/retrieve', parameter).then(response => {
         $('#loading').css({'display': 'none'})
         if(response.data.length > 0){
+          console.log('[Datas]', response.data)
           this.data = response.data
           this.date = response.request_timestamp
           if(this.selectedItem !== null){

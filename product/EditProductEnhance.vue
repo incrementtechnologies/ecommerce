@@ -74,7 +74,7 @@
         </div>
         <div class="table-responsive">
           <label style="margin-top: 5%" :hidden="isEdit===true"><strong>Activity Group</strong></label>      
-          <table class="table table-hover table-bordered table-sm w-50" v-if="listGroup.length > 0">
+          <table class="table table-hover mt-3 table-bordered table-sm w-50" v-if="listGroup.length > 0">
               <thead>
                   <tr>
                     <td>Group</td>
@@ -84,7 +84,7 @@
               <tbody>
                 <tr v-for="(group, index) in listGroup" :key="index">
                   <td>{{group.group}}</td>
-                  <td><button class="btn" @click="showConfirmationModal(index, 'groups')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
+                  <td><button class="btn" @click="showConfirmationModal(index, 'group')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                 </tr>
               </tbody>
           </table>
@@ -124,36 +124,38 @@
               <div class="product-item-title ml-4" :hidden="isEdit===false" style="margin-bottom:-5%">
                 <label>Actives <span class="text-danger">{{errorMessageActives}}</span></label>
               </div>
-            <div class="col-sm-5 product-item-title" :hidden="isEdit===false">
+            <div class="col-sm-4 product-item-title" :hidden="isEdit===false">
               <label></label>
               <br>
               <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents">
             </div>
-            <div class="col-sm-2 product-item-title" :hidden="isEdit===false">
+            <div class="col-sm-2 pl-0 product-item-title" :hidden="isEdit===false">
               <label></label>
               <br>
               <input type="number" class="form-control form-control-custom" v-model="active.value" placeholder="value" >
             </div>
-            <div class="col-sm-2 product-item-title"  :hidden="isEdit===false">
+            <div class="col-sm-3 pl-0 ml-0 product-item-title"  :hidden="isEdit===false">
               <label></label>
               <br>
               <select class="form-control form-control-custom" v-model="active.attribute" @change="getValue($event, 'attribute1')">
-                <option v-for="(item, index) in formulations.ACTIVE_UNITS" :value="item">{{item}}</option>
+                <option v-for="(item, index) in formulations.ACTIVE_UNITS" :value="item" :key="index">{{item}}</option>
               </select>
             </div>
              <div class="col-sm-2 product-item-title"  :hidden="isEdit===false">
               <label></label>
               <br>
-              <select class="form-control form-control-custom" v-model="active.attribute2" @change="getValue($event, 'attribute2')">
-                <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :value="item">{{item}}</option>
+              <select class="form-control pl-0 ml-0 form-control-custom" v-model="active.attribute2" @change="getValue($event, 'attribute2')">
+                <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :value="item" :key="index">
+                  <a v-if="active.attribute != item">{{item}}</a>
+                </option>
               </select>
             </div>
-            <div class="col-sm-1 product-item-title pl-2" style="margin-top: 5%;" :hidden="isEdit===false"> 
+            <div class="col-sm-1 product-item-title pl-4" style="margin-top: 5%;" :hidden="isEdit===false"> 
               <button class="btn btn-primary" @click="addActive"><i class="fa fa-plus" ></i></button>
             </div>
           </div>
             <label style="margin-top: 1%" :hidden="isEdit===true"><strong>Actives</strong></label>
-            <div class="table-responsive">
+            <div class="table-responsive mt-3">
               <table class="table table-hover table-bordered table-sm w-50 " style="float: left" v-if="actives.length > 0">
                 <thead>
                     <tr>
@@ -219,7 +221,7 @@
         </div>
         <div class="product-item-title" style="width: 20%; margin-top:2.3%">
           <br>
-          <input type="text" class="form-control form-control-custom" placeholder="Months" disabled>
+          <input type="text" class="form-control form-control-custom" placeholder="Month/s" disabled>
         </div>
          <div class="product-item-title">
           <label>APVMA Approval number</label>
