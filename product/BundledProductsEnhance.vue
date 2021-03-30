@@ -13,12 +13,14 @@
               <tr>
                 <td><b>Bundled Name</b></td>
                 <td><b>Qty</b></td>
+                <td><b>Action</b></td>
               </tr>
             </thead>
             <tbody>
-              <tr  v-for="itemVariation, indexVariation in item.bundled">
+              <tr  v-for="(itemVariation, indexVariation) in item.bundled" :key="indexVariation">
                 <td>{{`${itemVariation.qty} X ${item.title}(${itemVariation.variation[0].payload_value}${convertion.getUnitsAbbreviation(itemVariation.variation[0].payload)})`}}</td>
                 <td>{{itemVariation.scanned_qty}}</td>
+                <td><button v-if="itemVariation.scanned_qty === 0 || itemVariation.scanned_qty === null" class="btn btn-danger" @click="deleteBundle(itemVariation.id, 'bundle')" title="Delete Inventory" :disabled="isEdit===false">Delete</button></td>
               </tr>
             </tbody>
           </table>
@@ -29,7 +31,7 @@
     <div id="demo" class="collapse">
       <div><br>
           <select class="form-control form-control-custom"  style="float: left; width: 40%;" @change="getAttribute($event)" v-model="selectedVariation" :disabled="isEdit===false">
-              <option v-for="itemVariation, indexVariation in item.variation" :value="{id: itemVariation.id, payload: itemVariation.payload, payload_value: itemVariation.payload_value}" >{{itemVariation.payload_value}}{{convertion.getUnitsAbbreviation(itemVariation.payload)}}</option>
+              <option v-for="(itemVariation, indexVariation) in item.variation" :key="indexVariation" :value="{id: itemVariation.id, payload: itemVariation.payload, payload_value: itemVariation.payload_value}" >{{itemVariation.payload_value}}{{convertion.getUnitsAbbreviation(itemVariation.payload)}}</option>
           </select>
           <input type="number" class="form-control form-control-custom" style="float: left; width: 40%; margin-left: 10px;" placeholder="Qty" v-model="newAttribute.qty" @keyup.enter="create()" :disabled="isEdit===false">
           <i class="fa fa-check mt-2" style="color: #cae166; font-size: 30px;" v-if="newAttribute.product_attribute_id !== null && newAttribute.qty !== null"></i>
@@ -44,8 +46,24 @@
         @onConfirm="create($event)"
         >
     </Confirmation>
+    <Confirmation
+        :title="'Confirmation Modal'"
+        :message="confirmationMessage"
+        ref="confirmDeleteBundle"
+        id = "confirmDeleteBundle"
+        @onConfirm="confirmDeletebundle($event.id, $event)"
+      />
     <create-modal :property="createProductTraceModal"></create-modal>
     <create-product-traces-modal ref="addTrace" :params="productId" :variations="selectedVariation"></create-product-traces-modal>
+    <!-- <confirmation
+      :message="confirmationMessage"
+      ref="confirmDeleteBundle"
+      id="confirmDeleteBundle"
+      :title="'Confirmation Message'"
+      @onConfirm="confirmDeleteBundle()"
+    >
+    </confirmation> -->
+
   </div>
 </template>
 <style scoped>
@@ -115,17 +133,34 @@ export default {
       variantPayloadValue: null,
       createProductTraceModal: ProductTrace,
       productId: this.item.id,
-      selectedVariation: null
+      selectedVariation: null,
+      toDeleteBundle: null,
+      confirmationMessage: null
     }
   },
   components: {
     Confirmation,
     'create-modal': require('components/increment/generic/modal/Modal.vue'),
+    'confirmation': require('components/increment/generic/modal/Confirmation.vue'),
     'create-product-traces-modal': require('./CreateProductTraces.vue')
   },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    deleteBundle(id, array){
+      let parameter = {
+        id: id,
+        array: array
+      }
+      this.confirmationMessage = 'Are you sure you want to delete this ' + array + '?'
+      this.$refs.confirmDeleteBundle.show(parameter)
+    },
+    confirmDeleteBundle(index){
+      console.log(index.id)
+      let parameter = {
+        id: index.id
+      }
     },
     getAttribute(data){
       this.variantId = this.selectedVariation.id
@@ -182,7 +217,12 @@ export default {
                 this.$parent.retrieve()
                 if(response.data > 0){
                   this.errorMessage = null
-                  this.$parent.retrieve()
+                  // this.variantId = null
+                  // this.variantPayload = null
+                  // this.variantPayloadValue = null
+                  this.selectedVariation = null
+                  this.newAttribute.qty = null
+                  // this.$parent.retrieve()
                 }
               })
             })

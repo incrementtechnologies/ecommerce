@@ -1,7 +1,7 @@
 <template>
   <div class="holder">
     <h4>Batches</h4>
-    <h4 v-if="data">Product: {{data[0].product.title}}({{data[0].variation[0].payload_value}}{{conversion.getUnitsAbbreviation(data[0].variation[0].payload)}})</h4>
+    <h4 v-if="data.length > 0">Product: {{data[0].product.title}}({{data[0].variation[0].payload_value}}{{conversion.getUnitsAbbreviation(data[0].variation[0].payload)}})</h4>
     <div>
       <button class="btn btn-primary pull-left" style="margin-bottom: 10px;" v-if="viewInactive === false" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'inactive'), viewInactive = !viewInactive">Show Inactive</button>
       <button class="btn btn-primary pull-left" v-if="viewInactive === true" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'active'), viewInactive = !viewInactive">Show Active</button>
@@ -14,7 +14,7 @@
       @changeStyle="manageGrid($event)"
       :grid="['list', 'th-large']">
     </filter-product>
-    <table class="table table-bordered" v-if="data !== null">
+    <table class="table table-bordered" v-if="data.length > 0">
       <thead>
         <tr>
           <!-- <td>Trace ID</td> -->
@@ -62,7 +62,7 @@
 
           <!-- Modal body -->
           <div class="modal-body">
-            <label v-if="data[0].product !== null">Product:{{selectedBatch.product.title}}({{selectedBatch.variation[0].payload_value}}{{conversion.getUnitsAbbreviation(selectedBatch.variation[0].payload)}})</label><br>
+            <label v-if="data.length > 0">Product:{{selectedBatch.product.title}}({{selectedBatch.variation[0].payload_value}}{{conversion.getUnitsAbbreviation(selectedBatch.variation[0].payload)}})</label><br>
             <label>Batch Number: {{selectedBatch.batch_number}}</label><br>
             <label>Manufacture Date: {{selectedBatch.manufacturing_date}}</label><br>
             <div class="row">
@@ -219,7 +219,7 @@ export default {
       config: CONFIG,
       conversion: Conversion,
       errorMessage: null,
-      data: null,
+      data: [],
       selectedItem: null,
       selectedIndex: null,
       listStyle: 'list',
@@ -351,7 +351,7 @@ export default {
               this.selectedItem = this.data[this.selectedIndex]
             }
           }else{
-            this.data = null
+            this.data = []
             this.selectedIndex = null
             this.selectedItem = null
           }
