@@ -4,7 +4,8 @@
     <div class="form-group">
       <label for="exampleInputEmail1" style="font-weight: 600;">Created Bundles</label>
     </div>
-    <div class="variations-content" v-if="item.bundled !== null">
+    <center v-if="item.length <= 0"><i class="fa fa-circle-o-notch fa-spin" style="font-size:50px;color:#cae166"></i><br>Loading</center>
+    <div class="variations-content" v-if="item.length > 0">
       <!-- <div class="attribute-item"> -->
         <div class="table-responsive"> 
           <table class="table table-hover">
@@ -24,7 +25,7 @@
         </div>
       <!-- </div> -->
     </div>
-    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo">Create new product variation</button>
+    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="item.length > 0">Create new product variation</button>
     <div id="demo" class="collapse">
       <div><br>
           <select class="form-control form-control-custom"  style="float: left; width: 40%;" @change="getAttribute($event)" v-model="selectedVariation" :disabled="isEdit===false">

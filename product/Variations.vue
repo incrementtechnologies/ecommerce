@@ -4,7 +4,8 @@
     <div class="form-group">
       <label for="exampleInputEmail1" style="font-weight: 600;">Product Variations</label>
     </div>
-    <div class="variations-content" v-if="item.variation !== null">
+    <center v-if="variationData === null"><i class="fa fa-circle-o-notch fa-spin" style="font-size:50px;color:#cae166" ></i><br>Loading</center>
+    <div class="variations-content" v-if="variationData !== null">
       <!-- <div class="attribute-item"> -->
         <div class="table-responsive">
           <table class="table table-hover">
@@ -17,7 +18,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="itemVariation, indexVariation in item.variation">
+              <tr v-for="itemVariation, indexVariation in variationData.variation">
                 <td>{{item.title}}({{itemVariation.payload_value}} {{convertion.getUnitsAbbreviation(itemVariation.payload)}})</td>
                 <td>{{itemVariation.payload_value}}{{convertion.getUnitsAbbreviation(itemVariation.payload)}}</td>
                 <td><button class="btn btn-primary" style="margin-left: 10px;" @click="redirect('/traces/' + itemVariation.id + '/' + item.code)" disabled>
@@ -47,13 +48,13 @@
         </button> -->
       <!-- </div> -->
     </div>
-    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo">Create new product variation</button>
+    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="variationData !== null">Create new product variation</button>
     <div id="demo" class="collapse"><br>
         <input type="number" class="form-control form-control-custom" style="float: left; width: 30%; " placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup.enter="getVariationName()" :disabled="isEdit===false">
-        <select class="form-control form-control-custom"  style="float: left; width: 30%;margin-left: 10px;" v-model="newAttribute.payload" v-if="item.variation === null" :disabled="isEdit===false" @change="getVariationName()">
+        <select class="form-control form-control-custom"  style="float: left; width: 30%;margin-left: 10px;" v-model="newAttribute.payload" v-if="variationData === null" :disabled="isEdit===false" @change="getVariationName()">
             <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
         </select>
-        <input class="form-control form-control-custom"  style="float: left; width: 30%;margin-left: 10px;" id="payload" :placeholder="`${item.title}(${convertion.getUnitsAbbreviation(item.variation[0].payload)})`" :value="item.variation[0].payload" v-else disabled>
+        <input class="form-control form-control-custom"  style="float: left; width: 30%;margin-left: 10px;" id="payload" :placeholder="`${item.title}(${convertion.getUnitsAbbreviation(variationData.variation[0].payload)})`" :value="variationData.variation[0].payload" v-else disabled>
         <input type="text" class="form-control form-control-custom" style="float: left; width: 30%; margin-left: 10px;" placeholder='Variation name' v-model="variationName" disabled>
         <!-- <i class="fa fa-check mt-2" style="color: #cae166; font-size: 30px;" v-if="newAttribute.payload_value !== null && newAttribute.payload_value !== ''"></i> -->
         <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="confirmAdd()" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
@@ -116,7 +117,7 @@ import Confirmation from 'src/components/increment/generic/modal/Confirmation.vu
 export default {
   mounted(){
   },
-  props: ['item', 'isEdit'],
+  props: ['item', 'isEdit', 'variationData'],
   data(){
     return {
       user: AUTH.user,
@@ -150,7 +151,7 @@ export default {
       if(this.newAttribute.payload !== null){
         this.variationName = `${this.item.title}(${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.newAttribute.payload)})`
       }else{
-        this.variationName = `${this.item.title}(${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.item.variation[0].payload)})`
+        this.variationName = `${this.item.title}(${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.variationData.variation[0].payload)})`
       }
     },
     addTraces(variation){
@@ -184,7 +185,7 @@ export default {
     },
     create(){
       if(this.item && this.item.variation !== null){
-        this.newAttribute.payload = this.item.variation[0].payload
+        this.newAttribute.payload = this.variationData.variation[0].payload
       }
       if(this.newAttribute.payload_value !== null && this.newAttribute.payload_value !== ''){
         this.payloadValueExit(this.newAttribute.payload_value)
