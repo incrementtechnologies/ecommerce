@@ -4,7 +4,8 @@
     <div class="form-group">
       <label for="exampleInputEmail1" style="font-weight: 600;">Product Variations</label>
     </div>
-    <div class="variations-content" v-if="item.variation !== null">
+    <center v-if="variationData === null"><i class="fa fa-circle-o-notch fa-spin" style="font-size:50px;color:#cae166" ></i><br>Loading</center>
+    <div class="variations-content" v-if="variationData !== null">
       <!-- <div class="attribute-item"> -->
         <div class="table-responsive">
           <table class="table table-hover">
@@ -17,8 +18,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="itemVariation, indexVariation in item.variation">
-                <td>{{item.title}}&nbsp;({{itemVariation.payload_value}} {{convertion.getUnitsAbbreviation(itemVariation.payload)}})</td>
+              <tr v-for="itemVariation, indexVariation in variationData.variation">
+                <td>{{item.title}}({{itemVariation.payload_value}} {{convertion.getUnitsAbbreviation(itemVariation.payload)}})</td>
                 <td>{{itemVariation.payload_value}}{{convertion.getUnitsAbbreviation(itemVariation.payload)}}</td>
                 <td><button class="btn btn-primary" style="margin-left: 10px;" @click="redirect('/traces/' + itemVariation.id + '/' + item.code)" disabled>
                       {{itemVariation.product_trace_qty}}
@@ -30,7 +31,7 @@
                 <!-- <td><button class="btn btn-primary" style="margin-left: 10px;" @click="addTraces(itemVariation)" title="Add Inventory" :disabled="isEdit===false">Inventory</button></td> -->
                 <td>
                   <button class="btn btn-primary" style="margin-left: 10px;" @click="addTraces(itemVariation)" title="Add Inventory" :disabled="isEdit===false">Inventory</button>
-                  <!-- <button class="btn btn-primary" style="margin-left: 10px;" @click="redirect('/traces/' + itemVariation.id + '/' + item.code)" title="View Batches">View Batches</button></td> -->
+                  <button class="btn btn-primary" style="margin-left: 10px;" @click="redirect('/traces/' + itemVariation.id + '/' + item.code)" title="View Batches">View Batches</button>
                   <button v-if="itemVariation.product_trace_qty === 0 || itemVariation.product_trace_qty === null" class="btn btn-danger btn-sm" style="margin-left: 10px;" @click="addOrDelete(itemVariation, false)" title="Delete Inventory" :disabled="isEdit===false">Delete</button>
                 </td>
               </tr>
@@ -52,8 +53,8 @@
         </button> -->
       <!-- </div> -->
     </div>
-    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo">Create new product variation</button>
-    <div id="demo" class="collapse"><br>
+    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="variationData !== null">Create new product variation</button>
+    <div id="demo" class="collapse" v-if="variationData !== null"><br>
       <div class="table table-borderless">
         <tbody>
           <tr class="pl-0">
@@ -64,7 +65,7 @@
               <select class="form-control form-control-custom" v-model="newAttribute.payload" v-if="item.variation === null" :disabled="isEdit===false" @change="getVariationName()">
                   <option v-for="(item, index) in common.ecommerce.productUnits" :value="item" :key="index">{{item}}</option>
               </select>
-              <input class="form-control form-control-custom" id="payload" :placeholder="`${item.title}(${convertion.getUnitsAbbreviation(item.variation[0].payload)})`" :value="item.variation[0].payload" v-else disabled>
+              <input class="form-control form-control-custom" id="payload" :placeholder="`${item.title}(${convertion.getUnitsAbbreviation(variationData.variation[0].payload)})`" :value="variationData.variation[0].payload" v-else disabled>
             </td>
             <td class="pl-0">
               <input type="text" class="form-control form-control-custom"  placeholder='Variation name' v-model="variationName" disabled>
@@ -149,7 +150,7 @@ import Confirmation from 'src/components/increment/generic/modal/Confirmation.vu
 export default {
   mounted(){
   },
-  props: ['item', 'isEdit'],
+  props: ['item', 'isEdit', 'variationData'],
   data(){
     return {
       user: AUTH.user,
@@ -183,6 +184,7 @@ export default {
       ROUTER.push(parameter)
     },
     processData(event){
+      console.log(this.isDelete)
       if(this.isDelete === false){
         this.create()
         console.log('Reading in create')
@@ -191,7 +193,7 @@ export default {
       }
     },
     addOrDelete(item, bool){
-      bool === true ? this.confirmationMessage = 'Are you sure you want to add this variantion?' : this.confirmationMessage = 'Are you sure you want to delete this variantion?'
+      bool === true ? this.confirmationMessage = 'Are you sure you want to add this variation?' : this.confirmationMessage = 'Are you sure you want to delete this variantion?'
       if(bool === true){
         if(this.newAttribute.payload_value === null || this.newAttribute.payload_value === ''){
           this.errorMessage = 'Fill up the required fields.'
@@ -217,7 +219,7 @@ export default {
       if(this.newAttribute.payload !== null){
         this.variationName = `${this.item.title} (${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.newAttribute.payload)})`
       }else{
-        this.variationName = `${this.item.title} (${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.item.variation[0].payload)})`
+        this.variationName = `${this.item.title}(${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.variationData.variation[0].payload)})`
       }
     },
     deleteVariation(){
@@ -228,7 +230,7 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('product_attributes/delete', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        this.$parent.retrieve()
+        this.$parent.retrieveVariation()
       })
     },
     addTraces(variation){
@@ -254,8 +256,8 @@ export default {
     },
     payloadValueExit(newValue){
       console.log(this.item)
-      if(this.item.variation !== null){
-        this.item.variation.map(el => {
+      if(this.variationData.variation !== null){
+        this.variationData.variation.map(el => {
           if(parseInt(newValue) === parseInt(el.payload_value)){
             this.errorMessage = 'Value is already existed in the list'
             return true
@@ -267,6 +269,9 @@ export default {
       }
     },
     create(){
+      if(this.item && this.variationData.variation !== null){
+        this.newAttribute.payload = this.variationData.variation[0].payload
+      }
       if(this.newAttribute.payload_value !== null && this.newAttribute.payload_value !== ''){
         this.payloadValueExit(this.newAttribute.payload_value)
         if(this.errorMessage !== null){
@@ -282,7 +287,7 @@ export default {
             this.variationName = ''
             this.newAttribute.payload_value = null
             this.errorMessage = null
-            this.$parent.retrieve()
+            this.$parent.retrieveVariation()
           }
         })
       }else{
@@ -297,7 +302,7 @@ export default {
         this.APIRequest('product_attributes/update', item).then(response => {
           if(response.data === true){
             this.errorMessage = null
-            this.$parent.retrieve()
+            this.$parent.retrieveVariation()
           }
         })
       }else{
