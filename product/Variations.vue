@@ -230,7 +230,7 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('product_attributes/delete', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        this.$parent.retrieve()
+        this.$parent.retrieveVariation()
       })
     },
     addTraces(variation){
@@ -287,7 +287,7 @@ export default {
             this.variationName = ''
             this.newAttribute.payload_value = null
             this.errorMessage = null
-            this.$parent.retrieve()
+            this.$parent.retrieveVariation()
           }
         })
       }else{
@@ -302,7 +302,7 @@ export default {
         this.APIRequest('product_attributes/update', item).then(response => {
           if(response.data === true){
             this.errorMessage = null
-            this.$parent.retrieve()
+            this.$parent.retrieveVariation()
           }
         })
       }else{
