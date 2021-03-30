@@ -11,14 +11,29 @@
             <label class="product-row-labels">Classification:</label>
             <label style="color:grey;">&nbsp;{{data.tags}}</label>
             <div class="col-sm-12 product-image m-0 p-0">
-              <div class="product-image-content">
+              <div class="product-image-content ml-2">
                 <img :src="config.BACKEND_URL + selectedImage" class="main-image mb-3" v-if="imagesList !== null">
                 <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image mb-3" v-if="imagesList === null && data.featured !== null">
                 <i class="fa fa-image mb-4" v-if="imagesList === null && data.featured === null"></i>
                 <div class="images-holder d-flex p-0 m-0" style="margin-top: 15%;" v-if="imagesList !== null">
-                  <div v-for="(item, index) in imagesList" :key="index" class="image-item" @click="selectImage(item.url)">
-                    <img :src="config.BACKEND_URL + item.url" :style="[ selectedImage === item.url ? { 'border': '3px solid grey'} : {'border':'1px solid grey'}]" class="other-image">
-                    <div class="overlay"></div>
+                  <div v-if="imagesList.length < 5">
+                    <div v-for="(item, index) in imagesList" :key="index" class="image-item" @click="selectImage(item.url)">
+                      <img
+                        :src="config.BACKEND_URL + item.url"
+                        :style="[ selectedImage === item.url ? { 'border': '3px solid grey'} : {'border':'1px solid grey'}]"
+                        class="other-image"
+                      >
+                    </div>
+                  </div>
+                  <div v-else>
+                    <div v-for="(item, index) in imagesList" :key="index" class="image-item holder" @click="selectImage(item.url)">
+                      <img
+                        :src="config.BACKEND_URL + item.url"
+                        :style="[ selectedImage === item.url ? { 'border': '3px solid grey'} : {'border':'1px solid grey'}]"
+                        class="other-image slide"
+                      >
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -164,7 +179,7 @@
       </div>
       <div class="col-sm-7 p-0" style="color: grey;">
         <p v-if="data.details.shelf_life === null">No Data</p>
-        <p v-else>{{data.details.shelf_life}}&nbsp;Months</p>
+        <p v-else>{{data.details.shelf_life}}&nbsp;Month/s</p>
       </div>
     </div>
     <!-- <div class="row mt-3">
@@ -192,23 +207,26 @@
       </div>
     </div> -->
     <div class="row mt-3">
-      <div class="col-sm-6">
+      <div class="col-sm-5">
         <p><b>Label:</b></p>
       </div>
-      <div class="col-sm-6">
+      <div class="col-sm-7 pl-0">
         <p><b>Safety Data Sheet (SDS):</b></p>
       </div>
     </div>
     <div class="row mt-3">
-      <div class="col-sm-6">
+      <div class="col-sm-5">
          <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.label.title !== null ? 'color: #cae166' : 'color: red'" @click="download('data1')"></i>
           <a :href="config.BACKEND_URL + data.details.files.label.url" id="data1" target="__blank"></a>
-          <label>&nbsp;{{data.details.files.label.title}}</label>
+          <label v-if="data.details.files.label.title !== null" style="color:grey;">&nbsp;{{data.details.files.label.title}}</label>
+          <label v-else style="color:grey;">&nbsp;No uploaded Label file</label>
+
       </div>
-      <div class="col-sm-6">
+      <div class="col-sm-7 pl-0">
         <i class="fa fa-file-pdf-o" id="icon" :style="data.details.files.sds.title !== null ? 'color: #cae166' : 'color: red'" @click="download('data2')"></i>
         <a :href="config.BACKEND_URL + data.details.files.sds.url" id="data2" target="__blank"></a>
-        <label>&nbsp;{{data.details.files.sds.title}}</label>
+        <label v-if="data.details.files.sds.title !== null" style="color:grey;">&nbsp;{{data.details.files.sds.title}}</label>
+        <label v-else style="color:grey;">&nbsp;No uploaded SDS file</label>
       </div>
     </div>
     <div class="row mt-4">
@@ -302,6 +320,17 @@
     max-width: 500px;
     width: 100%;
   }
+
+  .holder {
+    overflow: visible;
+    white-space:nowrap;
+}
+
+  .holder .slide {
+    display: inline-block;
+}
+
+
   .product-image-content .fa-image{
     font-size: 250px;
     line-height: 350px;
@@ -309,7 +338,7 @@
   .product-image-content .image-item{
     height: 60px;
     float: left;
-    width: 75px;
+    width: 80px;
     text-align: center;
   }
   .product-image-content .other-image{
@@ -320,10 +349,10 @@
     cursor: pointer;
     background: #ffaa81;
   }
-  .images-holder .overlay{
-    height: 60px;
+  .images-holder{
+    height: auto;
     z-index: 2;
-    width: 80px;
+    width: auto;
     margin-top: -60px;
     float: left;
     background: rgba(0, 0, 0, 0);

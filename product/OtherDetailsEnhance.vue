@@ -2,7 +2,67 @@
   <div class="other-details-holder">
       <h6>Approved Documents</h6><br>
       <h6 style="color: red">{{errorMessage}}</h6>
-      <div class="row">
+      <div class="table table-hover">
+        <tbody>
+          <tr>
+            <td>
+              <label>Label</label>
+            </td>
+            <td>
+              <div class="" v-if="item.details.files.label.url !== null && isEdit === false">
+                <i class="fa fa-file-pdf-o" style="color: #cae166" @click="download('data1')" title="View Document"></i>
+                <a :href="config.BACKEND_URL + item.details.files.label.url" id="data1" target="__blank"></a>
+              </div>
+              <div class="" v-else>
+                  <i class="fa fa-file-pdf-o" :style="file1 === null || errorMessage !== null ? 'color: red' : 'color: #cae166'"></i>
+              </div>
+            </td>
+            <td>
+              <div>
+                <button type="file" :class="item.details.files.label.url !== null ? 'btn btn-primary' : 'btn btn-danger'" class="btn btn-primary" @click="showInput('file1')" v-if="item.details.files.label.url !== null" :disabled="isEditing===false">Update PDF</button>
+                <button type="file" :class="item.details.files.label.url !== null ? 'btn btn-primary' : 'btn btn-danger'" @click="showInput('file1')" v-if="item.details.files.label.url === null" :disabled="isEditing===false">Upload PDF</button>
+                <input type="file" name="" id="file1" hidden @change="getFile1($event, 'file1')" :disabled="isEditing===false">
+              </div>
+            </td>
+            <td>
+              <p>{{item.details.files.label.url !== null && isEdit === false ? item.details.files.label.title : filetitle1}}</p>
+            </td>
+            <td>
+              <i :class="file1 === null ? null : 'fa fa-check'" v-if="errorMessage === null"></i>
+              <i :class="errorMessage === null ? null : 'fa fa-close'" style="color:red" v-else></i>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label>SDS (Safety Data Sheet)</label>
+            </td>
+            <td>
+              <div class="" v-if="item.details.files.sds.url !== null">
+                <i class="fa fa-file-pdf-o" style="color: #cae166" @click="download('data2')" title="View Document"></i>
+                <a :href="config.BACKEND_URL + item.details.files.sds.url" id="data2" target="__blank"></a>
+              </div>
+              <div class="" v-else>
+                  <i class="fa fa-file-pdf-o" :style="file2 === null || errorMessage !== null ? 'color: red' : 'color: #cae166'"></i>
+              </div>
+            </td>
+            <td>
+              <div>
+                <button type="file" :class="item.details.files.sds.title !== null ? 'btn btn-primary' : 'btn btn-danger'" @click="showInput('file2')" v-if="item.details.files.sds.title !== null" :disabled="isEditing===false">Update PDF</button>
+                <button :class="item.details.files.sds.title !== null ? 'btn btn-primary' : 'btn btn-danger'" @click="showInput('file2')" v-if="item.details.files.sds.title === null" :disabled="isEditing===false">Upload PDF</button>
+                <input type="file" name="file2" id="file2" hidden @change="getFile2($event, 'file2')" :disabled="isEditing===false">
+              </div>
+            </td>
+            <td>
+              <p>{{item.details.files.sds.url !== null ? item.details.files.sds.title : filetitle2}}</p>
+            </td>
+            <td>
+              <i :class="file2 === null ? null : 'fa fa-check'" v-if="errorMessage === null" ></i>
+              <i :class="errorMessage === null ? null : 'fa fa-close'" style="color:red" v-else></i>
+            </td>
+          </tr>
+        </tbody>
+      </div>
+      <!-- <div class="row">
           <div class="col-sm-2">
               <p>Label</p>
           </div>
@@ -58,8 +118,8 @@
               <i :class="file2 === null ? null : 'fa fa-check'" v-if="errorMessage === null" ></i>
               <i :class="errorMessage === null ? null : 'fa fa-close'" style="color:red" v-else></i>
           </div>
-      </div>
-      <hr>
+      </div> -->
+      <!-- <hr> -->
   </div>
 </template>
 
