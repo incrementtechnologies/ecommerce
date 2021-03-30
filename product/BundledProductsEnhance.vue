@@ -1,6 +1,5 @@
 <template>
   <div class="variations-holder">
-    <div class="error text-danger" v-if="errorMessage !== null">{{errorMessage}}</div>
     <div class="form-group">
       <label for="exampleInputEmail1" style="font-weight: 600;">Created Bundles</label>
     </div>
@@ -17,52 +16,45 @@
             </thead>
             <tbody>
               <tr  v-for="(itemVariation, indexVariation) in item.bundled" :key="indexVariation">
-                <td>{{`${itemVariation.qty} X ${item.title}(${itemVariation.variation[0].payload_value}${convertion.getUnitsAbbreviation(itemVariation.variation[0].payload)})`}}</td>
+                <td>{{`${itemVariation.qty} X ${item.title} (${itemVariation.variation[0].payload_value}${convertion.getUnitsAbbreviation(itemVariation.variation[0].payload)})`}}</td>
                 <td>{{itemVariation.scanned_qty}}</td>
-                <td><button v-if="itemVariation.scanned_qty === 0 || itemVariation.scanned_qty === null" class="btn btn-danger" @click="deleteBundle(itemVariation.id, 'bundle')" title="Delete Inventory" :disabled="isEdit===false">Delete</button></td>
+                <td><button v-if="itemVariation.scanned_qty === 0 || itemVariation.scanned_qty === null" class="btn btn-danger" @click="addOrDelete(itemVariation, false)" title="Delete Inventory" :disabled="isEdit===false">Delete</button></td>
               </tr>
             </tbody>
           </table>
         </div>
       <!-- </div> -->
     </div>
-    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo">Create new product variation</button>
+    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo">Create new bundle configuration</button>
     <div id="demo" class="collapse">
-      <div><br>
+      <div>
+      <div class="error text-danger" v-if="errorMessage !== null">{{errorMessage}}</div>
+        <br>
           <select class="form-control form-control-custom"  style="float: left; width: 40%;" @change="getAttribute($event)" v-model="selectedVariation" :disabled="isEdit===false">
-              <option v-for="(itemVariation, indexVariation) in item.variation" :key="indexVariation" :value="{id: itemVariation.id, payload: itemVariation.payload, payload_value: itemVariation.payload_value}" >{{itemVariation.payload_value}}{{convertion.getUnitsAbbreviation(itemVariation.payload)}}</option>
+              <option v-for="(itemVariation, indexVariation) in item.variation" :key="indexVariation" :value="{id: itemVariation.id, payload: itemVariation.payload, payload_value: itemVariation.payload_value}" >{{itemVariation.payload_value}}&nbsp;{{convertion.getUnitsAbbreviation(itemVariation.payload)}}</option>
           </select>
-          <input type="number" class="form-control form-control-custom" style="float: left; width: 40%; margin-left: 10px;" placeholder="Qty" v-model="newAttribute.qty" @keyup.enter="create()" :disabled="isEdit===false">
+          <input 
+            type="number"
+            class="form-control form-control-custom"
+            style="float: left; width: 40%; margin-left: 10px;"
+            placeholder="Qty"
+            v-model="newAttribute.qty"
+            :disabled="isEdit===false"
+            @on-keyup="getAttribute(null)"
+          >
           <i class="fa fa-check mt-2" style="color: #cae166; font-size: 30px;" v-if="newAttribute.product_attribute_id !== null && newAttribute.qty !== null"></i>
-          <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="confirmAdd()" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
+          <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="addOrDelete(null, true)" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
       </div>
       <label><i>Note: Configurations must fit in a single pallet</i></label>
     </div>
     <Confirmation
-        :title="'Confirmation Modal'"
-        :message="'Are you sure you want to add this variation?'"
-        ref="confirmDelete"
-        @onConfirm="create($event)"
-        >
-    </Confirmation>
-    <Confirmation
-        :title="'Confirmation Modal'"
+        :title="'Confirmation Message'"
         :message="confirmationMessage"
-        ref="confirmDeleteBundle"
-        id = "confirmDeleteBundle"
-        @onConfirm="confirmDeletebundle($event.id, $event)"
+        ref="confirmModal"
+        @onConfirm="processData($event.id, $event)"
       />
     <create-modal :property="createProductTraceModal"></create-modal>
     <create-product-traces-modal ref="addTrace" :params="productId" :variations="selectedVariation"></create-product-traces-modal>
-    <!-- <confirmation
-      :message="confirmationMessage"
-      ref="confirmDeleteBundle"
-      id="confirmDeleteBundle"
-      :title="'Confirmation Message'"
-      @onConfirm="confirmDeleteBundle()"
-    >
-    </confirmation> -->
-
   </div>
 </template>
 <style scoped>
@@ -134,7 +126,8 @@ export default {
       productId: this.item.id,
       selectedVariation: null,
       toDeleteBundle: null,
-      confirmationMessage: null
+      confirmationMessage: null,
+      isDelete: null
     }
   },
   components: {
@@ -147,19 +140,92 @@ export default {
     redirect(parameter){
       ROUTER.push(parameter)
     },
-    deleteBundle(id, array){
-      let parameter = {
-        id: id,
-        array: array
+    processData(){
+      if(this.isDelete === true){
+        this.deleteBundle()
+      } else {
+        this.create()
       }
-      this.confirmationMessage = 'Are you sure you want to delete this ' + array + '?'
-      this.$refs.confirmDeleteBundle.show(parameter)
     },
-    confirmDeleteBundle(index){
-      console.log(index.id)
-      let parameter = {
-        id: index.id
+    addOrDelete(item, bool){
+      console.log(this.item.bundled)
+      bool === true ? this.confirmationMessage = 'Are you sure you want to create this new bundle configuration?' : this.confirmationMessage = 'Are you sure you want to delete this bundle configuration?'
+      if(bool === true) {
+        if(this.selectedVariation !== null && this.newAttribute.qty !== null) {
+          this.isDelete = false
+          this.$refs.confirmModal.show()
+        } else {
+          this.errorMessage = 'Fill up the required fields.'
+        }
+      } else{
+        this.toDeleteBundle = item
+        this.isDelete = true
+        this.$refs.confirmModal.show()
       }
+    },
+    deleteBundle(){
+      console.log('[ID TO DELETE]', this.toDeleteBundle)
+      let bundleSetting = {
+        id: this.toDeleteBundle.id,
+        bundled: this.toDeleteBundle.bundled
+      }
+      let product = {
+        id: this.toDeleteBundle.bundled
+      }
+      let attribute = {
+        id: this.toDeleteBundle.product_attribute_id
+      }
+      this.APIRequest('products/delete', product).then(response => {
+        this.APIRequest('bundled_settings/delete', bundleSetting).then(response => {})
+        this.APIRequest('product_attributes/delete', attribute).then(response => {
+          return this.$parent.retrieve()
+        })
+        return this.$parent.retrieve()
+      })
+
+    },
+    create(){
+      console.log('updateed 18-03-2021 2:16')
+      console.log(this.newAttribute.product_attribute_id, this.newAttribute.qty)
+      this.payloadValueExit(this.newAttribute.qty, this.variantPayload, this.variantPayloadValue)
+      if(this.errorMessage !== null){
+        return
+      }
+      let parameter = {
+        account_id: this.user.userID,
+        title: `${this.newAttribute.qty} X ${this.item.title}(${this.convertion.getUnitsAbbreviation(this.variantPayload)}${this.variantPayloadValue})`,
+        description: this.item.description,
+        status: 'pending',
+        type: 'bundled',
+        merchant_id: this.user.subAccount.merchant.id
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('products/create', parameter).then(response => {
+        $('#loading').css({display: 'none'})
+        if(response.data > 0){
+          let varParams = {
+            payload: this.variantPayload,
+            payload_value: this.variantPayloadValue,
+            product_id: response.data
+          }
+          this.APIRequest('product_attributes/create', varParams).then(res => {
+            this.newAttribute.product_attribute_id = res.data
+            this.newAttribute.bundled = response.data
+            this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
+              this.$parent.retrieve()
+              if(response.data > 0){
+                this.errorMessage = null
+                // this.variantId = null
+                // this.variantPayload = null
+                // this.variantPayloadValue = null
+                this.selectedVariation = null
+                this.newAttribute.qty = null
+                // this.$parent.retrieve()
+              }
+            })
+          })
+        }
+      })
     },
     getAttribute(data){
       this.variantId = this.selectedVariation.id
@@ -182,53 +248,6 @@ export default {
             })
           }
         })
-      }
-    },
-    create(){
-      console.log('updateed 18-03-2021 2:16')
-      console.log(this.newAttribute.product_attribute_id, this.newAttribute.qty)
-      if(this.selectedVariation !== null && this.newAttribute.qty !== null){
-        this.payloadValueExit(this.newAttribute.qty, this.variantPayload, this.variantPayloadValue)
-        if(this.errorMessage !== null){
-          return
-        }
-        let parameter = {
-          account_id: this.user.userID,
-          title: `${this.newAttribute.qty} X ${this.item.title}(${this.convertion.getUnitsAbbreviation(this.variantPayload)}${this.variantPayloadValue})`,
-          description: this.item.description,
-          status: 'pending',
-          type: 'bundled',
-          merchant_id: this.user.subAccount.merchant.id
-        }
-        $('#loading').css({display: 'block'})
-        this.APIRequest('products/create', parameter).then(response => {
-          $('#loading').css({display: 'none'})
-          if(response.data > 0){
-            let varParams = {
-              payload: this.variantPayload,
-              payload_value: this.variantPayloadValue,
-              product_id: response.data
-            }
-            this.APIRequest('product_attributes/create', varParams).then(res => {
-              this.newAttribute.product_attribute_id = res.data
-              this.newAttribute.bundled = response.data
-              this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
-                this.$parent.retrieve()
-                if(response.data > 0){
-                  this.errorMessage = null
-                  // this.variantId = null
-                  // this.variantPayload = null
-                  // this.variantPayloadValue = null
-                  this.selectedVariation = null
-                  this.newAttribute.qty = null
-                  // this.$parent.retrieve()
-                }
-              })
-            })
-          }
-        })
-      }else{
-        this.errorMessage = 'Fill up the required fields.'
       }
     },
     confirmAdd(){
