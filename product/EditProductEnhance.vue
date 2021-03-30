@@ -146,7 +146,7 @@
               <br>
               <select class="form-control pl-0 ml-0 form-control-custom" v-model="active.attribute2" @change="getValue($event, 'attribute2')">
                 <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :value="item" :key="index">
-                  <a v-if="active.attribute != item">{{item}}</a>
+                  <a v-if="active.attribute !== item">{{item}}</a>
                 </option>
               </select>
             </div>
