@@ -357,7 +357,7 @@ export default {
       errorMessageHracs: null,
       idxToBeDeleted: null,
       confirmationMessage: null,
-      bundledData: [],
+      bundledData: null,
       variationData: null
     }
   },

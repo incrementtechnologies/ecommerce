@@ -54,7 +54,7 @@
       <!-- </div> -->
     </div>
     <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="variationData !== null">Create new product variation</button>
-    <div id="demo" class="collapse"><br>
+    <div id="demo" class="collapse" v-if="variationData !== null"><br>
       <div class="table table-borderless">
         <tbody>
           <tr class="pl-0">
@@ -184,6 +184,7 @@ export default {
       ROUTER.push(parameter)
     },
     processData(event){
+      console.log(this.isDelete)
       if(this.isDelete === false){
         this.create()
         console.log('Reading in create')
@@ -192,7 +193,7 @@ export default {
       }
     },
     addOrDelete(item, bool){
-      bool === true ? this.confirmationMessage = 'Are you sure you want to add this variantion?' : this.confirmationMessage = 'Are you sure you want to delete this variantion?'
+      bool === true ? this.confirmationMessage = 'Are you sure you want to add this variation?' : this.confirmationMessage = 'Are you sure you want to delete this variantion?'
       if(bool === true){
         if(this.newAttribute.payload_value === null || this.newAttribute.payload_value === ''){
           this.errorMessage = 'Fill up the required fields.'
@@ -255,8 +256,8 @@ export default {
     },
     payloadValueExit(newValue){
       console.log(this.item)
-      if(this.item.variation !== null){
-        this.item.variation.map(el => {
+      if(this.variationData.variation !== null){
+        this.variationData.variation.map(el => {
           if(parseInt(newValue) === parseInt(el.payload_value)){
             this.errorMessage = 'Value is already existed in the list'
             return true
@@ -268,7 +269,7 @@ export default {
       }
     },
     create(){
-      if(this.item && this.item.variation !== null){
+      if(this.item && this.variationData.variation !== null){
         this.newAttribute.payload = this.variationData.variation[0].payload
       }
       if(this.newAttribute.payload_value !== null && this.newAttribute.payload_value !== ''){
