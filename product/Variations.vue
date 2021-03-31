@@ -18,8 +18,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="itemVariation, indexVariation in variationData.variation">
-                <td>{{item.title}}({{itemVariation.payload_value}} {{convertion.getUnitsAbbreviation(itemVariation.payload)}})</td>
+              <tr v-for="(itemVariation, indexVariation) in item.variation" :key="indexVariation">
+                <td>{{item.title}}&nbsp;({{itemVariation.payload_value}} {{convertion.getUnitsAbbreviation(itemVariation.payload)}})</td>
                 <td>{{itemVariation.payload_value}}{{convertion.getUnitsAbbreviation(itemVariation.payload)}}</td>
                 <td><button class="btn btn-primary" style="margin-left: 10px;" @click="redirect('/traces/' + itemVariation.id + '/' + item.code)" disabled>
                       {{itemVariation.product_trace_qty}}
@@ -91,16 +91,8 @@
         ref="confirmationModal"
         @onConfirm="processData($event)"
       />
-    <!-- <Confirmation
-        :title="'Confirmation Modal'"
-        :message="'Are you sure you want to add this variation?'"
-        id="confirmAdd"
-        @onConfirm="create($event)"
-        >
-    </Confirmation> -->
     <create-modal :property="createProductTraceModal"></create-modal>
     <create-product-traces-modal ref="addTrace" :params="productId" :variations="selectedVariation"></create-product-traces-modal>
-    <!-- <confirmation ref="confirmationAdd" :title="'Confirmation Message'" :message="confirmationMessage" @onConfirm="deleteVariation($event)"></confirmation> -->
   </div>
 </template>
 <style scoped>
@@ -193,7 +185,7 @@ export default {
       }
     },
     addOrDelete(item, bool){
-      bool === true ? this.confirmationMessage = 'Are you sure you want to add this variation?' : this.confirmationMessage = 'Are you sure you want to delete this variantion?'
+      bool === true ? this.confirmationMessage = 'Are you sure you want to add this variation?' : this.confirmationMessage = 'Are you sure you want to delete this variation?'
       if(bool === true){
         if(this.newAttribute.payload_value === null || this.newAttribute.payload_value === ''){
           this.errorMessage = 'Fill up the required fields.'
@@ -229,6 +221,7 @@ export default {
       console.log(parameter)
       $('#loading').css({display: 'block'})
       this.APIRequest('product_attributes/delete', parameter).then(response => {
+        console.log('[Response]', response.data)
         $('#loading').css({display: 'none'})
         this.$parent.retrieveVariation()
       })
@@ -247,12 +240,6 @@ export default {
       setTimeout(() => {
         $('#createProductTracesModal').modal('show')
       }, 100)
-    },
-    deleteTraces(variation, array){
-      this.toDeleteVariation = variation.id
-      this.confirmationMessage = 'Are you sure you want to delete this ' + array + '?'
-      this.$refs.confirmDeleteVariation.show()
-      // $('#confirmDeleteVariation').modal('show')
     },
     payloadValueExit(newValue){
       console.log(this.item)
