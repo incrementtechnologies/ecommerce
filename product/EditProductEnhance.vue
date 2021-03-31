@@ -255,7 +255,7 @@
         </ul>
       </div>
       <div class="details-holder" v-if="selectedMenu.title === 'Variation'">
-        <variations :item="data" :isEdit="isEdit"></variations>
+        <variations :item="data" :isEdit="isEdit" :variationData="variationData"></variations>
       </div>
       <div class="details-holder" v-if="selectedMenu.title === 'Price'">
         <prices :item="data"></prices>
@@ -269,7 +269,7 @@
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Bundled Products'">
-        <bundled-products :item="data" :isEdit="isEdit"></bundled-products>
+        <bundled-products :item="bundledData" :isEdit="isEdit"></bundled-products>
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Documentation'">
@@ -291,6 +291,8 @@ import axios from 'axios'
 export default {
   mounted(){
     this.retrieve()
+    this.retrieveBundled()
+    this.retrieveVariation()
     this.isEdit = false
   },
   data(){
@@ -348,7 +350,9 @@ export default {
       errorMessageHracs: null,
       idxToBeDeleted: null,
       confirmationMessage: null,
-      tagName: null
+      tagName: null,
+      bundledData: null,
+      variationData: null
     }
   },
   computed: {
@@ -552,6 +556,32 @@ export default {
           }
           this.tagChecker(null)
         }
+      })
+    },
+    retrieveBundled(){
+      let parameter = {
+        condition: [{
+          value: this.code,
+          column: 'code',
+          clause: '='
+        }],
+        account_id: this.user.userID
+      }
+      this.APIRequest('products/retrieve_bundled', parameter).then(response => {
+        this.bundledData = response.data[0]
+      })
+    },
+    retrieveVariation(){
+      let parameter = {
+        condition: [{
+          value: this.code,
+          column: 'code',
+          clause: '='
+        }],
+        account_id: this.user.userID
+      }
+      this.APIRequest('products/retrieve_variation', parameter).then(response => {
+        this.variationData = response.data[0]
       })
     },
     deleteProduct(id){

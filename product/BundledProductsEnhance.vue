@@ -3,7 +3,8 @@
     <div class="form-group">
       <label for="exampleInputEmail1" style="font-weight: 600;">Created Bundles</label>
     </div>
-    <div class="variations-content" v-if="item.bundled !== null">
+    <center v-if="item === null"><i class="fa fa-circle-o-notch fa-spin" style="font-size:50px;color:#cae166"></i><br>Loading</center>
+    <div class="variations-content" v-if="item !== null">
       <!-- <div class="attribute-item"> -->
         <div class="table-responsive"> 
           <table class="table table-hover">
@@ -25,7 +26,7 @@
         </div>
       <!-- </div> -->
     </div>
-    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo">Create new bundle configuration</button>
+    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="item !== null">Create new bundle configuration</button>
     <div id="demo" class="collapse">
       <div>
       <div class="error text-danger" v-if="errorMessage !== null">{{errorMessage}}</div>
@@ -250,6 +251,53 @@ export default {
         })
       }
     },
+    // create(){
+    //   console.log('updateed 18-03-2021 2:16')
+    //   console.log(this.newAttribute.product_attribute_id, this.newAttribute.qty)
+    //   if(this.selectedVariation !== null && this.newAttribute.qty !== null){
+    //     this.payloadValueExit(this.newAttribute.qty, this.variantPayload, this.variantPayloadValue)
+    //     if(this.errorMessage !== null){
+    //       return
+    //     }
+    //     let parameter = {
+    //       account_id: this.user.userID,
+    //       title: `${this.newAttribute.qty} X ${this.item.title}(${this.variantPayloadValue}${this.convertion.getUnitsAbbreviation(this.variantPayload)})`,
+    //       description: this.item.description,
+    //       status: 'pending',
+    //       type: 'bundled',
+    //       merchant_id: this.user.subAccount.merchant.id
+    //     }
+    //     $('#loading').css({display: 'block'})
+    //     this.APIRequest('products/create', parameter).then(response => {
+    //       $('#loading').css({display: 'none'})
+    //       if(response.data > 0){
+    //         let varParams = {
+    //           payload: this.variantPayload,
+    //           payload_value: this.variantPayloadValue,
+    //           product_id: response.data
+    //         }
+    //         this.APIRequest('product_attributes/create', varParams).then(res => {
+    //           this.newAttribute.product_attribute_id = res.data
+    //           this.newAttribute.bundled = response.data
+    //           this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
+    //             this.$parent.retrieve()
+    //             if(response.data > 0){
+    //               this.errorMessage = null
+    //               // this.variantId = null
+    //               // this.variantPayload = null
+    //               // this.variantPayloadValue = null
+    //               this.selectedVariation = null
+    //               this.newAttribute.qty = null
+    //               // this.$parent.retrieve()
+    //             }
+    //           })
+    //         })
+    //       }
+    //     })
+    //   }else{
+    //     this.errorMessage = 'Fill up the required fields.'
+    //   }
+    // },
     confirmAdd(){
       $('#connectionError').modal('show')
     }

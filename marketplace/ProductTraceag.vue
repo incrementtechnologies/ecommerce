@@ -26,14 +26,24 @@
                     </div>
                   </div>
                   <div v-else>
-                    <div v-for="(item, index) in imagesList" :key="index" class="image-item holder" @click="selectImage(item.url)">
+                    <center>
+                    <div class="scrolling-wrapper" style="width:85%;">  
+                      <img v-for="(item, index) in imagesList" 
+                        :key="index" 
+                        @click="selectImage(item.url)"
+                        :src="config.BACKEND_URL + item.url"
+                        :style="[{ 'width': '75px', 'height': '75px', 'cursor': 'pointer'}, selectedImage === item.url ? { 'border': '3px solid grey'} : {'border':'1px solid grey'}]"
+                        class="images"
+                      />
+                    </div>
+                    <!-- <div v-for="(item, index) in imagesList" :key="index" class="image-item holder" @click="selectImage(item.url)">
                       <img
                         :src="config.BACKEND_URL + item.url"
                         :style="[ selectedImage === item.url ? { 'border': '3px solid grey'} : {'border':'1px solid grey'}]"
                         class="other-image slide"
                       >
-                    </div>
-
+                    </div> -->
+                    </center>
                   </div>
                 </div>
               </div>
@@ -251,6 +261,14 @@
 </div>
 </template>
 <style scoped>
+  .scrolling-wrapper {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+  }
+  .images {
+    flex: 0 0 auto;
+  }
   .card-header{
     cursor: pointer;
   }
