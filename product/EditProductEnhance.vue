@@ -74,7 +74,7 @@
         </div>
         <div class="table-responsive">
           <label style="margin-top: 5%" :hidden="isEdit===true"><strong>Activity Group</strong></label>      
-          <table class="table table-hover mt-3 table-bordered table-sm w-50" v-if="listGroup.length > 0">
+          <table class="table table-hover mt-3 table-bordered table-sm w-50" v-if="listGroup === null">
               <thead>
                   <tr>
                     <td>Group</td>
@@ -88,7 +88,9 @@
                 </tr>
               </tbody>
           </table>
-           <label v-else>No Groups Available</label>
+          <div v-else>
+            <label>No Groups Available</label>
+          </div>
           </div>
           <div v-if="tagName === 'Herbicide' || tagName === 'herbicide'">
             <div class="mt-0">
@@ -208,13 +210,14 @@
             </div>
           </div>
         </div>
-        <div class="product-item-title" style="width: 79%; margin-right: 1%;">
+        <div class="product-item-title">
           <label>Shelf Life</label>
           <br>
-          <input type="number" class="form-control form-control-custom" v-model="data.details.shelf_life" placeholder="Type shelf life" :disabled="isEdit===false">
-        </div>
-        <div class="product-item-title" style="width: 20%; margin-top:6.6%">
-          <input type="text" class="form-control form-control-custom" placeholder="Month/s" disabled>
+          <div class="d-flex">
+            <input type="number" class="form-control form-control-custom"  style="width: 79%;" v-model="data.details.shelf_life" placeholder="Type shelf life" :disabled="isEdit===false">
+            <div class="p-2"></div>
+            <input type="text" class="form-control form-control-custom" style="width:19%;" placeholder="Month/s" disabled>
+          </div>
         </div>
          <div class="product-item-title">
           <label>APVMA Approval number</label>
