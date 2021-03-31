@@ -25,8 +25,8 @@
         <div class="product-item-title mb-3">
           <label>Tags</label>
           <br>
-         <select class="form-control form-control-custom" v-model="tagName" :disabled="isEdit===false" @change="tagChecker($event)">
-            <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag" :selected="data.tags === tag.toLowerCase() ? true : false">{{tag}}</option>
+         <select class="form-control form-control-custom" :disabled="isEdit===false" @change="tagChecker($event)">
+            <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag" :selected="data.tags.toLowerCase() === tag.toLowerCase() ? true : false">{{tag}}</option>
           </select>
         </div>
         <!-- <div v-if="common.ecommerce.productUnits !== null">
