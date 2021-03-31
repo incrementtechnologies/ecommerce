@@ -22,10 +22,10 @@
           <br>
           <textarea class="form-control" rows="20" v-model="data.description" placeholder="Type product description here..." :disabled="isEdit===false"></textarea>
         </div>
-        <div class="product-item-title">
+        <div class="product-item-title mb-3">
           <label>Tags</label>
           <br>
-         <select class="form-control form-control-custom" :disabled="isEdit===false" @change="tagChecker($event)">
+         <select class="form-control form-control-custom" v-model="tagName" :disabled="isEdit===false" @change="tagChecker($event)">
             <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag" :selected="data.tags === tag.toLowerCase() ? true : false">{{tag}}</option>
           </select>
         </div>
@@ -59,8 +59,8 @@
             </div>
           </div>
         </div> -->
-        <div :hidden="isEdit===false">
-          <div class="product-item-title" style="width: 90%" >
+        <div :hidden="isEdit===false" class="mt-2">
+          <div class="product-item-title mt-1" style="width: 90%" >
             <label :hidden="isEdit===false">Activity Group</label>
             <label class="text-danger">{{errorMessageGroups}}</label>
             <br>
@@ -68,7 +68,7 @@
               <option v-for="(group, index) in groups" :key="index" :value="group">{{group}}</option>
             </select>
           </div>
-          <div class="product-item-title pl-4" style="width: 10%; margin-top: 5.5%;">
+          <div class="product-item-title pl-2 pb-0 mt-5 mb-0" style="width: 10%;">
               <button class="btn btn-primary" @click="addGroup" :hidden="isEdit===false"><i class="fa fa-plus"></i></button>
           </div>
         </div>
@@ -81,81 +81,75 @@
                     <td>Action</td>
                   </tr>
               </thead>
-              <tbody>
+              <tbody v-if="listGroup.length > 0 || listGroup !== null">
                 <tr v-for="(group, index) in listGroup" :key="index">
-                  <td>{{group.group}}</td>
-                  <td><button class="btn" @click="showConfirmationModal(index, 'group')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
+                  <td v-if="group.group !== null">{{group.group}}</td>
+                  <td v-if="group.group !== null"><button class="btn" @click="showConfirmationModal(index, 'group')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                 </tr>
               </tbody>
           </table>
            <label v-else>No Groups Available</label>
           </div>
-          <div v-if="showHrac">
-            <div class="product-item-title" style="width: 90%">
-              <label>HRAC Mode of Action</label>
-              <label class="text-danger">{{errorMessageHracs}}</label>
-              <br>
-            <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="isEdit===false">
-                <option v-for="(el, index) in formulations.HRAC" :key="index" :value="el" >{{el}}</option>
-            </select>
+          <div v-if="tagName === 'Herbicide' || tagName === 'herbicide'">
+            <div class="mt-0">
+              <div class="product-item-title mt-0" style="width: 90%">
+                <label>HRAC Mode of Action</label>
+                <label class="text-danger">{{errorMessageHracs}}</label>
+                <br>
+              <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="isEdit===false">
+                  <option v-for="(el, index) in formulations.HRAC" :key="index" :value="el" >{{el}}</option>
+              </select>
+              </div>
+              <div class="product-item-title pl-3 " style="width: 10%; margin-top: 5.5%;">
+                  <button class="btn btn-primary" @click="addHrac" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
+              </div>
             </div>
-            <div class="product-item-title pl-4" style="width: 10%; margin-top: 5.5%;">
-                <button class="btn btn-primary" @click="addHrac" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
-            </div>
-            <div class="table-responsive">
-            <table class="table table-hover table-bordered table-sm w-50" v-if="listOfHracs.length > 0">
-                <thead >
-                    <tr>
-                      <td>HRACS</td>
-                      <td>Action</td>
+            <div class="">
+              <table class="mb-0 table table-hover table-bordered table-sm w-50" style="margin-top: 3% !important;" v-if="listOfHracs.length > 0">
+                  <thead>
+                      <tr>
+                        <td>HRACS</td>
+                        <td>Action</td>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(el, index) in listOfHracs" :key="index">
+                      <td>{{el}}</td>
+                      <td><button class="btn" @click="showConfirmationModal(index, 'hrac')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                     </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(el, index) in listOfHracs" :key="index">
-                    <td>{{el}}</td>
-                    <td><button class="btn" @click="showConfirmationModal(index, 'hrac')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
-                  </tr>
-                </tbody>
-            </table>
-            <label v-else>No HRAC Available</label>
-          </div>
+                  </tbody>
+              </table>
+              <label v-else>No HRAC Available</label>
+            </div>
           </div>
           <div class="row">
               <div class="product-item-title ml-4" :hidden="isEdit===false" style="margin-bottom:-5%">
                 <label>Actives <span class="text-danger">{{errorMessageActives}}</span></label>
               </div>
-            <div class="col-sm-4 product-item-title" :hidden="isEdit===false">
-              <label></label>
-              <br>
+            <div class="col-sm-4 mb-0 product-item-title" :hidden="isEdit===false">
               <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents">
             </div>
             <div class="col-sm-2 pl-0 product-item-title" :hidden="isEdit===false">
-              <label></label>
-              <br>
               <input type="number" class="form-control form-control-custom" v-model="active.value" placeholder="value" >
             </div>
             <div class="col-sm-3 pl-0 ml-0 product-item-title"  :hidden="isEdit===false">
-              <label></label>
-              <br>
               <select class="form-control form-control-custom" v-model="active.attribute" @change="getValue($event, 'attribute1')">
                 <option v-for="(item, index) in formulations.ACTIVE_UNITS" :value="item" :key="index">{{item}}</option>
               </select>
             </div>
              <div class="col-sm-2 product-item-title"  :hidden="isEdit===false">
-              <label></label>
-              <br>
               <select class="form-control pl-0 ml-0 form-control-custom" v-model="active.attribute2" @change="getValue($event, 'attribute2')">
-                <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :value="item" :key="index">
-                  <a v-if="active.attribute !== item">{{item}}</a>
+                <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :style="[active.attribute !== item ? {} : {display: 'none'}]" :value="item" :key="index" >
+                  {{item}}
                 </option>
               </select>
             </div>
-            <div class="col-sm-1 product-item-title pl-4" style="margin-top: 5%;" :hidden="isEdit===false"> 
+            <div class="col-sm-1 product-item-title pl-0" style="margin-top: 2%;" :hidden="isEdit===false"> 
               <button class="btn btn-primary" @click="addActive"><i class="fa fa-plus" ></i></button>
             </div>
           </div>
             <label style="margin-top: 1%" :hidden="isEdit===true"><strong>Actives</strong></label>
-            <div class="table-responsive mt-3">
+            <div class="table-responsive">
               <table class="table table-hover table-bordered table-sm w-50 " style="float: left" v-if="actives.length > 0">
                 <thead>
                     <tr>
@@ -219,8 +213,7 @@
           <br>
           <input type="number" class="form-control form-control-custom" v-model="data.details.shelf_life" placeholder="Type shelf life" :disabled="isEdit===false">
         </div>
-        <div class="product-item-title" style="width: 20%; margin-top:2.3%">
-          <br>
+        <div class="product-item-title" style="width: 20%; margin-top:6.6%">
           <input type="text" class="form-control form-control-custom" placeholder="Month/s" disabled>
         </div>
          <div class="product-item-title">
@@ -258,7 +251,7 @@
     <div class="product-more-details">
       <div class="pagination-holder">
         <ul class="product-menu">
-          <li v-for="item, index in productMenu" v-bind:class="{'menu-active': item.flag === true}" class="" @click="selectMenu(index)">{{item.title}}</li>
+          <li v-for="(item, index) in productMenu" :key="index" v-bind:class="{'menu-active': item.flag === true}" class="" @click="selectMenu(index)">{{item.title}}</li>
         </ul>
       </div>
       <div class="details-holder" v-if="selectedMenu.title === 'Variation'">
@@ -357,6 +350,7 @@ export default {
       errorMessageHracs: null,
       idxToBeDeleted: null,
       confirmationMessage: null,
+      tagName: null,
       bundledData: null,
       variationData: null
     }
@@ -397,16 +391,18 @@ export default {
         this.selectedMenu = this.productMenu[index]
       }
     },
-    getValue(event, attribute){
-      if(attribute === 'attribute1'){
-        console.log('[GET_VALUE]', this.formulations.ACTIVE_UNITS.indexOf(event.target.value))
-        if(event.target.value === 'Grams (g)'){
-          let index = this.formulations.ACTIVE_UNITS.indexOf('Grams (g)')
-          this.formulations.ACTIVE_UNITS2.splice(index, 1)
-          console.log(this.formulations)
-        }
-      }
-    },
+    // getValue(event, attribute){
+    //   if(attribute === 'attribute1'){
+    //     console.log('[GET_VALUE]', this.formulations.ACTIVE_UNITS.indexOf(event.target.value))
+    //     if(event.target.value === 'Grams (g)'){
+    //       let index = this.formulations.ACTIVE_UNITS.indexOf('Grams (g)')
+    //       this.formulations.ACTIVE_UNITS2.splice(index, 1)
+    //       console.log('[Formulations]', this.formulations)
+    //     }
+    //   }
+    //   console.log('[GET_VALUE]', this.formulations.ACTIVE_UNITS2)
+    //   console.log('ATTRIBUTE VALUES')
+    // },
     addActive(){
       if((this.active.active_name === null || this.active.active_name === '') || (this.active.value === null || this.active.value <= 0) || this.active.attribute === null || this.active.attribute2 === null){
         this.errorMessage = 'Empty fields cannot be added'
@@ -464,7 +460,7 @@ export default {
       if(index.array === 'active'){
         this.actives.splice(index.id, 1)
         this.errorMessageActives = null
-      }else if(index.array === 'groups'){
+      }else if(index.array === 'group'){
         this.listGroup.splice(index.id, 1)
         this.errorMessageGroups = null
       }else if(index.array === 'hrac'){
@@ -519,7 +515,7 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('products/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        console.log(response.data)
+        console.log('[DATAS]', response.data)
         if(response.data.length > 0){
           this.data = response.data[0]
           let group = {
