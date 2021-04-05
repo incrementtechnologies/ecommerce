@@ -18,7 +18,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(itemVariation, indexVariation) in item.variation" :key="indexVariation">
+              <tr v-for="(itemVariation, indexVariation) in variationData.variation" :key="indexVariation">
                 <td>{{item.title}}&nbsp;({{itemVariation.payload_value}} {{convertion.getUnitsAbbreviation(itemVariation.payload)}})</td>
                 <td>{{itemVariation.payload_value}}{{convertion.getUnitsAbbreviation(itemVariation.payload)}}</td>
                 <td><button class="btn btn-primary" style="margin-left: 10px;" @click="redirect('/traces/' + itemVariation.id + '/' + item.code)" disabled>
