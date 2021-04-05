@@ -32,7 +32,7 @@
       <div class="error text-danger" v-if="errorMessage !== null">{{errorMessage}}</div>
         <br>
           <select class="form-control form-control-custom"  style="float: left; width: 40%;" @change="getAttribute($event)" v-model="selectedVariation" :disabled="isEdit===false">
-              <option v-for="(itemVariation, indexVariation) in item.variation" :key="indexVariation" :value="{id: itemVariation.id, payload: itemVariation.payload, payload_value: itemVariation.payload_value}" >{{itemVariation.payload_value}}&nbsp;{{convertion.getUnitsAbbreviation(itemVariation.payload)}}</option>
+              <option v-for="(itemVariation, indexVariation) in variationData.variation" :key="indexVariation" :value="{id: itemVariation.id, payload: itemVariation.payload, payload_value: itemVariation.payload_value}" >{{itemVariation.payload_value}}&nbsp;{{convertion.getUnitsAbbreviation(itemVariation.payload)}}</option>
           </select>
           <input 
             type="number"
@@ -105,7 +105,7 @@ import Confirmation from 'src/components/increment/generic/modal/Confirmation.vu
 export default {
   mounted(){
   },
-  props: ['item', 'isEdit'],
+  props: ['item', 'isEdit', 'variationData'],
   data(){
     return {
       user: AUTH.user,
