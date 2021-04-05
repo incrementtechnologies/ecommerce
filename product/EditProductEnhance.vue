@@ -272,7 +272,7 @@
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Bundled Products'">
-        <bundled-products :item="bundledData" :isEdit="isEdit"></bundled-products>
+        <bundled-products :item="bundledData" :isEdit="isEdit" :variationData="variationData"></bundled-products>
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Documentation'">
