@@ -1,96 +1,101 @@
 <template>
   <div class="holder">
-    <i class="fa fa-reply" style="color:#cae166; font-size:20px" @click="showInventory=false" v-if="showInventory===true"></i>
-    <h5>Batches</h5>
-    <h5 v-if="returnHasData.length > 0">Product: {{data[0].product.title}}({{data[0].variation[0].payload_value}}{{conversion.getUnitsAbbreviation(data[0].variation[0].payload)}})</h5>
-    <div v-if="showInventory === false">
-      <div>
-        <button class="btn btn-primary pull-left" style="margin-bottom: 10px;" v-if="viewInactive === false" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'inactive'), viewInactive = !viewInactive">Show Inactive</button>
-        <button class="btn btn-primary pull-left" v-if="viewInactive === true" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'active'), viewInactive = !viewInactive">Show Active</button>
-        <button class="btn btn-warning pull-right" v-if="viewInactive === true" style="margin-bottom: 10px;" @click="exportData()"><i class="fas fa-file-export" style="padding-right: 5px;"></i>Export</button>
-      </div>
-      <filter-product v-bind:category="category" 
-        :activeCategoryIndex="0"
-        :activeSortingIndex="0"
-        @changeSortEvent="retrieve($event.sort, $event.filter)"
-        @changeStyle="manageGrid($event)"
-        :grid="['list', 'th-large']">
-      </filter-product>
-      <table class="table table-bordered" v-if="returnHasData.length > 0">
-        <thead>
-          <tr>
-            <!-- <td>Trace ID</td> -->
-            <td>Batch Number
-              <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayBatch('desc')" v-if="activeSortBatch === 'asc'"></i>
-              <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayBatch('asc')" v-if="activeSortBatch === 'desc'"></i>
-            </td>
-            <td>Manufacture Date
-              <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayDate('desc')" v-if="activeSortDate === 'asc'"></i>
-              <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayDate('asc')" v-if="activeSortDate === 'desc'"></i>
-            </td>
-            <td>Quantity</td>
-            <td>Status</td>
-            <td>Created At</td>
-            <td>Actions</td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in data" :key="index">
-            <!-- <td>{{item.code}}</td> -->
-            <td>{{item.batch_number}}</td>
-            <td>{{item.manufacturing_date}}</td>
-            <td>{{item.qty}}</td>
-            <td style="text-transform: UPPERCASE">{{item.status}}</td>
-            <td>{{item.created_at_human}}</td>
-            <td><button class="btn btn-warning" @click="item.status === 'inactive' ? showModal(item) : showInventoryTable(item)">{{item.status === 'inactive' ? 'Order Labels' : 'View Inventory'}}</button></td>
-    <!--         <td>
-              <label class="text-primary action-link" @click="redirect('/product/edit/' + item.code)">EDIT</label> / 
-              <label class="text-danger action-link">DELETE</label>
-            </td> -->
-          </tr>
-        </tbody>
-      </table>
-      <empty v-if="data === null" :title="'Looks like you have not added a product!'" :action="'Click the New Product Button to get started.'"></empty>
-      <!-- The Modal -->
-      <div class="modal fade" id="myModal">
-        <div class="modal-dialog">
-          <div class="modal-content">
+      <i class="fa fa-reply" style="color:#cae166; font-size:20px" @click="showInventory=false" v-if="showInventory===true"></i>
+      <h5>Batches</h5>
+      <h5 v-if="returnHasData.length > 0">Product: {{data[0].product.title}}({{data[0].variation[0].payload_value}}{{conversion.getUnitsAbbreviation(data[0].variation[0].payload)}})</h5>
+      <div v-if="showInventory === false">
+        <div>
+          <button class="btn btn-primary pull-left" style="margin-bottom: 10px;" v-if="viewInactive === false" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'inactive'), viewInactive = !viewInactive">Show Inactive</button>
+          <button class="btn btn-primary pull-left" v-if="viewInactive === true" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'active'), viewInactive = !viewInactive">Show Active</button>
+          <button class="btn btn-warning pull-right" v-if="viewInactive === true && data.length !== 0" style="margin-bottom: 10px;" @click="exportData()"><i class="fas fa-file-export" style="padding-right: 5px;"></i>Export</button>
+        </div>
+        <div v-if="data.length !== 0">
+          <filter-product v-bind:category="category" 
+            :activeCategoryIndex="0"
+            :activeSortingIndex="0"
+            @changeSortEvent="retrieve($event.sort, $event.filter)"
+            @changeStyle="manageGrid($event)"
+            :grid="['list', 'th-large']">
+          </filter-product>
+          <table class="table table-bordered" v-if="returnHasData.length > 0">
+            <thead>
+              <tr>
+                <!-- <td>Trace ID</td> -->
+                <td>Batch Number
+                  <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayBatch('desc')" v-if="activeSortBatch === 'asc'"></i>
+                  <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayBatch('asc')" v-if="activeSortBatch === 'desc'"></i>
+                </td>
+                <td>Manufacture Date
+                  <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayDate('desc')" v-if="activeSortDate === 'asc'"></i>
+                  <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayDate('asc')" v-if="activeSortDate === 'desc'"></i>
+                </td>
+                <td>Quantity</td>
+                <td>Status</td>
+                <td>Created At</td>
+                <td>Actions</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in data" :key="index">
+                <!-- <td>{{item.code}}</td> -->
+                <td>{{item.batch_number}}</td>
+                <td>{{item.manufacturing_date}}</td>
+                <td>{{item.qty}}</td>
+                <td style="text-transform: UPPERCASE">{{item.status}}</td>
+                <td>{{item.created_at_human}}</td>
+                <td><button class="btn btn-warning" @click="item.status === 'inactive' ? showModal(item) : showInventoryTable(item)">{{item.status === 'inactive' ? 'Order Labels' : 'View Inventory'}}</button></td>
+        <!--         <td>
+                  <label class="text-primary action-link" @click="redirect('/product/edit/' + item.code)">EDIT</label> / 
+                  <label class="text-danger action-link">DELETE</label>
+                </td> -->
+              </tr>
+            </tbody>
+          </table>
+          <empty v-if="data === null" :title="'Looks like you have not added a product!'" :action="'Click the New Product Button to get started.'"></empty>
+          <!-- The Modal -->
+          <div class="modal fade" id="myModal">
+            <div class="modal-dialog">
+              <div class="modal-content">
 
-            <!-- Modal Header -->
-            <div class="modal-header">
-              <h4 class="modal-title">Order Smart Labels</h4>
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title">Order Smart Labels</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
 
-            <!-- Modal body -->
-            <div class="modal-body">
-              <label v-if="selectedBatch.length > 0">Product:{{selectedBatch.product.title}}({{selectedBatch.variation[0].payload_value}}{{conversion.getUnitsAbbreviation(selectedBatch.variation[0].payload)}})</label><br>
-              <label>Batch Number: {{selectedBatch.batch_number}}</label><br>
-              <label>Manufacture Date: {{selectedBatch.manufacturing_date}}</label><br>
-              <div class="row">
-                <div class="col-sm-5">
-                  <label>Label Quantity: {{selectedBatch.qty}}</label>  
+                <!-- Modal body -->
+                <div class="modal-body">
+                  <label v-if="selectedBatch.length > 0">Product:{{selectedBatch.product.title}}({{selectedBatch.variation[0].payload_value}}{{conversion.getUnitsAbbreviation(selectedBatch.variation[0].payload)}})</label><br>
+                  <label>Batch Number: {{selectedBatch.batch_number}}</label><br>
+                  <label>Manufacture Date: {{selectedBatch.manufacturing_date}}</label><br>
+                  <div class="row">
+                    <div class="col-sm-5">
+                      <label>Label Quantity: {{selectedBatch.qty}}</label>  
+                    </div>
+                    <div class="col-sm-7">
+                      <select class="form-control custom-form-control">
+                        <option value=""></option>
+                      </select>
+                    </div>
+                  </div>
+                  <span style="font-size: 12px">All Agricord labels include lifetim traceability through Agricord platform</span>
+                  <center><button class="btn btn-warning" style="width:50%; margin-top:2%" @click="exportTraces(selectedBatch)">Export Order</button></center>
                 </div>
-                <div class="col-sm-7">
-                  <select class="form-control custom-form-control">
-                    <option value=""></option>
-                  </select>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
+
               </div>
-              <span style="font-size: 12px">All Agricord labels include lifetim traceability through Agricord platform</span>
-              <center><button class="btn btn-warning" style="width:50%; margin-top:2%" @click="exportTraces(selectedBatch)">Export Order</button></center>
             </div>
-
-            <!-- Modal footer -->
-            <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
-
           </div>
+          <InventoryEnhance v-if="showInventory === true"  :inventory="inventoryList"/>
+        </div>
+        <div v-else>
+          <empty :title="viewInactive === false ? 'Empty Active Batches!' : 'Empty Inactive Batches!'" ></empty>
         </div>
       </div>
-    </div>
-    <InventoryEnhance v-if="showInventory === true"  :inventory="inventoryList"/>
   </div>
 </template>
 <style>
@@ -361,6 +366,7 @@ export default {
         $('#loading').css({'display': 'block'})
         this.APIRequest('product_traces/retrieve_with_attribute', parameter).then(response => {
           $('#loading').css({'display': 'none'})
+          console.log('DATAS', response.data)
           if(response.data.length > 0){
             this.data = response.data
             this.date = response.request_timestamp
