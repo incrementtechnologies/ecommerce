@@ -1,14 +1,25 @@
 <template>
   <div class="holder">
-    <i class="fa fa-reply" style="color:#cae166; font-size:20px" @click="showInventory=false" v-if="showInventory===true"></i>
-    <h5>Batches</h5>
-    <h5 v-if="returnHasData.length > 0">Product: {{data[0].product.title}}({{data[0].variation[0].payload_value}}{{conversion.getUnitsAbbreviation(data[0].variation[0].payload)}})</h5>
-    <div v-if="showInventory === false">
+    <div class="row mb-4">
+      <div class="col-sm-6">
+          <i class="fa fa-reply" style="color:#cae166; font-size:20px;cursor:pointer; width:20%" title="Back" @click="showInventory === false ? $router.push('/product/edit/' + $route.params.code) : showInventory=false"></i>
+          <h5>Batches</h5>
+          <!-- {{data[0].product}} -->
+          <h5 v-if="returnHasData.length > 0">Product: {{data[0].product.title}}({{data[0].variation[0].payload_value}}{{conversion.getUnitsAbbreviation(data[0].variation[0].payload)}})</h5>
+      </div>
+      <div class="col-sm-6">
       <div>
+          <button class="btn btn-primary pull-right" v-if="returnHasData.length > 0" style="margin-bottom: 10px;" @click="addTraces(data[0].variation[0])">Create Batch</button>
+      </div>
+      </div>
+    </div>
+    <div v-if="showInventory === false">
+      <!-- <div>
+        <button class="btn btn-primary pull-right" style="margin-bottom: 10px;">Create Batch</button>
         <button class="btn btn-primary pull-left" style="margin-bottom: 10px;" v-if="viewInactive === false" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'inactive'), viewInactive = !viewInactive">Show Inactive</button>
         <button class="btn btn-primary pull-left" v-if="viewInactive === true" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'active'), viewInactive = !viewInactive">Show Active</button>
         <button class="btn btn-warning pull-right" v-if="viewInactive === true" style="margin-bottom: 10px;" @click="exportData()"><i class="fas fa-file-export" style="padding-right: 5px;"></i>Export</button>
-      </div>
+      </div> -->
       <filter-product v-bind:category="category" 
         :activeCategoryIndex="0"
         :activeSortingIndex="0"
@@ -77,7 +88,7 @@
                   </select>
                 </div>
               </div>
-              <span style="font-size: 12px">All Agricord labels include lifetim traceability through Agricord platform</span>
+              <span style="font-size: 12px">All Agricord labels include Lifetime traceability through Agricord platform</span>
               <center><button class="btn btn-warning" style="width:50%; margin-top:2%" @click="exportTraces(selectedBatch)">Export Order</button></center>
             </div>
 
@@ -91,6 +102,7 @@
       </div>
     </div>
     <InventoryEnhance v-if="showInventory === true"  :inventory="inventoryList"/>
+     <create-product-traces-modal ref="addTrace" :params="productId" :variations="selectedVariation"></create-product-traces-modal>
   </div>
 </template>
 <style>
@@ -223,6 +235,7 @@ export default {
       user: AUTH.user,
       config: CONFIG,
       conversion: Conversion,
+      productId: null,
       errorMessage: null,
       data: [],
       selectedItem: null,
@@ -289,12 +302,14 @@ export default {
       activeSortBatch: 'asc',
       activeSortDate: 'asc',
       showInventory: false,
-      inventoryList: null
+      inventoryList: null,
+      selectedVariation: null
     }
   },
   components: {
     'empty': require('components/increment/generic/empty/Empty.vue'),
     'filter-product': require('components/increment/ecommerce/filter/Product.vue'),
+    'create-product-traces-modal': require('../product/CreateProductTraces'),
     InventoryEnhance
   },
   computed: {
@@ -327,6 +342,17 @@ export default {
         })
       }
     },
+    addTraces(variation){
+      this.productId = this.data[0].product.id
+      let fullVariation = {
+        variation: variation,
+        product: this.data[0].product.title
+      }
+      this.selectedVariation = fullVariation
+      setTimeout(() => {
+        $('#createProductTracesModal').modal('show')
+      }, 100)
+    },
     showModal(item){
       this.selectedBatch = item
       console.log(item)
@@ -348,10 +374,6 @@ export default {
           value: filter.value + '%',
           column: filter.column,
           clause: 'like'
-        }, {
-          value: status,
-          clause: '=',
-          column: 'status'
         }],
         code: this.$route.params.code,
         sort: sort
@@ -362,6 +384,7 @@ export default {
         this.APIRequest('product_traces/retrieve_with_attribute', parameter).then(response => {
           $('#loading').css({'display': 'none'})
           if(response.data.length > 0){
+            console.log(response.data)
             this.data = response.data
             this.date = response.request_timestamp
             if(this.selectedItem !== null){
@@ -432,7 +455,7 @@ export default {
       this.APIRequest('product_traces/retrieve_with_traces', parameter).then(response => {
         $('#loading').css({'display': 'none'})
         response.data.map(el => {
-          var code = selectedBatch.product.title + '<>' + selectedBatch.product.merchant.name + '<>' + el.batch_number + '<>' + el.manufacturing_date + '<>' + el.code + '<>' + selectedBatch.product.merchant.website
+          var code = selectedBatch.product.title + '-' + selectedBatch.variation[0].payload_value + this.conversion.getUnitsAbbreviation(selectedBatch.variation[0].payload) + '<>' + selectedBatch.product.merchant.name + '<>' + el.batch_number + '<>' + el.manufacturing_date + '<>' + el.code + '<>' + selectedBatch.product.merchant.website
           var object = {
             trace_code: el.code,
             batch_number: el.batch_number,
