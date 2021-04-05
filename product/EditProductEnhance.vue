@@ -92,7 +92,7 @@
             <label>No Groups Available</label>
           </div>
           </div>
-          <div v-if="tagName === 'Herbicide' || tagName === 'herbicide'">
+          <div v-if="showHrac">
             <div class="mt-0">
               <div class="product-item-title mt-0" style="width: 90%">
                 <label>HRAC Mode of Action</label>
@@ -102,7 +102,7 @@
                   <option v-for="(el, index) in formulations.HRAC" :key="index" :value="el" >{{el}}</option>
               </select>
               </div>
-              <div class="product-item-title pl-3 " style="width: 10%; margin-top: 5.5%;">
+              <div class="product-item-title pl-3 " style="width: 10%; margin-top: 4%;">
                   <button class="btn btn-primary" @click="addHrac" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
               </div>
             </div>
