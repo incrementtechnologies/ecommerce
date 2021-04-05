@@ -2,7 +2,7 @@
   <div class="holder">
     <div class="row mb-4">
       <div class="col-sm-6">
-          <i class="fa fa-reply" style="color:#cae166; font-size:20px" @click="showInventory=false" v-if="showInventory===true"></i>
+          <i class="fa fa-reply" style="color:#cae166; font-size:20px;cursor:pointer; width:20%" title="Back" @click="showInventory === false ? $router.push('/product/edit/' + $route.params.code) : showInventory=false"></i>
           <h5>Batches</h5>
           <!-- {{data[0].product}} -->
           <h5 v-if="returnHasData.length > 0">Product: {{data[0].product.title}}({{data[0].variation[0].payload_value}}{{conversion.getUnitsAbbreviation(data[0].variation[0].payload)}})</h5>
