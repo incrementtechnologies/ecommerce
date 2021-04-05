@@ -74,14 +74,14 @@
         </div>
         <div class="table-responsive">
           <label style="margin-top: 5%" :hidden="isEdit===true"><strong>Activity Group</strong></label>      
-          <table class="table table-hover mt-3 table-bordered table-sm w-50" v-if="listGroup === null">
+          <table class="table table-hover mt-3 table-bordered table-sm w-50" v-if="listGroup !== null">
               <thead>
                   <tr>
                     <td>Group</td>
                     <td>Action</td>
                   </tr>
               </thead>
-              <tbody v-if="listGroup.length > 0 || listGroup !== null">
+              <tbody v-if="listGroup.length > 0 && listGroup !== null">
                 <tr v-for="(group, index) in listGroup" :key="index">
                   <td v-if="group.group !== null">{{group.group}}</td>
                   <td v-if="group.group !== null"><button class="btn" @click="showConfirmationModal(index, 'group')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
@@ -92,7 +92,7 @@
             <label>No Groups Available</label>
           </div>
           </div>
-          <div v-if="tagName === 'Herbicide' || tagName === 'herbicide'">
+          <div v-if="showHrac">
             <div class="mt-0">
               <div class="product-item-title mt-0" style="width: 90%">
                 <label>HRAC Mode of Action</label>
@@ -102,7 +102,7 @@
                   <option v-for="(el, index) in formulations.HRAC" :key="index" :value="el" >{{el}}</option>
               </select>
               </div>
-              <div class="product-item-title pl-3 " style="width: 10%; margin-top: 5.5%;">
+              <div class="product-item-title pl-3 " style="width: 10%; margin-top: 4%;">
                   <button class="btn btn-primary" @click="addHrac" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
               </div>
             </div>
