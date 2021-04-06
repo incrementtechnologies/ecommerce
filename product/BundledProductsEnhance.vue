@@ -186,7 +186,7 @@ export default {
 
     },
     create(){
-      console.log('updateed 18-03-2021 2:16')
+      console.log('item', this.item)
       console.log(this.newAttribute.product_attribute_id, this.newAttribute.qty)
       this.payloadValueExit(this.newAttribute.qty, this.variantPayload, this.variantPayloadValue)
       if(this.errorMessage !== null){
