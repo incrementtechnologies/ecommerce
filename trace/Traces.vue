@@ -228,6 +228,7 @@ export default {
       user: AUTH.user,
       config: CONFIG,
       conversion: Conversion,
+      productId: null,
       errorMessage: null,
       data: [],
       selectedItem: null,
@@ -294,12 +295,14 @@ export default {
       activeSortBatch: 'asc',
       activeSortDate: 'asc',
       showInventory: false,
-      inventoryList: null
+      inventoryList: null,
+      selectedVariation: null
     }
   },
   components: {
     'empty': require('components/increment/generic/empty/Empty.vue'),
     'filter-product': require('components/increment/ecommerce/filter/Product.vue'),
+    'create-product-traces-modal': require('../product/CreateProductTraces'),
     InventoryEnhance
   },
   computed: {
@@ -332,6 +335,17 @@ export default {
         })
       }
     },
+    addTraces(variation){
+      this.productId = this.data[0].product.id
+      let fullVariation = {
+        variation: variation,
+        product: this.data[0].product.title
+      }
+      this.selectedVariation = fullVariation
+      setTimeout(() => {
+        $('#createProductTracesModal').modal('show')
+      }, 100)
+    },
     showModal(item){
       this.selectedBatch = item
       console.log(item)
@@ -353,10 +367,6 @@ export default {
           value: filter.value + '%',
           column: filter.column,
           clause: 'like'
-        }, {
-          value: status,
-          clause: '=',
-          column: 'status'
         }],
         code: this.$route.params.code,
         sort: sort
@@ -368,6 +378,7 @@ export default {
           $('#loading').css({'display': 'none'})
           console.log('DATAS', response.data)
           if(response.data.length > 0){
+            console.log(response.data)
             this.data = response.data
             this.date = response.request_timestamp
             if(this.selectedItem !== null){
@@ -438,7 +449,7 @@ export default {
       this.APIRequest('product_traces/retrieve_with_traces', parameter).then(response => {
         $('#loading').css({'display': 'none'})
         response.data.map(el => {
-          var code = selectedBatch.product.title + '<>' + selectedBatch.product.merchant.name + '<>' + el.batch_number + '<>' + el.manufacturing_date + '<>' + el.code + '<>' + selectedBatch.product.merchant.website
+          var code = selectedBatch.product.title + '-' + selectedBatch.variation[0].payload_value + this.conversion.getUnitsAbbreviation(selectedBatch.variation[0].payload) + '<>' + selectedBatch.product.merchant.name + '<>' + el.batch_number + '<>' + el.manufacturing_date + '<>' + el.code + '<>' + selectedBatch.product.merchant.website
           var object = {
             trace_code: el.code,
             batch_number: el.batch_number,
