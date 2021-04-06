@@ -10,7 +10,7 @@
       </thead>
       <tbody>
         <tr v-for="(item, index) in data" :key="index">
-          <td>{{item.title}}{{item.product_attribute}}</td>
+          <td>{{item.title}} {{item.product_attribute}}</td>
           <td>{{item.batch_number}}</td>
           <td>{{item.manufacturing_date}}</td>
 <!--           <td>
