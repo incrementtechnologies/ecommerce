@@ -5,16 +5,18 @@
       <div class="title">
         <br>
         <h3>{{data.title}}</h3>
-        <div class="product-row-merchant" v-if="data.merchant !== null">
+        <div class="product-row-merchant w-100" v-if="data.merchant !== null">
             <label class="product-row-labels">Manufacturer:</label>
             <label style="color:grey;">&nbsp;{{data.merchant.name}}&nbsp;</label>
             <label class="product-row-labels">Classification:</label>
             <label style="color:grey;">&nbsp;{{data.tags}}</label>
-            <div class="col-sm-12 product-image m-0 p-0">
-              <div class="product-image-content ml-2">
-                <img :src="config.BACKEND_URL + selectedImage" class="main-image mb-3" v-if="imagesList !== null">
-                <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image mb-3" v-if="imagesList === null && data.featured !== null">
-                <i class="fa fa-image mb-4" v-if="imagesList === null && data.featured === null"></i>
+            <div class="col-sm-12 product-image w-100">
+              <div class="product-image-content w-100">
+                  <img :src="config.BACKEND_URL + selectedImage" class="main-image mb-3" v-if="imagesList !== null">
+                  <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image mb-3 " v-if="imagesList === null && data.featured !== null">
+                  <div style="margin:auto;">
+                    <i class="fa fa-image mb-3" v-if="imagesList === null && data.featured === null"></i>
+                  </div>
                 <div class="images-holder d-flex p-0 m-0" style="margin-top: 15%;" v-if="imagesList !== null">
                   <div v-if="imagesList.length < 5">
                     <div v-for="(item, index) in imagesList" :key="index" class="image-item" @click="selectImage(item.url)">
