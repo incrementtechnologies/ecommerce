@@ -434,6 +434,7 @@ export default {
       var exportData = []
       let parameter = {
         product_attribute_id: selectedBatch.product_attribute_id,
+        batch_number: selectedBatch.batch_number,
         status: 'inactive'
       }
       console.log('paramter', parameter)
