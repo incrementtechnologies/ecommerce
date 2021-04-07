@@ -243,7 +243,7 @@ export default {
             month: null
           }
           $('#createProductTracesModal').modal('hide')
-          this.$parent.retrieve({'title': 'asc'}, {column: 'title', value: ''})
+          this.$parent.retrieve({'created_at': 'asc'}, {column: 'created_at', value: ''})
         })
       }
     },
