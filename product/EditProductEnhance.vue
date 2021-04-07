@@ -571,6 +571,7 @@ export default {
         account_id: this.user.userID
       }
       this.APIRequest('products/retrieve_bundled', parameter).then(response => {
+        response.data[0].bundled = response.data[0].bundled.sort(this.getSortOrderBundled('payload_value'))
         this.bundledData = response.data[0]
       })
     },
@@ -584,8 +585,29 @@ export default {
         account_id: this.user.userID
       }
       this.APIRequest('products/retrieve_variation', parameter).then(response => {
+        response.data[0].variation = response.data[0].variation.sort(this.getSortOrder('payload_value'))
         this.variationData = response.data[0]
       })
+    },
+    getSortOrder(prop) {
+      return function(a, b) {
+        if (a[prop] > b[prop]) {
+          return 1
+        } else if (a[prop] < b[prop]) {
+          return -1
+        }
+        return 0
+      }
+    },
+    getSortOrderBundled(prop) {
+      return function(a, b) {
+        if (a.variation[0][prop] > b.variation[0][prop]) {
+          return 1
+        } else if (a.variation[0][prop] < b.variation[0][prop]) {
+          return -1
+        }
+        return 0
+      }
     },
     deleteProduct(id){
       let parameter = {
