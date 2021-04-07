@@ -12,14 +12,14 @@
               <tr>
                 <td><b>Bundled Name</b></td>
                 <td><b>Qty</b></td>
-                <td><b>Action</b></td>
+                <td v-if="isEdit"><b>Action</b></td>
               </tr>
             </thead>
             <tbody>
               <tr  v-for="(itemVariation, indexVariation) in item.bundled" :key="indexVariation">
                 <td>{{`${itemVariation.qty} X ${item.title} (${itemVariation.variation[0].payload_value}${convertion.getUnitsAbbreviation(itemVariation.variation[0].payload)})`}}</td>
                 <td>{{itemVariation.scanned_qty}}</td>
-                <td><button v-if="itemVariation.scanned_qty === 0 || itemVariation.scanned_qty === null" class="btn btn-danger" @click="addOrDelete(itemVariation, false)" title="Delete Inventory" :disabled="isEdit===false">Delete</button></td>
+                <td v-if="isEdit"><button v-if="itemVariation.scanned_qty === 0 || itemVariation.scanned_qty === null" class="btn btn-danger" @click="addOrDelete(itemVariation, false)" title="Delete Inventory" :disabled="isEdit===false">Delete</button></td>
               </tr>
             </tbody>
           </table>
