@@ -4,12 +4,11 @@
       <div class="col-sm-6">
           <i class="fa fa-reply" style="color:#cae166; font-size:20px;cursor:pointer;" title="Back" @click="showInventory === false ? $router.push('/product/edit/' + $route.params.code) : showInventory=false"></i>
           <h5>Batches</h5>
-          <!-- {{data[0].product}} -->
-          <h5 v-if="returnHasData.length > 0">Product: {{data[0].product.title}}({{data[0].variation[0].payload_value}}{{conversion.getUnitsAbbreviation(data[0].variation[0].payload)}})</h5>
+          <h5 v-if="returnHasData.length > 0">Product: {{returnHasData[0].product.title}}({{returnHasData[0].product.variation[0].payload_value}}{{conversion.getUnitsAbbreviation(returnHasData[0].product.variation[0].payload)}})</h5>
       </div>
       <div class="col-sm-6">
       <div>
-          <button class="btn btn-primary pull-right" v-if="returnHasData.length > 0" style="margin-bottom: 10px;" @click="addTraces(data[0].variation[0])">Create Batch</button>
+          <button class="btn btn-primary pull-right" v-if="returnHasData.length > 0" style="margin-bottom: 10px;" @click="addTraces(returnHasData[0].product.variation[0])">Create Batch</button>
       </div>
       </div>
     </div>
@@ -27,10 +26,9 @@
         @changeStyle="manageGrid($event)"
         :grid="['list', 'th-large']">
       </filter-product>
-      <table class="table table-bordered" v-if="returnHasData.length > 0">
+      <table class="table table-bordered" v-if="returnHasData[1].traces.length > 0">
         <thead>
           <tr>
-            <!-- <td>Trace ID</td> -->
             <td>Batch Number
               <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayBatch('desc')" v-if="activeSortBatch === 'asc'"></i>
               <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayBatch('asc')" v-if="activeSortBatch === 'desc'"></i>
@@ -46,22 +44,17 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, index) in data" :key="index">
-            <!-- <td>{{item.code}}</td> -->
+          <tr v-for="(item, index) in returnHasData[1].traces" :key="index">
             <td>{{item.batch_number}}</td>
             <td>{{item.manufacturing_date}}</td>
             <td>{{item.qty}}</td>
             <td style="text-transform: UPPERCASE">{{item.status}}</td>
             <td>{{item.created_at_human}}</td>
-            <td><button class="btn btn-warning" @click="item.status === 'inactive' ? showModal(item) : showInventoryTable(item)">{{item.status === 'inactive' ? 'Order Labels' : 'View Inventory'}}</button></td>
-    <!--         <td>
-              <label class="text-primary action-link" @click="redirect('/product/edit/' + item.code)">EDIT</label> / 
-              <label class="text-danger action-link">DELETE</label>
-            </td> -->
+            <td><button class="btn btn-warning" @click="item.status === 'inactive' ? showModal(item, returnHasData[0].product) : showInventoryTable(item)">{{item.status === 'inactive' ? 'Order Labels' : 'View Inventory'}}</button></td>
           </tr>
         </tbody>
       </table>
-      <empty v-if="data === null" :title="'Looks like you have not added a product!'" :action="'Click the New Product Button to get started.'"></empty>
+      <empty v-if="returnHasData[1].traces.length <= 0" :title="'Looks like you have not added a product!'" :action="'Click the New Product Button to get started.'"></empty>
       <!-- The Modal -->
       <div class="modal fade" id="myModal">
         <div class="modal-dialog">
@@ -74,8 +67,8 @@
             </div>
 
             <!-- Modal body -->
-            <div class="modal-body">
-              <label v-if="selectedBatch.length > 0">Product:{{selectedBatch.product.title}}({{selectedBatch.variation[0].payload_value}}{{conversion.getUnitsAbbreviation(selectedBatch.variation[0].payload)}})</label><br>
+            <div class="modal-body" v-if="selectedBatch !== null">
+              <label>Product: {{selectedBatch.product.title}}({{selectedBatch.product.variation[0].payload_value}}{{conversion.getUnitsAbbreviation(selectedBatch.product.variation[0].payload)}})</label><br>
               <label>Batch Number: {{selectedBatch.batch_number}}</label><br>
               <label>Manufacture Date: {{selectedBatch.manufacturing_date}}</label><br>
               <div class="row">
@@ -96,7 +89,6 @@
             <div class="modal-footer">
               <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
-
           </div>
         </div>
       </div>
@@ -242,20 +234,10 @@ export default {
       selectedItem: null,
       selectedIndex: null,
       listStyle: 'list',
-      selectedBatch: [],
+      selectedBatch: null,
       category: [{
         title: 'Product Traces',
         sorting: [{
-          title: 'Code ascending',
-          payload: 'code',
-          payload_value: 'asc',
-          type: 'text'
-        }, {
-          title: 'Code descending',
-          payload: 'code',
-          payload_value: 'desc',
-          type: 'text'
-        }, {
           title: 'Created ascending',
           payload: 'created_at',
           payload_value: 'asc',
@@ -344,6 +326,7 @@ export default {
       }
     },
     addTraces(variation){
+      console.log(this.data[0].product.id)
       this.productId = this.data[0].product.id
       let fullVariation = {
         variation: variation,
@@ -354,9 +337,10 @@ export default {
         $('#createProductTracesModal').modal('show')
       }, 100)
     },
-    showModal(item){
+    showModal(item, product){
+      item['product'] = product
       this.selectedBatch = item
-      console.log(item)
+      console.log(this.selectedBatch)
       $('#myModal').modal('show')
     },
     showInventoryTable(item){
@@ -372,7 +356,7 @@ export default {
       }
       let parameter = {
         condition: [{
-          value: filter.value + '%',
+          value: '%' + filter.value + '%',
           column: filter.column,
           clause: 'like'
         }],
@@ -433,6 +417,7 @@ export default {
       }
     },
     exportTraces(selectedBatch){
+      console.log('[SELECTED BATCH]', selectedBatch)
       let options = {
         fieldSeparator: ',',
         quoteStrings: '"',
@@ -456,7 +441,7 @@ export default {
       this.APIRequest('product_traces/retrieve_with_traces', parameter).then(response => {
         $('#loading').css({'display': 'none'})
         response.data.map(el => {
-          var code = selectedBatch.product.title + '-' + selectedBatch.variation[0].payload_value + this.conversion.getUnitsAbbreviation(selectedBatch.variation[0].payload) + '<>' + selectedBatch.product.merchant.name + '<>' + el.batch_number + '<>' + el.manufacturing_date + '<>' + el.code + '<>' + selectedBatch.product.merchant.website
+          var code = selectedBatch.product.title + '-' + selectedBatch.product.variation[0].payload_value + this.conversion.getUnitsAbbreviation(selectedBatch.product.variation[0].payload) + '<>' + selectedBatch.product.merchant.name + '<>' + el.batch_number + '<>' + el.manufacturing_date + '<>' + el.code + '<>' + selectedBatch.product.merchant.website
           var object = {
             trace_code: el.code,
             batch_number: el.batch_number,
