@@ -8,7 +8,7 @@
       </div>
       <div class="col-sm-6">
       <div>
-          <button class="btn btn-primary pull-right" v-if="returnHasData.length > 0" style="margin-bottom: 10px;" @click="addTraces(returnHasData[0].product.variation[0])">Create Batch</button>
+          <button class="btn btn-primary" v-if="returnHasData.length > 0" style="position:absolute;right:15px;bottom:0;" @click="addTraces(returnHasData[0].product.variation[0])">Create Batch</button>
       </div>
       </div>
     </div>
@@ -68,12 +68,12 @@
 
             <!-- Modal body -->
             <div class="modal-body" v-if="selectedBatch !== null">
-              <label>Product: {{selectedBatch.product.title}}({{selectedBatch.product.variation[0].payload_value}}{{conversion.getUnitsAbbreviation(selectedBatch.product.variation[0].payload)}})</label><br>
-              <label>Batch Number: {{selectedBatch.batch_number}}</label><br>
-              <label>Manufacture Date: {{selectedBatch.manufacturing_date}}</label><br>
+              <label><b>Product:</b> {{selectedBatch.product.title}}({{selectedBatch.product.variation[0].payload_value}}{{conversion.getUnitsAbbreviation(selectedBatch.product.variation[0].payload)}})</label><br>
+              <label><b>Batch Number:</b> {{selectedBatch.batch_number}}</label><br>
+              <label><b>Manufacture Date:</b> {{selectedBatch.manufacturing_date}}</label><br>
               <div class="row">
                 <div class="col-sm-5">
-                  <label>Label Quantity: {{selectedBatch.qty}}</label>  
+                  <label><b>Label Quantity:</b> {{selectedBatch.qty}}</label>  
                 </div>
                 <div class="col-sm-7">
                   <select class="form-control custom-form-control">
