@@ -32,7 +32,7 @@
                 <td>
                   <!-- <button class="btn btn-primary" style="margin-left: 10px;" @click="addTraces(itemVariation)" title="Add Inventory" :disabled="isEdit===false">Inventory</button> -->
                   <button class="btn btn-primary" style="margin-left: 10px;" @click="redirect('/traces/' + itemVariation.id + '/' + item.code)" title="View Batches">View Batches</button>
-                  <button v-if="itemVariation.product_trace_qty === 0 || itemVariation.product_trace_qty === null" class="btn btn-danger btn-sm" style="margin-left: 10px;" @click="addOrDelete(itemVariation, false)" title="Delete Inventory" :disabled="isEdit===false">Delete</button>
+                  <button v-if="isEdit === true && (itemVariation.product_trace_qty === 0 || itemVariation.product_trace_qty === null)" class="btn btn-danger btn-sm" style="margin-left: 10px;" @click="addOrDelete(itemVariation, false)" title="Delete Inventory" :disabled="isEdit===false">Delete</button>
                 </td>
               </tr>
             </tbody>
@@ -53,13 +53,13 @@
         </button> -->
       <!-- </div> -->
     </div>
-    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="variationData !== null">Create new product variation</button>
+    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="variationData !== null && isEdit===true">Create new product variation</button>
     <div id="demo" class="collapse" v-if="variationData !== null"><br>
       <div class="table table-borderless">
         <tbody>
           <tr class="pl-0">
             <td>
-              <input type="number" class="form-control form-control-custom" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup.enter="getVariationName()" :disabled="isEdit===false">
+              <input type="number" class="form-control form-control-custom" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup="getVariationName()" :disabled="isEdit===false">
             </td>
             <td class="pl-0">
               <select class="form-control form-control-custom" v-model="newAttribute.payload" v-if="item.variation === null" :disabled="isEdit===false" @change="getVariationName()">

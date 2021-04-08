@@ -26,7 +26,7 @@
         </div>
       <!-- </div> -->
     </div>
-    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="item !== null">Create new bundle configuration</button>
+    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="item !== null && isEdit === true">Create new bundle configuration</button>
     <div id="demo" class="collapse">
       <div>
       <div class="error text-danger" v-if="errorMessage !== null">{{errorMessage}}</div>
@@ -41,7 +41,7 @@
             placeholder="Qty"
             v-model="newAttribute.qty"
             :disabled="isEdit===false"
-            @on-keyup="getAttribute(null)"
+            @keyup="getAttribute(null)"
           >
           <i class="fa fa-check mt-2" style="color: #cae166; font-size: 30px;" v-if="newAttribute.product_attribute_id !== null && newAttribute.qty !== null"></i>
           <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="addOrDelete(null, true)" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
@@ -213,7 +213,7 @@ export default {
             this.newAttribute.product_attribute_id = res.data
             this.newAttribute.bundled = response.data
             this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
-              this.$parent.retrieve()
+              // this.$parent.retrieve()
               if(response.data > 0){
                 this.errorMessage = null
                 // this.variantId = null
@@ -221,7 +221,7 @@ export default {
                 // this.variantPayloadValue = null
                 this.selectedVariation = null
                 this.newAttribute.qty = null
-                // this.$parent.retrieve()
+                this.$parent.retrieveBundled()
               }
             })
           })
