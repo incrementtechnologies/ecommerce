@@ -2,10 +2,10 @@
   <div class="variations-holder">
     <div class="error text-danger" v-if="errorMessage !== null">{{errorMessage}}</div>
     <div class="form-group">
-      <label for="exampleInputEmail1" style="font-weight: 600;">Product Variations</label>
+      <label for="exampleInputEmail1" v-if="variationData.variation.length > 0" style="font-weight: 600;">Product Variations</label>
     </div>
     <center v-if="variationData === null"><i class="fa fa-circle-o-notch fa-spin" style="font-size:50px;color:#cae166" ></i><br>Loading</center>
-    <div class="variations-content" v-if="variationData !== null">
+    <div class="variations-content" v-if="variationData.variation.length > 0">
       <!-- <div class="attribute-item"> -->
         <div class="table-responsive">
           <table class="table table-hover">
@@ -53,8 +53,8 @@
         </button> -->
       <!-- </div> -->
     </div>
-    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="variationData !== null && isEdit===true">Create new product variation</button>
-    <div id="demo" class="collapse" v-if="variationData !== null"><br>
+    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="isEdit===true">Create new product variation</button>
+    <div id="demo" class="collapse"><br>
       <div class="table table-borderless">
         <tbody>
           <tr class="pl-0">
@@ -62,7 +62,7 @@
               <input type="number" class="form-control form-control-custom" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup="getVariationName()" :disabled="isEdit===false">
             </td>
             <td class="pl-0">
-              <select class="form-control form-control-custom" v-model="newAttribute.payload" v-if="item.variation === null" :disabled="isEdit===false" @change="getVariationName()">
+              <select class="form-control form-control-custom" v-model="newAttribute.payload" v-if="variationData.variation.length <= 0" :disabled="isEdit===false" @change="getVariationName()">
                   <option v-for="(item, index) in common.ecommerce.productUnits" :value="item" :key="index">{{item}}</option>
               </select>
               <input class="form-control form-control-custom" id="payload" :placeholder="`${item.title}(${convertion.getUnitsAbbreviation(variationData.variation[0].payload)})`" :value="variationData.variation[0].payload" v-else disabled>
@@ -154,7 +154,7 @@ export default {
       newAttribute: {
         product_id: this.item.id,
         payload: null,
-        payload_value: null
+        payload_value: 0
       },
       createProductTraceModal: ProductTrace,
       productId: this.item.id,
@@ -189,7 +189,7 @@ export default {
       if(bool === true){
         if(this.newAttribute.payload_value === null || this.newAttribute.payload_value === ''){
           this.errorMessage = 'Fill up the required fields.'
-        }else {
+        } else {
           console.log('TESTING', item)
           console.log('TESTING', this.confirmationMessage)
           this.isDelete = false
@@ -210,7 +210,7 @@ export default {
       console.log('[VARIATION NAME]', this.newAttribute.payload_value, this.newAttribute.payload)
       if(this.newAttribute.payload !== null){
         this.variationName = `${this.item.title} (${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.newAttribute.payload)})`
-      }else{
+      } else{
         this.variationName = `${this.item.title}(${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.variationData.variation[0].payload)})`
       }
     },
@@ -256,23 +256,25 @@ export default {
       }
     },
     create(){
-      if(this.item && this.variationData.variation !== null){
-        this.newAttribute.payload = this.variationData.variation[0].payload
-      }
+      // if(this.item && this.variationData.variation.length > 0){
+      //   this.newAttribute.payload = this.variationData.variation[0].payload
+      // }
       if(this.newAttribute.payload_value !== null && this.newAttribute.payload_value !== ''){
         this.payloadValueExit(this.newAttribute.payload_value)
         if(this.errorMessage !== null){
           return
         }
-        if(this.item.variation !== null){
-          this.newAttribute.payload = $('#payload').val()
-        }else{
-        }
+        // if(this.item.variation !== null){
+        //   this.newAttribute.payload = $('#payload').val()
+        // }else{
+        // }
         console.log('READ IN CREATE')
         this.APIRequest('product_attributes/create', this.newAttribute).then(response => {
+          console.log('After IN CREATE', this.newAttribute)
           if(response.data > 0){
             this.variationName = ''
-            this.newAttribute.payload_value = null
+            this.newAttribute.payload_value = 0
+            // this.newAttribute.payload = null
             this.errorMessage = null
             this.$parent.retrieveVariation()
           }
