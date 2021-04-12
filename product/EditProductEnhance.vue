@@ -92,7 +92,7 @@
               </tbody>
           </table>
           <div v-else>
-            <label>No Groups Available</label>
+            <label v-if="!isEdit">No Groups Available</label>
           </div>
         </div>
         <div v-if="showHrac">
@@ -577,7 +577,9 @@ export default {
         account_id: this.user.userID
       }
       this.APIRequest('products/retrieve_bundled', parameter).then(response => {
-        response.data[0].bundled = response.data[0].bundled.sort(this.getSortOrderBundled('payload_value'))
+        if(response.data[0].bundled !== null){
+          response.data[0].bundled = response.data[0].bundled.sort(this.getSortOrderBundled('payload_value'))
+        }
         this.bundledData = response.data[0]
         console.log('BUNDLED DATA', this.bundledData)
       })

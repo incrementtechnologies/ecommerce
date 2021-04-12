@@ -264,10 +264,10 @@ export default {
         if(this.errorMessage !== null){
           return
         }
-        // if(this.item.variation !== null){
-        //   this.newAttribute.payload = $('#payload').val()
-        // }else{
-        // }
+        if(this.item.variation !== null){
+          this.newAttribute.payload = $('#payload').val()
+        }else{
+        }
         console.log('READ IN CREATE')
         this.APIRequest('product_attributes/create', this.newAttribute).then(response => {
           console.log('After IN CREATE', this.newAttribute)
