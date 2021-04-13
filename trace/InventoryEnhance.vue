@@ -7,7 +7,7 @@
               <td>Trace ID</td>
               <td>Batch ID</td>
               <td>Manufacturing Date</td>
-              <td>Date</td>
+              <td>Status</td>
             </tr>
           </thead>
           <tbody>
@@ -20,7 +20,7 @@
             </td>
             <td>{{itemI.manufacturing_date}}</td>
             <td>
-              {{itemI.created_at_human}}
+              {{itemI.status}}
             </td>
           </tr>
         </tbody>
@@ -48,7 +48,8 @@ export default {
   created(){
     let parameter = {
       product_attribute_id: this.inventory.product_attribute_id,
-      status: 'active'
+      status: 'active',
+      batch_number: this.inventory.batch_number
     }
     console.log('paramter', parameter)
     $('#loading').css({'display': 'block'})
