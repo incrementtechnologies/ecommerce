@@ -45,7 +45,7 @@ export default {
     'ZC - Mixed formulations of CS and SC',
     'ZW - Mixed formulations of CS and EW',
     'ZE - Mixed formulations of CS and SE'],
-  TAGS: ['Herbicide', 'Fungicide', 'Insecticide', 'Other'],
+  TAGS: ['', 'Herbicide', 'Fungicide', 'Insecticide', 'Other'],
   HRAC: [12, 5, 6, 22, 14, 12, 27, 33, 13, 9, 10, 18, 3, 23, 29, 24, 15, 4, 19, 30, 31, 32, 34, 0],
   SAFETY_EQUIPMENTS: [
     'Wear cotton overalls buttoned to neck and wrist',

@@ -1,10 +1,10 @@
 <template>
   <div class="variations-holder">
-    <div class="form-group" v-if="item.length !== null">
+    <div class="form-group" v-if="item.bundled !== null">
       <label for="exampleInputEmail1" style="font-weight: 600;">Created Bundles</label>
     </div>
     <center v-if="item === null"><i class="fa fa-circle-o-notch fa-spin" style="font-size:50px;color:#cae166"></i><br>Loading</center>
-    <div class="variations-content" v-if="item.length !== null ">
+    <div class="variations-content" v-if="item.bundled !== null">
       <!-- <div class="attribute-item"> -->
         <div class="table-responsive"> 
           <table class="table table-hover">
@@ -179,9 +179,9 @@ export default {
       this.APIRequest('products/delete', product).then(response => {
         this.APIRequest('bundled_settings/delete', bundleSetting).then(response => {})
         this.APIRequest('product_attributes/delete', attribute).then(response => {
-          return this.$parent.retrieve()
+          return this.$parent.retrieveBundled()
         })
-        return this.$parent.retrieve()
+        return this.$parent.retrieveBundled()
       })
 
     },
