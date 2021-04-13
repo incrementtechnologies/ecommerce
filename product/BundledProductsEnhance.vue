@@ -1,10 +1,10 @@
 <template>
   <div class="variations-holder">
-    <div class="form-group">
+    <div class="form-group" v-if="item.length !== null">
       <label for="exampleInputEmail1" style="font-weight: 600;">Created Bundles</label>
     </div>
     <center v-if="item === null"><i class="fa fa-circle-o-notch fa-spin" style="font-size:50px;color:#cae166"></i><br>Loading</center>
-    <div class="variations-content" v-if="item !== null">
+    <div class="variations-content" v-if="item.length !== null ">
       <!-- <div class="attribute-item"> -->
         <div class="table-responsive"> 
           <table class="table table-hover">
@@ -12,21 +12,21 @@
               <tr>
                 <td><b>Bundled Name</b></td>
                 <td><b>Qty</b></td>
-                <td><b>Action</b></td>
+                <td v-if="isEdit"><b>Action</b></td>
               </tr>
             </thead>
             <tbody>
               <tr  v-for="(itemVariation, indexVariation) in item.bundled" :key="indexVariation">
                 <td>{{`${itemVariation.qty} X ${item.title} (${itemVariation.variation[0].payload_value}${convertion.getUnitsAbbreviation(itemVariation.variation[0].payload)})`}}</td>
                 <td>{{itemVariation.scanned_qty}}</td>
-                <td><button v-if="itemVariation.scanned_qty === 0 || itemVariation.scanned_qty === null" class="btn btn-danger" @click="addOrDelete(itemVariation, false)" title="Delete Inventory" :disabled="isEdit===false">Delete</button></td>
+                <td v-if="isEdit"><button v-if="itemVariation.scanned_qty === 0 || itemVariation.scanned_qty === null" class="btn btn-danger" @click="addOrDelete(itemVariation, false)" title="Delete Inventory" :disabled="isEdit===false">Delete</button></td>
               </tr>
             </tbody>
           </table>
         </div>
       <!-- </div> -->
     </div>
-    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="item !== null">Create new bundle configuration</button>
+    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="item !== null && isEdit === true">Create new bundle configuration</button>
     <div id="demo" class="collapse">
       <div>
       <div class="error text-danger" v-if="errorMessage !== null">{{errorMessage}}</div>
@@ -41,7 +41,7 @@
             placeholder="Qty"
             v-model="newAttribute.qty"
             :disabled="isEdit===false"
-            @on-keyup="getAttribute(null)"
+            @keyup="getAttribute(null)"
           >
           <i class="fa fa-check mt-2" style="color: #cae166; font-size: 30px;" v-if="newAttribute.product_attribute_id !== null && newAttribute.qty !== null"></i>
           <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="addOrDelete(null, true)" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
@@ -213,7 +213,7 @@ export default {
             this.newAttribute.product_attribute_id = res.data
             this.newAttribute.bundled = response.data
             this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
-              this.$parent.retrieve()
+              // this.$parent.retrieve()
               if(response.data > 0){
                 this.errorMessage = null
                 // this.variantId = null
@@ -221,10 +221,11 @@ export default {
                 // this.variantPayloadValue = null
                 this.selectedVariation = null
                 this.newAttribute.qty = null
-                // this.$parent.retrieve()
+                this.$parent.retrieveBundled()
               }
             })
           })
+          this.$parent.retrieveBundled()
         }
       })
     },

@@ -5,18 +5,20 @@
       <div class="title">
         <br>
         <h3>{{data.title}}</h3>
-        <div class="product-row-merchant" v-if="data.merchant !== null">
+        <div class="product-row-merchant w-100" v-if="data.merchant !== null">
             <label class="product-row-labels">Manufacturer:</label>
             <label style="color:grey;">&nbsp;{{data.merchant.name}}&nbsp;</label>
             <label class="product-row-labels">Classification:</label>
             <label style="color:grey;">&nbsp;{{data.tags}}</label>
-            <div class="col-sm-12 product-image m-0 p-0">
-              <div class="product-image-content ml-2">
-                <img :src="config.BACKEND_URL + selectedImage" class="main-image mb-3" v-if="imagesList !== null">
-                <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image mb-3" v-if="imagesList === null && data.featured !== null">
-                <i class="fa fa-image mb-4" v-if="imagesList === null && data.featured === null"></i>
-                <div class="images-holder d-flex p-0 m-0" style="margin-top: 15%;" v-if="imagesList !== null">
-                  <div v-if="imagesList.length < 5">
+            <div class="col-sm-12 product-image w-100">
+              <div class="product-image-content w-100">
+                  <img :src="config.BACKEND_URL + selectedImage" class="main-image mb-3" v-if="imagesList !== null">
+                  <img :src="config.BACKEND_URL + data.featured[0].url" class="main-image mb-3 " v-if="imagesList === null && data.featured !== null">
+                  <div style="margin:auto;">
+                    <i class="fa fa-image mb-3" v-if="imagesList === null && data.featured === null"></i>
+                  </div>
+                <div class="images-holder m-0" style="margin-top: 15%;" v-if="imagesList !== null">
+                  <div v-if="imagesList.length < 5" class="d-flex">
                     <div v-for="(item, index) in imagesList" :key="index" class="image-item" @click="selectImage(item.url)">
                       <img
                         :src="config.BACKEND_URL + item.url"
@@ -25,17 +27,16 @@
                       >
                     </div>
                   </div>
-                  <div v-else>
+                  <div v-else class="scrolling-wrapper">
                     <center>
-                    <div class="scrolling-wrapper" style="width:85%;">  
                       <img v-for="(item, index) in imagesList" 
                         :key="index" 
                         @click="selectImage(item.url)"
                         :src="config.BACKEND_URL + item.url"
                         :style="[{ 'width': '75px', 'height': '75px', 'cursor': 'pointer'}, selectedImage === item.url ? { 'border': '3px solid grey'} : {'border':'1px solid grey'}]"
-                        class="images"
+                        class="images mb-1"
                       />
-                    </div>
+                    </center>
                     <!-- <div v-for="(item, index) in imagesList" :key="index" class="image-item holder" @click="selectImage(item.url)">
                       <img
                         :src="config.BACKEND_URL + item.url"
@@ -43,7 +44,6 @@
                         class="other-image slide"
                       >
                     </div> -->
-                    </center>
                   </div>
                 </div>
               </div>
@@ -261,10 +261,20 @@
 </div>
 </template>
 <style scoped>
-  .scrolling-wrapper {
+  div.scrolling-wrapper {
     overflow-x: scroll;
-    overflow-y: hidden;
-    white-space: nowrap;
+    white-space: nowrap !important;
+    width: 80%;
+  }
+  div.scrolling-wrapper::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: grey; 
+    width: 50px;
+  }
+  div.scrolling-wrapper::-webkit-scrollbar {
+    height: 10px;
+    width: 50px;
   }
   .images {
     flex: 0 0 auto;

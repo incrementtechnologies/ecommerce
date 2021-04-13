@@ -76,15 +76,15 @@
           </div>
         </div>
         <div class="table-responsive">
-          <label style="margin-top: 5%" :hidden="isEdit===true"><strong>Activity Group</strong></label>      
-          <table class="table table-hover mt-3 table-bordered table-sm w-50" v-if="listGroup !== null">
+          <label style="margin-top: 5%" :hidden="isEdit"><strong>Activity Group</strong></label>      
+          <table class="table table-hover mt-3 table-bordered table-sm w-50" v-if="listGroup.length !== 0 && listGroup !== null">
               <thead>
                   <tr>
                     <td>Group</td>
                     <td>Action</td>
                   </tr>
               </thead>
-              <tbody v-if="listGroup.length > 0 && listGroup !== null">
+              <tbody>
                 <tr v-for="(group, index) in listGroup" :key="index">
                   <td v-if="group.group !== null">{{group.group}}</td>
                   <td v-if="group.group !== null"><button class="btn" @click="showConfirmationModal(index, 'group')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
@@ -92,89 +92,92 @@
               </tbody>
           </table>
           <div v-else>
-            <label>No Groups Available</label>
+            <label v-if="!isEdit">No Groups Available</label>
           </div>
-          </div>
-          <div v-if="showHrac">
-            <div class="mt-0">
-              <div class="product-item-title mt-0" style="width: 90%">
-                <label>HRAC Mode of Action</label>
-                <label class="text-danger">{{errorMessageHracs}}</label>
-                <br>
-              <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="isEdit===false">
-                  <option v-for="(el, index) in formulations.HRAC" :key="index" :value="el" >{{el}}</option>
-              </select>
-              </div>
-              <div class="product-item-title pl-3 " style="width: 10%; margin-top: 4%;">
-                  <button class="btn btn-primary" @click="addHrac" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
-              </div>
+        </div>
+        <div v-if="showHrac">
+          <div class="mt-0">
+            <div class="product-item-title mt-0" style="width: 90%">
+              <label>HRAC Mode of Action</label>
+              <label class="text-danger">{{errorMessageHracs}}</label>
+              <br>
+            <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="isEdit===false">
+                <option v-for="(el, index) in formulations.HRAC" :key="index" :value="el" >{{el}}</option>
+            </select>
             </div>
-            <div class="">
-              <table class="mb-0 table table-hover table-bordered table-sm w-50" style="margin-top: 3% !important;" v-if="listOfHracs.length > 0">
-                  <thead>
-                      <tr>
-                        <td>HRACS</td>
-                        <td>Action</td>
-                      </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(el, index) in listOfHracs" :key="index">
-                      <td>{{el}}</td>
-                      <td><button class="btn" @click="showConfirmationModal(index, 'hrac')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
-                    </tr>
-                  </tbody>
-              </table>
-              <label v-else>No HRAC Available</label>
+            <div class="product-item-title pl-3 " style="width: 10%; margin-top: 4%;">
+                <button class="btn btn-primary" @click="addHrac" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
             </div>
           </div>
-          <div class="row">
-              <div class="product-item-title ml-4" :hidden="isEdit===false" style="margin-bottom:-5%">
-                <label>Actives <span class="text-danger">{{errorMessageActives}}</span></label>
-              </div>
-            <div class="col-sm-4 mb-0 product-item-title" :hidden="isEdit===false">
-              <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents">
-            </div>
-            <div class="col-sm-2 pl-0 product-item-title" :hidden="isEdit===false">
-              <input type="number" class="form-control form-control-custom" v-model="active.value" placeholder="value" >
-            </div>
-            <div class="col-sm-3 pl-0 ml-0 product-item-title"  :hidden="isEdit===false">
-              <select class="form-control form-control-custom" v-model="active.attribute" @change="getValue($event, 'attribute1')">
-                <option v-for="(item, index) in formulations.ACTIVE_UNITS" :value="item" :key="index">{{item}}</option>
-              </select>
-            </div>
-             <div class="col-sm-2 product-item-title"  :hidden="isEdit===false">
-              <select class="form-control pl-0 ml-0 form-control-custom" v-model="active.attribute2" @change="getValue($event, 'attribute2')">
-                <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :style="[active.attribute !== item ? {} : {display: 'none'}]" :value="item" :key="index" >
-                  {{item}}
-                </option>
-              </select>
-            </div>
-            <div class="col-sm-1 product-item-title pl-0" style="margin-top: 2%;" :hidden="isEdit===false"> 
-              <button class="btn btn-primary" @click="addActive"><i class="fa fa-plus" ></i></button>
-            </div>
-          </div>
-            <label style="margin-top: 1%" :hidden="isEdit===true"><strong>Actives</strong></label>
-            <div class="table-responsive">
-              <table class="table table-hover table-bordered table-sm w-50 " style="float: left" v-if="actives.length > 0">
+          <div class="">
+            <table class="mb-0 table table-hover table-bordered table-sm w-50" style="margin-top: 3% !important;" v-if="listOfHracs.length > 0">
                 <thead>
                     <tr>
-                      <td>Active Constituent</td>
-                      <td>Value</td>
-                      <td>Attribute</td>
+                      <td>HRACS</td>
                       <td>Action</td>
                     </tr>
                 </thead>
-                  <tbody v-if="actives === null || actives.length > 0">
-                    <tr v-for="(active, index) in actives" :key="index">
-                      <td>{{active.active_name}}</td>
-                      <td>{{active.value}}</td>
-                      <td>{{conversion.getUnitsAbbreviation(active.attribute)}}/{{conversion.getUnitsAbbreviation(active.attribute2)}}</td>
-                      <td><button class="btn" @click="showConfirmationModal(index, 'active')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
-                    </tr>
-                  </tbody>
-              </table>
-              <label v-else>No Actives Available</label>
-            </div>
+                <tbody>
+                  <tr v-for="(el, index) in listOfHracs" :key="index">
+                    <td>{{el}}</td>
+                    <td><button class="btn" @click="showConfirmationModal(index, 'hrac')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
+                  </tr>
+                </tbody>
+            </table>
+            <label v-else>No HRAC Available</label>
+          </div>
+        </div>
+        <div class="row" v-if="isEdit">
+          <div class="product-item-title ml-4" :hidden="isEdit===false" style="margin-bottom:-5%">
+            <label>Actives <span class="text-danger">{{errorMessageActives}}</span></label>
+          </div>
+          <div class="col-sm-4 mb-0 product-item-title" :hidden="isEdit===false">
+            <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents">
+          </div>
+          <div class="col-sm-2 pl-0 product-item-title" :hidden="isEdit===false">
+            <input type="number" class="form-control form-control-custom" v-model="active.value" placeholder="value" >
+          </div>
+          <div class="col-sm-3 pl-0 ml-0 product-item-title"  :hidden="isEdit===false">
+            <select class="form-control form-control-custom" v-model="active.attribute" @change="getValue($event, 'attribute1')">
+              <option v-for="(item, index) in formulations.ACTIVE_UNITS" :value="item" :key="index">{{item}}</option>
+            </select>
+          </div>
+            <div class="col-sm-2 product-item-title"  :hidden="isEdit===false">
+            <select class="form-control pl-0 ml-0 form-control-custom" v-model="active.attribute2" @change="getValue($event, 'attribute2')">
+              <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :style="[active.attribute !== item ? {} : {display: 'none'}]" :value="item" :key="index" >
+                {{item}}
+              </option>
+            </select>
+          </div>
+          <div class="col-sm-1 product-item-title pl-0" style="margin-top: 2%;" :hidden="isEdit===false"> 
+            <button class="btn btn-primary" @click="addActive"><i class="fa fa-plus" ></i></button>
+          </div>
+        </div>
+        <div v-else>
+          <label style="margin-top: 1%" ><strong>Actives</strong></label>
+          <p v-if="actives.length === 0">No Actives Available</p>
+        </div>
+        
+        <div class="table-responsive" v-if="actives.length > 0">
+          <table class="table table-hover table-bordered table-sm w-50 " style="float: left">
+            <thead>
+                <tr>
+                  <td>Active Constituent</td>
+                  <td>Value</td>
+                  <td>Attribute</td>
+                  <td>Action</td>
+                </tr>
+            </thead>
+              <tbody v-if="actives === null || actives.length > 0">
+                <tr v-for="(active, index) in actives" :key="index">
+                  <td>{{active.active_name}}</td>
+                  <td>{{active.value}}</td>
+                  <td>{{conversion.getUnitsAbbreviation(active.attribute)}}/{{conversion.getUnitsAbbreviation(active.attribute2)}}</td>
+                  <td><button class="btn" @click="showConfirmationModal(index, 'active')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
+                </tr>
+              </tbody>
+          </table>
+        </div>
         <div class="product-item-title">
           <label>Solvent (if applicable)</label>
           <br>
@@ -574,8 +577,11 @@ export default {
         account_id: this.user.userID
       }
       this.APIRequest('products/retrieve_bundled', parameter).then(response => {
-        response.data[0].bundled = response.data[0].bundled.sort(this.getSortOrderBundled('payload_value'))
+        if(response.data[0].bundled !== null){
+          response.data[0].bundled = response.data[0].bundled.sort(this.getSortOrderBundled('payload_value'))
+        }
         this.bundledData = response.data[0]
+        console.log('BUNDLED DATA', this.bundledData)
       })
     },
     retrieveVariation(){
@@ -590,6 +596,7 @@ export default {
       this.APIRequest('products/retrieve_variation', parameter).then(response => {
         response.data[0].variation = response.data[0].variation.sort(this.getSortOrder('payload_value'))
         this.variationData = response.data[0]
+        console.log('[Variation Data]', this.variationData)
       })
     },
     getSortOrder(prop) {
