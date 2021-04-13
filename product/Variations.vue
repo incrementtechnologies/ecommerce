@@ -153,7 +153,7 @@ export default {
       deletedId: null,
       newAttribute: {
         product_id: this.item.id,
-        payload: null,
+        payload: 'Litres (L)',
         payload_value: 0
       },
       createProductTraceModal: ProductTrace,
@@ -208,6 +208,7 @@ export default {
     },
     getVariationName(){
       console.log('[VARIATION NAME]', this.newAttribute.payload_value, this.newAttribute.payload)
+      this.newAttribute.payload = this.newAttribute.payload
       if(this.newAttribute.payload !== null){
         this.variationName = `${this.item.title} (${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.newAttribute.payload)})`
       } else{
@@ -264,11 +265,11 @@ export default {
         if(this.errorMessage !== null){
           return
         }
-        if(this.item.variation !== null){
+        if(this.variationData.variation.length > 0){
           this.newAttribute.payload = $('#payload').val()
         }else{
         }
-        console.log('READ IN CREATE')
+        console.log('READ IN CREATE', this.newAttribute)
         this.APIRequest('product_attributes/create', this.newAttribute).then(response => {
           console.log('After IN CREATE', this.newAttribute)
           if(response.data > 0){

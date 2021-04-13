@@ -23,10 +23,10 @@
           <textarea class="form-control" rows="20" v-model="data.description" placeholder="Type product description here..." :disabled="isEdit===false"></textarea>
         </div>
         <div class="product-item-title mb-3">
-          <label>Tags</label>
+          <label>Classification</label>
           <br>
-         <select class="form-control form-control-custom" :disabled="isEdit===false" @change="tagChecker($event)" v-if="data.tags !== null">
-            <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag" :selected="data.tags.toLowerCase() === tag.toLowerCase() ? true : false">{{tag}}</option>
+         <select class="form-control form-control-custom" :disabled="isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
+            <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag" :selected="data.tags === tag ? true : false">{{tag}}</option>
           </select>
           <select class="form-control form-control-custom" :disabled="isEdit===false" @change="tagChecker($event)" v-else>
             <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag">{{tag}}</option>
@@ -96,7 +96,7 @@
           </div>
         </div>
         <div v-if="showHrac">
-          <div class="mt-0">
+          <div class="mt-0" v-if="isEdit">
             <div class="product-item-title mt-0" style="width: 90%">
               <label>HRAC Mode of Action</label>
               <label class="text-danger">{{errorMessageHracs}}</label>
@@ -110,21 +110,25 @@
             </div>
           </div>
           <div class="">
-            <table class="mb-0 table table-hover table-bordered table-sm w-50" style="margin-top: 3% !important;" v-if="listOfHracs.length > 0">
-                <thead>
-                    <tr>
-                      <td>HRACS</td>
-                      <td>Action</td>
+            <div v-if="listOfHracs.length > 0">
+              <table class="mb-0 table table-hover table-bordered table-sm w-50" style="margin-top: 3% !important;" >
+                  <thead>
+                      <tr>
+                        <td>HRACS</td>
+                        <td>Action</td>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(el, index) in listOfHracs" :key="index">
+                      <td>{{el}}</td>
+                      <td><button class="btn" @click="showConfirmationModal(index, 'hrac')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                     </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(el, index) in listOfHracs" :key="index">
-                    <td>{{el}}</td>
-                    <td><button class="btn" @click="showConfirmationModal(index, 'hrac')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
-                  </tr>
-                </tbody>
-            </table>
-            <label v-else>No HRAC Available</label>
+                  </tbody>
+              </table>
+            </div>
+            <label v-else>
+              No HRAC Available
+            </label>
           </div>
         </div>
         <div class="row" v-if="isEdit">
@@ -269,10 +273,10 @@
       <div class="details-holder" v-if="selectedMenu.title === 'Price'">
         <prices :item="data"></prices>
       </div>
-      <!-- <div class="details-holder" v-if="selectedMenu.title === 'Inventory'">
+      <div class="details-holder" v-if="selectedMenu.title === 'Inventory'">
         <inventories :item="data" v-if="common.ecommerce.inventoryType === 'inventory'"></inventories>
         <product-trace v-if="common.ecommerce.inventoryType === 'product_trace'" :item="data"></product-trace>
-      </div> -->
+      </div>
       <div class="details-holder" v-if="selectedMenu.title === 'Comment'">
         <product-comments :payloadValue="data.id" :payload="'product'" :load="true"></product-comments>
       </div>
@@ -527,6 +531,7 @@ export default {
         console.log('[DATAS]', response.data)
         if(response.data.length > 0){
           this.data = response.data[0]
+          this.tagChecker(null)
           let group = {
             group: null
           }
@@ -563,7 +568,6 @@ export default {
             this.listOfHracs = this.data.details.hracs
             this.showHrac = true
           }
-          this.tagChecker(null)
         }
       })
     },
@@ -630,19 +634,19 @@ export default {
       })
     },
     tagChecker(data){
-      // console.log('[DATA]', data === null)
+      console.log('[DATA]', data)
       this.tags = data !== null ? data.target.value : this.data.tags
       if(data === null){
-        if(this.data.tags.toLowerCase() === 'insecticide'){
+        if(this.data.tags === 'Insecticide'){
           this.groups = GROUP.INSECTICIDE
           this.showHrac = false
-        }else if(this.data.tags.toLowerCase() === 'herbicide'){
+        }else if(this.data.tags === 'Herbicide'){
           this.groups = GROUP.HERBICIDE
           this.showHrac = true
-        }else if(this.data.tags.toLowerCase() === 'fungicide'){
+        }else if(this.data.tags === 'Fungicide'){
           this.groups = GROUP.FUNGICIDE
           this.showHrac = false
-        }else if(this.data.tags.toLowerCase() === 'other'){
+        }else if(this.data.tags === 'Other'){
           this.groups = GROUP.ADJUVANT
           this.showHrac = false
         }else{
@@ -650,16 +654,16 @@ export default {
           this.showHrac = false
         }
       }else{
-        if(data.target.value.toLowerCase().includes('insecticide')){
+        if(data.target.value.includes('Insecticide')){
           this.groups = GROUP.INSECTICIDE
           this.showHrac = false
-        }else if(data.target.value.toLowerCase().includes('herbicide')){
+        }else if(data.target.value.includes('Herbicide')){
           this.groups = GROUP.HERBICIDE
           this.showHrac = true
-        }else if(data.target.value.toLowerCase().includes('fungicide')){
+        }else if(data.target.value.includes('Fungicide')){
           this.groups = GROUP.FUNGICIDE
           this.showHrac = false
-        }else if(data.target.value.toLowerCase().includes('other')){
+        }else if(data.target.value.includes('Other')){
           this.groups = GROUP.OTHERS
           this.showHrac = false
         }else{
@@ -703,15 +707,10 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('products/update', this.data).then(response => {
         $('#loading').css({display: 'none'})
-        if(this.common.ecommerce.productUnits !== null){
-          if(this.data.variation !== null){
-            this.updateAttribute(this.data.variation[0])
-          }else{
-            this.createAttribute()
-          }
-        }else{
-          this.retrieve()
-        }
+        this.retrieve()
+        this.retrieveBundled()
+        this.retrieveVariation()
+        this.isEdit = false
       })
     },
     createAttribute(){
@@ -736,6 +735,7 @@ export default {
           }else{
             this.retrieve()
           }
+          this.$router.go(this.$router.currentRoute)
         })
       }else{
         this.retrieve()
