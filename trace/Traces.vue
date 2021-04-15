@@ -2,7 +2,7 @@
   <div class="holder">
     <div class="row mb-4">
       <div class="col-sm-6">
-          <i class="fa fa-reply" style="color:#cae166; font-size:20px;cursor:pointer;" title="Back" @click="showInventory === false ? $router.push('/product/edit/' + $route.params.code) : showInventory=false"></i>
+          <i class="fa fa-reply" style="color:#cae166; font-size:20px;cursor:pointer;" title="Back" @click="showInventory === false ? $router.push('/product/edit/' + $route.params.code) : retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'active')"></i>
           <h5>Batches</h5>
           <h5 v-if="returnHasData.length > 0">Product: {{returnHasData[0].product.title}}({{returnHasData[0].product.variation[0].payload_value}}{{conversion.getUnitsAbbreviation(returnHasData[0].product.variation[0].payload)}})</h5>
       </div>
@@ -351,6 +351,7 @@ export default {
       ROUTER.push(parameter)
     },
     retrieve(sort, filter, status){
+      this.showInventory = false
       if(status === undefined || status === null) {
         status = this.viewInactive ? 'inactive' : 'active'
       }

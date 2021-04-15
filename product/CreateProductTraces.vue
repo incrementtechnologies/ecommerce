@@ -228,22 +228,26 @@ export default {
         $('#loading').css({'display': 'block'})
         this.APIRequest('product_traces/create', this.newData).then(response => {
           $('#loading').css({'display': 'none'})
-          this.newData = {
-            batch_number: null,
-            manufacturing_date: null,
-            qty: 1,
-            product_id: null,
-            account_id: null,
-            product_attribute_id: null,
-            inventory_type: COMMON.ecommerce.inventoryType
+          if(response.error.length > 0 && response.error !== null){
+            this.errorMessage = response.error
+          }else{
+            this.newData = {
+              batch_number: null,
+              manufacturing_date: null,
+              qty: 1,
+              product_id: null,
+              account_id: null,
+              product_attribute_id: null,
+              inventory_type: COMMON.ecommerce.inventoryType
+            }
+            this.manufacturing = {
+              date: null,
+              year: null,
+              month: null
+            }
+            $('#createProductTracesModal').modal('hide')
+            this.$parent.retrieve({'created_at': 'asc'}, {column: 'created_at', value: ''})
           }
-          this.manufacturing = {
-            date: null,
-            year: null,
-            month: null
-          }
-          $('#createProductTracesModal').modal('hide')
-          this.$parent.retrieve({'created_at': 'asc'}, {column: 'created_at', value: ''})
         })
       }
     },
