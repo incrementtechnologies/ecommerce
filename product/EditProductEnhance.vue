@@ -505,13 +505,15 @@ export default {
           this.data.details.files.label.title = data.title
           this.data.details.files.label.url = data.url
           this.updateProduct()
-          this.retrieve()
+          // this.retrieve()
+          // this.isEdit = true
         }else{
           console.log('file2s', this.data.details)
           this.data.details.files.sds.title = data.title
           this.data.details.files.sds.url = data.url
           this.updateProduct()
-          this.retrieve()
+          // this.retrieve()
+          // this.isEdit = true
         }
       }
     },
@@ -710,7 +712,7 @@ export default {
         this.retrieve()
         this.retrieveBundled()
         this.retrieveVariation()
-        this.isEdit = false
+        this.isEdit = true
       })
     },
     createAttribute(){
