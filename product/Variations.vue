@@ -59,7 +59,7 @@
         <tbody>
           <tr class="pl-0">
             <td>
-              <input type="number" class="form-control form-control-custom" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup="getVariationName()" :disabled="isEdit===false">
+              <input type="number" class="form-control form-control-custom" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @input="getVariationName($event)" :disabled="isEdit===false">
             </td>
             <td class="pl-0">
               <select class="form-control form-control-custom" v-model="newAttribute.payload" v-if="variationData.variation.length <= 0" :disabled="isEdit===false" @change="getVariationName()">
@@ -141,6 +141,7 @@ import Convertion from 'src/services/conversion.js'
 import Confirmation from 'src/components/increment/generic/modal/Confirmation.vue'
 export default {
   mounted(){
+    this.variationName = `${this.item.title} (${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.newAttribute.payload)})`
   },
   props: ['item', 'isEdit', 'variationData'],
   data(){
@@ -206,8 +207,7 @@ export default {
         this.$refs.confirmationModal.show()
       }
     },
-    getVariationName(){
-      console.log('[VARIATION NAME]', this.newAttribute.payload_value, this.newAttribute.payload)
+    getVariationName(event){
       this.newAttribute.payload = this.newAttribute.payload
       if(this.newAttribute.payload !== null){
         this.variationName = `${this.item.title} (${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.newAttribute.payload)})`
@@ -265,7 +265,7 @@ export default {
       // if(this.item && this.variationData.variation.length > 0){
       //   this.newAttribute.payload = this.variationData.variation[0].payload
       // }
-      if(this.newAttribute.payload_value !== null && this.newAttribute.payload_value !== ''){
+      if(parseInt(this.newAttribute.payload_value) > 0 && this.newAttribute.payload_value !== null && this.newAttribute.payload_value !== ''){
         this.payloadValueExit(this.newAttribute.payload_value)
         if(this.errorMessage !== null){
           return
@@ -286,7 +286,7 @@ export default {
           }
         })
       }else{
-        this.errorMessage = 'Fill up the required fields.'
+        this.errorMessage = 'Unit Value should be greater than 0'
       }
     },
     confirmAdd(){
