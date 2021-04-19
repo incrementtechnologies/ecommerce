@@ -67,11 +67,11 @@
               </select>
               <input class="form-control form-control-custom" id="payload" :placeholder="`${item.title}(${convertion.getUnitsAbbreviation(variationData.variation[0].payload)})`" :value="variationData.variation[0].payload" v-else disabled>
             </td>
-            <td class="pl-0">
-              <input type="text" class="form-control form-control-custom"  placeholder='Variation name' v-model="variationName" disabled>
+            <td class="pl-0" id="variationTD">
+              <input type="text" class="form-control form-control-custom variationName" id="variationName"  placeholder='Variation name' v-model="variationName" disabled>
             </td>
             <td class="pl-0 pr-0">
-              <button class="btn btn-primary form-control-custom" @click="addOrDelete(null, true)" :disabled="isEdit===false"><i class="fa fa-plus p-0"></i></button>
+              <button class="btn btn-primary form-control-custom" @click="addOrDelete(null, true)" :disabled="isEdit===false || newAttribute.payload_value < 1 || newAttribute.payload_value === '' "><i class="fa fa-plus p-0"></i></button>
             </td>
           </tr>
         </tbody>
@@ -155,7 +155,7 @@ export default {
       newAttribute: {
         product_id: this.item.id,
         payload: 'Litres (L)',
-        payload_value: 0
+        payload_value: ''
       },
       createProductTraceModal: ProductTrace,
       productId: this.item.id,
@@ -214,6 +214,11 @@ export default {
       } else{
         this.variationName = `${this.item.title}(${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.variationData.variation[0].payload)})`
       }
+      var varName = document.getElementById('variationName').value
+      var varHolder = document.getElementById('variationName')
+      varHolder.style.width = varHolder.style.width = ((this.variationName.length + 1) * 10) + 'px'
+      varName.style.width = varName.style.width = ((this.variationName.length + 1) * 8) + 'px'
+      console.log('Variation Length', this.variationName.length)
     },
     deleteVariation(){
       let parameter = {
