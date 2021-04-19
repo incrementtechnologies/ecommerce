@@ -68,7 +68,7 @@
 
             <!-- Modal body -->
             <div class="modal-body" v-if="selectedBatch !== null">
-              <label><b>Product:</b> {{selectedBatch.product.title}}({{selectedBatch.product.variation[0].payload_value}}{{conversion.getUnitsAbbreviation(selectedBatch.product.variation[0].payload)}})</label><br>
+              <label><b>Product:</b> {{selectedBatch.product.title}} ({{selectedBatch.product.variation[0].payload_value}}{{conversion.getUnitsAbbreviation(selectedBatch.product.variation[0].payload)}})</label><br>
               <label><b>Batch Number:</b> {{selectedBatch.batch_number}}</label><br>
               <label><b>Manufacture Date:</b> {{selectedBatch.manufacturing_date}}</label><br>
               <div class="row">
@@ -443,7 +443,7 @@ export default {
       this.APIRequest('product_traces/retrieve_with_traces', parameter).then(response => {
         $('#loading').css({'display': 'none'})
         response.data.map(el => {
-          var code = selectedBatch.product.title + '-' + selectedBatch.product.variation[0].payload_value + this.conversion.getUnitsAbbreviation(selectedBatch.product.variation[0].payload) + '<>' + selectedBatch.product.merchant.name + '<>' + el.batch_number + '<>' + el.manufacturing_date + '<>' + el.code + '<>' + selectedBatch.product.merchant.website
+          var code = `${selectedBatch.product.title} (${selectedBatch.product.variation[0].payload_value + this.conversion.getUnitsAbbreviation(selectedBatch.product.variation[0].payload)})` + '<>' + selectedBatch.product.merchant.name + '<>' + el.batch_number + '<>' + el.manufacturing_date + '<>' + el.code + '<>' + selectedBatch.product.merchant.website
           var object = {
             trace_code: el.code,
             batch_number: el.batch_number,
