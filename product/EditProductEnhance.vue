@@ -9,9 +9,6 @@
     <div class="product-item-holder">
       <div class="product-item-details">
       <button class="btn btn-primary" style="float:right" @click="isEdit = true" v-if="isEdit === false">Edit</button>
-        <div v-if="errorMessage !== null">
-          <label class="text-danger">Opps! {{errorMessage}}</label>
-        </div>
         <div class="product-item-title">
           <label>Title <label class="text-danger">*</label></label>
           <br>
@@ -21,6 +18,9 @@
           <label>Description <label class="text-danger">*</label></label>
           <br>
           <textarea class="form-control" rows="20" v-model="data.description" placeholder="Type product description here..." :disabled="isEdit===false"></textarea>
+        </div>
+        <div v-if="errorMessage !== null">
+          <label class="text-danger">Opps! {{errorMessage}}</label>
         </div>
         <div class="product-item-title mb-3">
           <label>Classification</label>
@@ -218,6 +218,9 @@
                 <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="isEdit===false"><span>{{equip}}</span>
               </label>
             </div>
+          </div>
+          <div v-if="!isEdit || data.details.safety_equipment.length <= 0 || data.details.safety_equipment.length === null ">
+            <p>No safety directions added.</p>
           </div>
         </div>
         <div class="product-item-title">
@@ -712,7 +715,7 @@ export default {
         this.retrieve()
         this.retrieveBundled()
         this.retrieveVariation()
-        this.isEdit = true
+        this.isEdit = false
       })
     },
     createAttribute(){
