@@ -213,7 +213,7 @@ export default {
             product_id: response.data
           }
           this.APIRequest('product_attributes/create', varParams).then(res => {
-            this.newAttribute.product_attribute_id = this.variationData.variation[0].id
+            this.newAttribute.product_attribute_id = this.item.variation.id
             this.newAttribute.bundled = response.data
             this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
               // this.$parent.retrieve()

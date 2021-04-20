@@ -2,7 +2,7 @@
   <div class="holder">
     <div class="row mb-4">
       <div class="col-sm-6">
-          <i class="fa fa-reply" style="color:#cae166; font-size:20px;cursor:pointer;" title="Back" @click="showInventory === false ? $router.push('/product/edit/' + $route.params.code) : showInventory=false"></i>
+          <i class="fa fa-reply" style="color:#cae166; font-size:20px;cursor:pointer;" title="Back" @click="showInventory === false ? $router.push('/product/edit/' + $route.params.code) : retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'active')"></i>
           <h5>Batches</h5>
           <h5 v-if="returnHasData.length > 0">Product: {{returnHasData[0].product.title}}({{returnHasData[0].product.variation[0].payload_value}}{{conversion.getUnitsAbbreviation(returnHasData[0].product.variation[0].payload)}})</h5>
       </div>
@@ -68,7 +68,7 @@
 
             <!-- Modal body -->
             <div class="modal-body" v-if="selectedBatch !== null">
-              <label><b>Product:</b> {{selectedBatch.product.title}}({{selectedBatch.product.variation[0].payload_value}}{{conversion.getUnitsAbbreviation(selectedBatch.product.variation[0].payload)}})</label><br>
+              <label><b>Product:</b> {{selectedBatch.product.title}} ({{selectedBatch.product.variation[0].payload_value}} {{conversion.getUnitsAbbreviation(selectedBatch.product.variation[0].payload)}})</label><br>
               <label><b>Batch Number:</b> {{selectedBatch.batch_number}}</label><br>
               <label><b>Manufacture Date:</b> {{selectedBatch.manufacturing_date}}</label><br>
               <div class="row">
@@ -351,6 +351,7 @@ export default {
       ROUTER.push(parameter)
     },
     retrieve(sort, filter, status){
+      this.showInventory = false
       if(status === undefined || status === null) {
         status = this.viewInactive ? 'inactive' : 'active'
       }
@@ -442,7 +443,7 @@ export default {
       this.APIRequest('product_traces/retrieve_with_traces', parameter).then(response => {
         $('#loading').css({'display': 'none'})
         response.data.map(el => {
-          var code = selectedBatch.product.title + '-' + selectedBatch.product.variation[0].payload_value + this.conversion.getUnitsAbbreviation(selectedBatch.product.variation[0].payload) + '<>' + selectedBatch.product.merchant.name + '<>' + el.batch_number + '<>' + el.manufacturing_date + '<>' + el.code + '<>' + selectedBatch.product.merchant.website
+          var code = `${selectedBatch.product.title} (${selectedBatch.product.variation[0].payload_value} ${this.conversion.getUnitsAbbreviation(selectedBatch.product.variation[0].payload)})` + '<>' + selectedBatch.product.merchant.name + '<>' + el.batch_number + '<>' + el.manufacturing_date + '<>' + el.code + '<>' + selectedBatch.product.merchant.website
           var object = {
             trace_code: el.code,
             batch_number: el.batch_number,
