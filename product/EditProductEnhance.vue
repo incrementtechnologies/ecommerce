@@ -96,9 +96,9 @@
           </div>
         </div>
         <div v-if="showHrac">
+          <label v-if="data.tags.toLowerCase() === 'herbicide'"><b>HRAC Mode of Action</b></label>
           <div class="mt-0" v-if="isEdit">
             <div class="product-item-title mt-0" style="width: 90%">
-              <label>HRAC Mode of Action</label>
               <label class="text-danger">{{errorMessageHracs}}</label>
               <br>
             <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="isEdit===false">
@@ -110,7 +110,7 @@
             </div>
           </div>
           <div class="">
-            <div v-if="listOfHracs.length > 0">
+            <div v-if="(listOfHracs.length > 0 && data.tags.toLowerCase() === 'herbicide')">
               <table class="mb-0 table table-hover table-bordered table-sm w-50" style="margin-top: 3% !important;" >
                   <thead>
                       <tr>
@@ -126,7 +126,7 @@
                   </tbody>
               </table>
             </div>
-            <label v-else>
+            <label v-else-if="listOfHracs.length === 0 && data.tags.toLowerCase() === 'herbicide' && !isEdit">
               No HRAC Available
             </label>
           </div>

@@ -26,6 +26,9 @@
         </div>
       <!-- </div> -->
     </div>
+    <div v-if="item.bundled === null && !isEdit">
+      <p style="color:red;">No bundled data.</p>
+    </div>
     <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="item !== null && isEdit === true">Create new bundle configuration</button>
     <div id="demo" class="collapse">
       <div>

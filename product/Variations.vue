@@ -53,6 +53,9 @@
         </button> -->
       <!-- </div> -->
     </div>
+    <div class="variations-content" v-if="variationData.variation.length === 0 && !isEdit">
+      <p style="color:red;">No variation data.</p>
+    </div>
     <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="isEdit===true">Create new product variation</button>
     <div id="demo" class="collapse"><br>
       <div class="table table-borderless">
