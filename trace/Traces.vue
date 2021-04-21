@@ -38,7 +38,7 @@
               <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayDate('asc')" v-if="activeSortDate === 'desc'"></i>
             </td>
             <td>Quantity</td>
-            <td>Status</td>
+            <!-- <td>Status</td> -->
             <td>Created At</td>
             <td>Actions</td>
           </tr>
@@ -48,7 +48,7 @@
             <td>{{item.batch_number}}</td>
             <td>{{item.manufacturing_date}}</td>
             <td>{{item.qty}}</td>
-            <td style="text-transform: UPPERCASE">{{item.status}}</td>
+            <!-- <td style="text-transform: UPPERCASE">{{item.status}}</td> -->
             <td>{{item.created_at_human}}</td>
             <td><button class="btn btn-warning" @click="item.status === 'inactive' ? showModal(item, returnHasData[0].product) : showInventoryTable(item)">{{item.status === 'inactive' ? 'Order Labels' : 'View Inventory'}}</button></td>
           </tr>
