@@ -78,7 +78,7 @@
               <label><b>Manufacture Date:</b> {{selectedBatch.manufacturing_date}}</label><br>
               <div class="row">
                 <div class="col-sm-5">
-                  <label><b>Label Quantity:</b> {{selectedBatch.qty}}</label>  
+                  <label><b>Label Quantity:</b> {{selectedBatch.total_qty}}</label>  
                 </div>
                 <div class="col-sm-7">
                   <select class="form-control custom-form-control">
