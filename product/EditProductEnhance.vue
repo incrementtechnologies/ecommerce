@@ -95,17 +95,16 @@
             <label v-if="!isEdit">No Groups Available</label>
           </div>
         </div>
-        <div v-if="showHrac">
-          <label v-if="data.tags.toLowerCase() === 'herbicide'"><b>HRAC Mode of Action</b></label>
+        <div v-if="showHrac === true">
+          <label class="mt-2"><strong>HRAC Mode of Action</strong></label>      
           <div class="mt-0" v-if="isEdit">
             <div class="product-item-title mt-0" style="width: 90%">
-              <label class="text-danger">{{errorMessageHracs}}</label>
-              <br>
+              <label class="text-danger" v-if="errorMessageHracs !== null">{{errorMessageHracs}}</label>
             <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="isEdit===false">
                 <option v-for="(el, index) in formulations.HRAC" :key="index" :value="el" >{{el}}</option>
             </select>
             </div>
-            <div class="product-item-title pl-3 " style="width: 10%; margin-top: 4%;">
+            <div class="product-item-title pl-3 " style="width: 10%; margin-top: 1%;">
                 <button class="btn btn-primary" @click="addHrac" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
             </div>
           </div>
@@ -153,7 +152,7 @@
               </option>
             </select>
           </div>
-          <div class="col-sm-1 product-item-title pl-0" style="margin-top: 2%;" :hidden="isEdit===false"> 
+          <div class="col-sm-1 product-item-title pl-0" style="margin-top: 3%;" :hidden="isEdit===false"> 
             <button class="btn btn-primary" @click="addActive"><i class="fa fa-plus" ></i></button>
           </div>
         </div>
@@ -639,7 +638,7 @@ export default {
       })
     },
     tagChecker(data){
-      console.log('[DATA]', data)
+      console.log('[DATA]', data.target.value)
       this.tags = data !== null ? data.target.value : this.data.tags
       if(data === null){
         if(this.data.tags === 'Insecticide'){
