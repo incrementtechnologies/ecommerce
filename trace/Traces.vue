@@ -274,16 +274,6 @@ export default {
           payload: 'manufacturing_date',
           payload_value: 'desc',
           type: 'custom-date'
-        }, {
-          title: 'Status ascending',
-          payload: 'status',
-          payload_value: 'asc',
-          type: 'text'
-        }, {
-          title: 'Status descending',
-          payload: 'status',
-          payload_value: 'desc',
-          type: 'text'
         }]
       }],
       common: COMMON,
