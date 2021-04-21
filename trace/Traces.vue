@@ -4,7 +4,7 @@
       <div class="col-sm-6">
           <i class="fa fa-reply" style="color:#cae166; font-size:20px;cursor:pointer;" title="Back" @click="showInventory === false ? $router.push('/product/edit/' + $route.params.code) : retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'active')"></i>
           <h5>Batches</h5>
-          <h5 v-if="returnHasData.length > 0">Product: {{returnHasData[0].product.title}}({{returnHasData[0].product.variation[0].payload_value}}{{conversion.getUnitsAbbreviation(returnHasData[0].product.variation[0].payload)}})</h5>
+          <h5 v-if="returnHasData.length > 0">Product: {{returnHasData[0].product.title}} ({{returnHasData[0].product.variation[0].payload_value}} {{conversion.getUnitsAbbreviation(returnHasData[0].product.variation[0].payload)}})</h5>
       </div>
       <div class="col-sm-6">
       <div>
@@ -37,7 +37,8 @@
               <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayDate('desc')" v-if="activeSortDate === 'asc'"></i>
               <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayDate('asc')" v-if="activeSortDate === 'desc'"></i>
             </td>
-            <td>Quantity</td>
+            <td>Batch Quantity</td>
+            <td>Active Quantity</td>
             <!-- <td>Status</td> -->
             <td>Created At</td>
             <td>Actions</td>
@@ -47,10 +48,14 @@
           <tr v-for="(item, index) in returnHasData[1].traces" :key="index">
             <td>{{item.batch_number}}</td>
             <td>{{item.manufacturing_date}}</td>
-            <td>{{item.qty}}</td>
+            <td>{{item.total_qty}}</td>
+            <td>{{item.active_qty}}</td>
             <!-- <td style="text-transform: UPPERCASE">{{item.status}}</td> -->
             <td>{{item.created_at_human}}</td>
-            <td><button class="btn btn-warning" @click="item.status === 'inactive' ? showModal(item, returnHasData[0].product) : showInventoryTable(item)">{{item.status === 'inactive' ? 'Order Labels' : 'View Inventory'}}</button></td>
+            <td>
+              <button class="btn btn-warning" @click="editTrace(item)">Edit</button>
+              <button class="btn btn-warning" @click="item.status === 'inactive' ? showModal(item, returnHasData[0].product) : showInventoryTable(item)">{{item.status === 'inactive' ? 'Order Labels' : 'View Inventory'}}</button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -94,6 +99,7 @@
       </div>
     </div>
     <InventoryEnhance v-if="showInventory === true"  :inventory="inventoryList"/>
+    <edit-product-trace-modal :data="trace" :currQty="qty"></edit-product-trace-modal>
     <create-product-traces-modal ref="addTrace" :params="productId" :variations="selectedVariation"></create-product-traces-modal>
     <empty :title="viewInactive === false ? 'Empty Active Batches!' : 'Empty Inactive Batches!'" v-if="returnHasData.length <= 0"></empty>
   </div>
@@ -219,6 +225,7 @@ import COMMON from 'src/common.js'
 import Conversion from 'src/services/conversion.js'
 import { ExportToCsv } from 'export-to-csv'
 import InventoryEnhance from './InventoryEnhance.vue'
+import EditProductTraces from './EditProductTraces.vue'
 export default {
   mounted(){
     this.retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'active')
@@ -286,14 +293,18 @@ export default {
       activeSortDate: 'asc',
       showInventory: false,
       inventoryList: null,
-      selectedVariation: null
+      selectedVariation: null,
+      trace: null,
+      qty: null
     }
   },
   components: {
     'empty': require('components/increment/generic/empty/Empty.vue'),
     'filter-product': require('components/increment/ecommerce/filter/Product.vue'),
     'create-product-traces-modal': require('../product/CreateProductTraces'),
-    InventoryEnhance
+    'edit-product-trace-modal': require('./EditProductTraces'),
+    InventoryEnhance,
+    EditProductTraces
   },
   computed: {
     returnHasData(){
@@ -335,6 +346,14 @@ export default {
       this.selectedVariation = fullVariation
       setTimeout(() => {
         $('#createProductTracesModal').modal('show')
+      }, 100)
+    },
+    editTrace(item){
+      this.trace = item
+      this.qty = item.total_qty
+      console.log(this.trace)
+      setTimeout(() => {
+        $('#editProductTracesModal').modal('show')
       }, 100)
     },
     showModal(item, product){

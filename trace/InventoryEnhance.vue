@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h5>Batch Number: {{inventory.batch_number}}</h5>
         <table class="table table-bordered">
           <thead>
             <tr>
