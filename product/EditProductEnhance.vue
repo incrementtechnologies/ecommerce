@@ -125,10 +125,13 @@
                   </tbody>
               </table>
             </div>
-            <label v-else-if="listOfHracs.length === 0 && data.tags.toLowerCase() === 'herbicide' && !isEdit">
-              No HRAC Available
-            </label>
           </div>
+        </div>
+        <div v-if="data.tags !== null && data.tags.toLowerCase() === 'herbicide' && !isEdit">
+          <label class="mt-2"><strong>HRAC Mode of Action</strong></label> <br>
+          <label>
+            No HRAC Available
+          </label>
         </div>
         <div class="row" v-if="isEdit">
           <div class="product-item-title ml-4" :hidden="isEdit===false" style="margin-bottom:-5%">

@@ -217,6 +217,11 @@ export default {
     },
     getVariationName(event){
       this.newAttribute.payload = this.newAttribute.payload
+      if(this.variationData.variation[0].payload !== null || this.variationData.variation[0].payload !== '' || this.variationData.variation[0].payload !== undefined){
+        this.newAttribute.payload = this.variationData.variation[0].payload
+        this.errorMessage1 = ''
+        this.errorInput = false
+      }
       if(this.newAttribute.payload_value % 1 !== 0){
         this.errorMessage1 = 'Variation value should be an integer!'
         this.errorInput = true
