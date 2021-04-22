@@ -221,7 +221,7 @@
               </label>
             </div>
           </div>
-          <div v-if="!isEdit || data.details.safety_equipment.length <= 0 || data.details.safety_equipment.length === null ">
+          <div v-if="(!isEdit && data.details.safety_equipment.length <= 0) || (data.details.safety_equipment.length === null && !isEdit) ">
             <p>No safety directions added.</p>
           </div>
         </div>
