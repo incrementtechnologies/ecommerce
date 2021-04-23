@@ -216,7 +216,7 @@ export default {
       }
     },
     getVariationName(event){
-      this.newAttribute.payload = this.newAttribute.payload
+      this.newAttribute.payload = event.target.value
       if(this.variationData.variation[0].payload !== null || this.variationData.variation[0].payload !== '' || this.variationData.variation[0].payload !== undefined){
         this.newAttribute.payload = this.variationData.variation[0].payload
         this.errorMessage1 = ''
