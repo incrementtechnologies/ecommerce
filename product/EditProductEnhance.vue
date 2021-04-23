@@ -95,7 +95,7 @@
             <label v-if="!isEdit">No Groups Available</label>
           </div>
         </div>
-        <div v-if="showHrac === true">
+        <div v-if="showHrac === true || (data.tags !== null && data.tags.toLowerCase() === 'herbicide')">
           <label class="mt-2"><strong>HRAC Mode of Action</strong></label>      
           <div class="mt-0" v-if="isEdit">
             <div class="product-item-title mt-0" style="width: 90%">
@@ -128,7 +128,7 @@
           </div>
         </div>
         <div v-if="data.tags !== null && data.tags.toLowerCase() === 'herbicide' && !isEdit">
-          <label class="mt-2"><strong>HRAC Mode of Action</strong></label> <br>
+          <!-- <label class="mt-2"><strong>HRAC Mode of Action</strong></label> <br> -->
           <label>
             No HRAC Available
           </label>
