@@ -59,11 +59,12 @@
         <tbody>
           <tr class="pl-0">
             <td>
-              <input type="number" class="form-control form-control-custom" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @input="getVariationName($event)" :disabled="isEdit===false">
+              <input type="number" class="form-control form-control-custom" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @input="getVariationName($event, 'payload_value')" :disabled="isEdit===false">
             </td>
             <td class="pl-0">
-              <select class="form-control form-control-custom" v-model="newAttribute.payload" v-if="variationData.variation.length <= 0" :disabled="isEdit===false" @change="getVariationName()">
-                  <option v-for="(item, index) in common.ecommerce.productUnits" :value="item" :key="index">{{item}}</option>
+              <select class="form-control form-control-custom" v-model="newAttribute.payload" v-if="variationData.variation.length <= 0" :disabled="isEdit===false" @change="getVariationName($event, 'payload')">
+                <option :key="'blank'" :value="' '">&nbsp;</option>
+                <option v-for="(item, index) in common.ecommerce.productUnits" :value="item" :key="index">{{item}}</option>
               </select>
               <input class="form-control form-control-custom" id="payload" :placeholder="`${item.title}(${convertion.getUnitsAbbreviation(variationData.variation[0].payload)})`" :value="variationData.variation[0].payload" v-else disabled>
             </td>
@@ -86,7 +87,7 @@
         <!-- <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="confirmAdd()" :disabled="isEdit===false"><i class="fa fa-plus"></i></button> -->
     </div>
     <Confirmation
-        :title="'Confirmation Modal'"
+        :title="'Confirm Delete'"
         :message="confirmationMessage"
         ref="confirmationModal"
         @onConfirm="processData($event)"
@@ -186,7 +187,7 @@ export default {
       }
     },
     addOrDelete(item, bool){
-      bool === true ? this.confirmationMessage = 'Are you sure you want to add this variation?' : this.confirmationMessage = 'Are you sure you want to delete this variation?'
+      bool === true ? this.confirmationMessage = 'Are you sure you want to add this variation?' : this.confirmationMessage = 'Deleting a variation will permanently remove this product and any dependent bundles. Are you sure you want to delete this variation?'
       if(bool === true){
         if(this.newAttribute.payload_value === null || this.newAttribute.payload_value === ''){
           this.errorMessage = 'Fill up the required fields.'
@@ -207,18 +208,46 @@ export default {
         this.$refs.confirmationModal.show()
       }
     },
-    getVariationName(event){
-      this.newAttribute.payload = this.newAttribute.payload
-      if(this.newAttribute.payload !== null){
-        this.variationName = `${this.item.title} (${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.newAttribute.payload)})`
+    getVariationName(event, type){
+      if(type === 'payload'){
+        this.newAttribute.payload = event.target.value
+      }else{
+        this.newAttribute.payload_value = event.target.value
+      }
+      console.log('PAYLOAD?', this.newAttribute.payload)
+      if(this.variationData.variation[0] !== undefined){
+        if(this.variationData.variation[0].payload !== null || this.variationData.variation[0].payload !== '' || this.variationData.variation[0].payload !== undefined){
+          this.newAttribute.payload = this.variationData.variation[0].payload
+          this.errorMessage1 = ''
+          this.errorInput = false
+        }
+      }
+      if(this.newAttribute.payload_value % 1 !== 0){
+        this.errorMessage1 = 'Variation value should be an integer!'
+        this.errorInput = true
+        return
+      }
+      if(this.newAttribute.payload === ' ' || this.newAttribute.payload === null){
+        this.variationName = `${this.item.title} (${this.newAttribute.payload_value !== undefined ? this.newAttribute.payload_value : ''})`
+        this.errorMessage1 = 'Please choose a product unit!'
+        this.errorInput = true
+        return
+      } else if(this.newAttribute.payload !== null || this.newAttribute.payload !== ''){
+        console.log('fsdaf', this.newAttribute.payload)
+        this.variationName = `${this.item.title} (${this.newAttribute.payload_value} ${this.newAttribute.payload !== undefined ? this.convertion.getUnitsAbbreviation(this.newAttribute.payload) : ''})`
       } else{
-        this.variationName = `${this.item.title}(${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.variationData.variation[0].payload)})`
+        if(this.variationData.variation[0] !== undefined){
+          this.variationName = `${this.item.title} (${this.newAttribute.payload_value} ${this.convertion.getUnitsAbbreviation(this.variationData.variation[0].payload)})`
+        }else{
+          this.variationName = `${this.item.title} (${this.newAttribute.payload_value})`
+        }
       }
       var varName = document.getElementById('variationName').value
       var varHolder = document.getElementById('variationName')
-      varHolder.style.width = varHolder.style.width = ((this.variationName.length + 1) * 10) + 'px'
-      varName.style.width = varName.style.width = ((this.variationName.length + 1) * 8) + 'px'
+      // varHolder.style.width = varHolder.style.width = ((this.variationName.length + 1) * 10) + 'px'
+      // varName.style.width = varName.style.width = ((this.variationName.length + 1) * 8) + 'px'
       console.log('Variation Length', this.variationName.length)
+
     },
     deleteVariation(){
       let parameter = {

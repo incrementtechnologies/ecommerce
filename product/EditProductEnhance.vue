@@ -95,8 +95,9 @@
             <label v-if="!isEdit">No Groups Available</label>
           </div>
         </div>
-        <div v-if="showHrac === true || (data.tags !== null && data.tags.toLowerCase() === 'herbicide')">
-          <label class="mt-2"><strong>HRAC Mode of Action</strong></label>      
+        <div v-if="data.tags !== null && data.tags === 'Herbicide' && data.tags !== ''" class="mt-2"><strong><label>HRAC Mode of Action</label></strong></div>
+        <div v-if="showHrac === true || (data.tags !== null && data.tags === 'Herbicide')">
+          <div v-if="isEdit" class="mt-2"><strong><label>HRAC Mode of Action</label></strong></div>
           <div class="mt-0" v-if="isEdit">
             <div class="product-item-title mt-0" style="width: 90%">
               <label class="text-danger" v-if="errorMessageHracs !== null">{{errorMessageHracs}}</label>
@@ -109,7 +110,7 @@
             </div>
           </div>
           <div class="">
-            <div v-if="(listOfHracs.length > 0 && data.tags.toLowerCase() === 'herbicide')">
+            <div v-if="(listOfHracs.length > 0)">
               <table class="mb-0 table table-hover table-bordered table-sm w-50" style="margin-top: 3% !important;" >
                   <thead>
                       <tr>
@@ -127,7 +128,7 @@
             </div>
           </div>
         </div>
-        <div v-if="data.tags !== null && data.tags.toLowerCase() === 'herbicide' && !isEdit">
+        <div v-if="data.tags !== null && data.tags === 'Herbicide' && !isEdit">
           <!-- <label class="mt-2"><strong>HRAC Mode of Action</strong></label> <br> -->
           <label>
             No HRAC Available
@@ -641,7 +642,8 @@ export default {
       })
     },
     tagChecker(data){
-      console.log('[DATA]', data.target.value)
+      // console.log('[TARGET]', data.target.value)
+      console.log('[DATA]', this.data.tags)
       this.tags = data !== null ? data.target.value : this.data.tags
       if(data === null){
         if(this.data.tags === 'Insecticide'){
