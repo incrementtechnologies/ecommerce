@@ -244,7 +244,7 @@ export default {
         this.item.bundled.map(el => {
           if(el.variation !== null){
             el.variation.map(each => {
-              if(parseInt(newValue) === el.qty || (each.payload === payload && each.payload_value === payloadValue)){
+              if((each.payload === payload && each.payload_value === payloadValue)){
                 this.errorMessage = 'Value is already existed in the list'
                 return true
               }else{
