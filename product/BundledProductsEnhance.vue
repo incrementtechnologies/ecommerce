@@ -4,7 +4,7 @@
       <label for="exampleInputEmail1" style="font-weight: 600;">Created Bundles</label>
     </div>
     <center v-if="item === null"><i class="fa fa-circle-o-notch fa-spin" style="font-size:50px;color:#cae166"></i><br>Loading</center>
-    <div class="variations-content" v-if="item.bundled !== null">
+    <div class="variations-content" v-if="item.bundled.length > 0">
       <!-- <div class="attribute-item"> -->
         <div class="table-responsive"> 
           <table class="table table-hover">
@@ -16,7 +16,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr  v-for="(itemVariation, indexVariation) in item.bundled" :key="indexVariation">
+              <tr  v-for="(itemVariation, indexVariation) in item.bundled" :key="indexVariation" v-if="itemVariation.variation.length">
                 <td>{{`${itemVariation.qty} X ${item.title} (${itemVariation.variation[0].payload_value}${convertion.getUnitsAbbreviation(itemVariation.variation[0].payload)})`}}</td>
                 <td>{{itemVariation.scanned_qty}}</td>
                 <td v-if="isEdit"><button v-if="itemVariation.scanned_qty === 0 || itemVariation.scanned_qty === null" class="btn btn-danger" @click="addOrDelete(itemVariation, false)" title="Delete Inventory" :disabled="isEdit===false">Delete</button></td>
@@ -194,43 +194,44 @@ export default {
       this.payloadValueExit(this.newAttribute.qty, this.variantPayload, this.variantPayloadValue)
       if(this.errorMessage !== null){
         return
-      }
-      let parameter = {
-        account_id: this.user.userID,
-        title: `${this.newAttribute.qty} X ${this.item.title}(${this.convertion.getUnitsAbbreviation(this.variantPayload)}${this.variantPayloadValue})`,
-        description: this.item.description,
-        status: 'pending',
-        type: 'bundled',
-        merchant_id: this.user.subAccount.merchant.id
-      }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('products/create', parameter).then(response => {
-        $('#loading').css({display: 'none'})
-        if(response.data > 0){
-          let varParams = {
-            payload: this.variantPayload,
-            payload_value: this.variantPayloadValue,
-            product_id: response.data
-          }
-          this.APIRequest('product_attributes/create', varParams).then(res => {
-            this.newAttribute.product_attribute_id = this.item.variation.id
-            this.newAttribute.bundled = response.data
-            this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
-              // this.$parent.retrieve()
-              if(response.data > 0){
-                this.errorMessage = null
-                // this.variantId = null
-                // this.variantPayload = null
-                // this.variantPayloadValue = null
-                this.selectedVariation = null
-                this.newAttribute.qty = null
-                this.$parent.retrieveBundled()
-              }
-            })
-          })
-          this.$parent.retrieveBundled()
+      }else{
+        let parameter = {
+          account_id: this.user.userID,
+          title: `${this.newAttribute.qty} X ${this.item.title}(${this.convertion.getUnitsAbbreviation(this.variantPayload)}${this.variantPayloadValue})`,
+          description: this.item.description,
+          status: 'pending',
+          type: 'bundled',
+          merchant_id: this.user.subAccount.merchant.id
         }
-      })
+        $('#loading').css({display: 'block'})
+        this.APIRequest('products/create', parameter).then(response => {
+          $('#loading').css({display: 'none'})
+          if(response.data > 0){
+            let varParams = {
+              payload: this.variantPayload,
+              payload_value: this.variantPayloadValue,
+              product_id: response.data
+            }
+            this.APIRequest('product_attributes/create', varParams).then(res => {
+              this.newAttribute.product_attribute_id = this.item.variation.id
+              this.newAttribute.bundled = response.data
+              this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
+                // this.$parent.retrieve()
+                if(response.data > 0){
+                  this.errorMessage = null
+                  // this.variantId = null
+                  // this.variantPayload = null
+                  // this.variantPayloadValue = null
+                  this.selectedVariation = null
+                  this.newAttribute.qty = null
+                  this.$parent.retrieveBundled()
+                }
+              })
+            })
+            this.$parent.retrieveBundled()
+          }
+        })
+      }
     },
     getAttribute(data){
       this.variantId = this.selectedVariation.id
@@ -243,7 +244,7 @@ export default {
         this.item.bundled.map(el => {
           if(el.variation !== null){
             el.variation.map(each => {
-              if(parseInt(newValue) === el.qty && each.payload === payload && each.payload_value === payloadValue){
+              if(parseInt(newValue) === el.qty || (each.payload === payload && each.payload_value === payloadValue)){
                 this.errorMessage = 'Value is already existed in the list'
                 return true
               }else{
