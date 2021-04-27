@@ -301,7 +301,14 @@ export default {
         offset: (this.activePage > 0) ? ((this.activePage - 1) * this.limit) : this.activePage
       }
       $('#loading').css({'display': 'block'})
-      this.APIRequest('transfers/retrieve_products_second_level_end_user', parameter).then(response => {
+      let route = null
+      console.log(this.user)
+      if(this.user.type === 'DISTRIBUTOR') {
+        route = 'transfers/retrieve_products_second_level'
+      } else {
+        route = 'transfers/retrieve_products_second_level_end_user'
+      }
+      this.APIRequest(route, parameter).then(response => {
         $('#loading').css({'display': 'none'})
         if(response.data.length > 0){
           this.data = response.data
