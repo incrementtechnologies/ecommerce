@@ -9,7 +9,8 @@
             <label class="product-row-labels">Manufacturer:</label>
             <label style="color:grey;">&nbsp;{{data.merchant.name}}&nbsp;</label>
             <label class="product-row-labels">Classification:</label>
-            <label style="color:grey;">&nbsp;{{data.tags}}</label>
+            <label v-if="data.tags !== null || data.tags !== '' " style="color:grey;">&nbsp;{{data.tags}}</label>
+            <label v-if="data.tags === null || data.tags === ''" style="color:grey;">&nbsp;No Data</label>
             <div class="col-sm-12 product-image w-100">
               <div class="product-image-content w-100">
                   <img :src="config.BACKEND_URL + selectedImage" class="main-image mb-3" v-if="imagesList !== null">
@@ -121,8 +122,8 @@
         <p><b>Activity Group/s:</b></p>
       </div>
       <div class="col-sm-7 p-0" style="color: grey;">
-        <p v-if="groups.length === 0">No Data</p>
-        <ul v-else class="p-0" style="list-style:none;">
+        <p v-if="data.details.group === null">No Data</p>
+        <ul v-if="data.details.group !== null" class="p-0" style="list-style:none;">
           <li v-for="(group, index) in groups" :key="index">{{group.group}}</li>
         </ul>
       </div>
