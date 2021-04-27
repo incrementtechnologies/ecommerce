@@ -194,43 +194,44 @@ export default {
       this.payloadValueExit(this.newAttribute.qty, this.variantPayload, this.variantPayloadValue)
       if(this.errorMessage !== null){
         return
-      }
-      let parameter = {
-        account_id: this.user.userID,
-        title: `${this.newAttribute.qty} X ${this.item.title}(${this.convertion.getUnitsAbbreviation(this.variantPayload)}${this.variantPayloadValue})`,
-        description: this.item.description,
-        status: 'pending',
-        type: 'bundled',
-        merchant_id: this.user.subAccount.merchant.id
-      }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('products/create', parameter).then(response => {
-        $('#loading').css({display: 'none'})
-        if(response.data > 0){
-          let varParams = {
-            payload: this.variantPayload,
-            payload_value: this.variantPayloadValue,
-            product_id: response.data
-          }
-          this.APIRequest('product_attributes/create', varParams).then(res => {
-            this.newAttribute.product_attribute_id = this.item.variation.id
-            this.newAttribute.bundled = response.data
-            this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
-              // this.$parent.retrieve()
-              if(response.data > 0){
-                this.errorMessage = null
-                // this.variantId = null
-                // this.variantPayload = null
-                // this.variantPayloadValue = null
-                this.selectedVariation = null
-                this.newAttribute.qty = null
-                this.$parent.retrieveBundled()
-              }
-            })
-          })
-          this.$parent.retrieveBundled()
+      }else{
+        let parameter = {
+          account_id: this.user.userID,
+          title: `${this.newAttribute.qty} X ${this.item.title}(${this.convertion.getUnitsAbbreviation(this.variantPayload)}${this.variantPayloadValue})`,
+          description: this.item.description,
+          status: 'pending',
+          type: 'bundled',
+          merchant_id: this.user.subAccount.merchant.id
         }
-      })
+        $('#loading').css({display: 'block'})
+        this.APIRequest('products/create', parameter).then(response => {
+          $('#loading').css({display: 'none'})
+          if(response.data > 0){
+            let varParams = {
+              payload: this.variantPayload,
+              payload_value: this.variantPayloadValue,
+              product_id: response.data
+            }
+            this.APIRequest('product_attributes/create', varParams).then(res => {
+              this.newAttribute.product_attribute_id = this.item.variation.id
+              this.newAttribute.bundled = response.data
+              this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
+                // this.$parent.retrieve()
+                if(response.data > 0){
+                  this.errorMessage = null
+                  // this.variantId = null
+                  // this.variantPayload = null
+                  // this.variantPayloadValue = null
+                  this.selectedVariation = null
+                  this.newAttribute.qty = null
+                  this.$parent.retrieveBundled()
+                }
+              })
+            })
+            this.$parent.retrieveBundled()
+          }
+        })
+      }
     },
     getAttribute(data){
       this.variantId = this.selectedVariation.id
@@ -243,7 +244,7 @@ export default {
         this.item.bundled.map(el => {
           if(el.variation !== null){
             el.variation.map(each => {
-              if(parseInt(newValue) === el.qty && each.payload === payload && each.payload_value === payloadValue){
+              if(parseInt(newValue) === el.qty || (each.payload === payload && each.payload_value === payloadValue)){
                 this.errorMessage = 'Value is already existed in the list'
                 return true
               }else{
