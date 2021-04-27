@@ -9,9 +9,6 @@
     <div class="product-item-holder">
       <div class="product-item-details">
       <button class="btn btn-primary" style="float:right" @click="isEdit = true" v-if="isEdit === false">Edit</button>
-        <div v-if="errorMessage !== null">
-          <label class="text-danger">Opps! {{errorMessage}}</label>
-        </div>
         <div class="product-item-title">
           <label>Title <label class="text-danger">*</label></label>
           <br>
@@ -21,6 +18,9 @@
           <label>Description <label class="text-danger">*</label></label>
           <br>
           <textarea class="form-control" rows="20" v-model="data.description" placeholder="Type product description here..." :disabled="isEdit===false"></textarea>
+        </div>
+        <div v-if="errorMessage !== null">
+          <label class="text-danger">Opps! {{errorMessage}}</label>
         </div>
         <div class="product-item-title mb-3">
           <label>Classification</label>
@@ -95,22 +95,21 @@
             <label v-if="!isEdit">No Groups Available</label>
           </div>
         </div>
-        <div v-if="showHrac">
+        <div v-if="showHrac === true || (data.tags !== null && data.tags.toLowerCase() === 'herbicide')">
+          <label class="mt-2"><strong>HRAC Mode of Action</strong></label>      
           <div class="mt-0" v-if="isEdit">
             <div class="product-item-title mt-0" style="width: 90%">
-              <label>HRAC Mode of Action</label>
-              <label class="text-danger">{{errorMessageHracs}}</label>
-              <br>
+              <label class="text-danger" v-if="errorMessageHracs !== null">{{errorMessageHracs}}</label>
             <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="isEdit===false">
                 <option v-for="(el, index) in formulations.HRAC" :key="index" :value="el" >{{el}}</option>
             </select>
             </div>
-            <div class="product-item-title pl-3 " style="width: 10%; margin-top: 4%;">
+            <div class="product-item-title pl-3 " style="width: 10%; margin-top: 1%;">
                 <button class="btn btn-primary" @click="addHrac" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
             </div>
           </div>
           <div class="">
-            <div v-if="listOfHracs.length > 0">
+            <div v-if="(listOfHracs.length > 0 && data.tags.toLowerCase() === 'herbicide')">
               <table class="mb-0 table table-hover table-bordered table-sm w-50" style="margin-top: 3% !important;" >
                   <thead>
                       <tr>
@@ -126,10 +125,13 @@
                   </tbody>
               </table>
             </div>
-            <label v-else>
-              No HRAC Available
-            </label>
           </div>
+        </div>
+        <div v-if="data.tags !== null && data.tags.toLowerCase() === 'herbicide' && !isEdit">
+          <!-- <label class="mt-2"><strong>HRAC Mode of Action</strong></label> <br> -->
+          <label>
+            No HRAC Available
+          </label>
         </div>
         <div class="row" v-if="isEdit">
           <div class="product-item-title ml-4" :hidden="isEdit===false" style="margin-bottom:-5%">
@@ -153,7 +155,7 @@
               </option>
             </select>
           </div>
-          <div class="col-sm-1 product-item-title pl-0" style="margin-top: 2%;" :hidden="isEdit===false"> 
+          <div class="col-sm-1 product-item-title pl-0" style="margin-top: 3%;" :hidden="isEdit===false"> 
             <button class="btn btn-primary" @click="addActive"><i class="fa fa-plus" ></i></button>
           </div>
         </div>
@@ -218,6 +220,9 @@
                 <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="isEdit===false"><span>{{equip}}</span>
               </label>
             </div>
+          </div>
+          <div v-if="(!isEdit && data.details.safety_equipment.length <= 0) || (data.details.safety_equipment.length === null && !isEdit) ">
+            <p>No safety directions added.</p>
           </div>
         </div>
         <div class="product-item-title">
@@ -636,7 +641,7 @@ export default {
       })
     },
     tagChecker(data){
-      console.log('[DATA]', data)
+      console.log('[DATA]', data.target.value)
       this.tags = data !== null ? data.target.value : this.data.tags
       if(data === null){
         if(this.data.tags === 'Insecticide'){
@@ -712,7 +717,7 @@ export default {
         this.retrieve()
         this.retrieveBundled()
         this.retrieveVariation()
-        this.isEdit = true
+        this.isEdit = false
       })
     },
     createAttribute(){
