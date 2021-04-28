@@ -191,13 +191,14 @@ export default {
     create(){
       console.log('item', this.item)
       console.log(this.newAttribute.product_attribute_id, this.newAttribute.qty)
+      let parentVariationId = this.item.variation.id
       this.payloadValueExit(this.newAttribute.qty, this.variantPayload, this.variantPayloadValue)
       if(this.errorMessage !== null){
         return
       }else{
         let parameter = {
           account_id: this.user.userID,
-          title: `${this.newAttribute.qty} X ${this.item.title}(${this.convertion.getUnitsAbbreviation(this.variantPayload)}${this.variantPayloadValue})`,
+          title: `${this.newAttribute.qty} X ${this.item.title} (${this.variantPayloadValue} ${this.convertion.getUnitsAbbreviation(this.variantPayload)})`,
           description: this.item.description,
           status: 'pending',
           type: 'bundled',
@@ -213,7 +214,7 @@ export default {
               product_id: response.data
             }
             this.APIRequest('product_attributes/create', varParams).then(res => {
-              this.newAttribute.product_attribute_id = this.item.variation.id
+              this.newAttribute.product_attribute_id = parentVariationId
               this.newAttribute.bundled = response.data
               this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
                 // this.$parent.retrieve()
