@@ -32,7 +32,7 @@
                 <td>
                   <!-- <button class="btn btn-primary" style="margin-left: 10px;" @click="addTraces(itemVariation)" title="Add Inventory" :disabled="isEdit===false">Inventory</button> -->
                   <button class="btn btn-primary" style="margin-left: 10px;" @click="redirect('/traces/' + itemVariation.id + '/' + item.code)" title="View Batches">View Batches</button>
-                  <button v-if="isEdit === true && ((itemVariation.product_trace_qty === 0 || itemVariation.product_trace_qty === null) && (itemVariation.is_used === false))" class="btn btn-danger btn-sm" style="margin-left: 10px;" @click="addOrDelete(itemVariation, false)" title="Delete Inventory" :disabled="isEdit===false">Delete</button>
+                  <button v-if="isEdit === true && (itemVariation.product_trace_qty === 0 || itemVariation.product_trace_qty === null)" class="btn btn-danger btn-sm" style="margin-left: 10px;" @click="addOrDelete(itemVariation, false)" title="Delete Inventory" :disabled="isEdit===false">Delete</button>
                 </td>
               </tr>
             </tbody>
@@ -53,12 +53,8 @@
         </button> -->
       <!-- </div> -->
     </div>
-    <div class="variations-content" v-if="variationData.variation.length === 0 && !isEdit">
-      <p style="color:black;">No product variations added. Click edit to add a product variation.</p>
-    </div>
     <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="isEdit===true">Create new product variation</button>
     <div id="demo" class="collapse"><br>
-      <div class="error text-danger" style="color:red;" v-if="errorMessage1 !== null">{{errorMessage1}}</div>
       <div class="table table-borderless">
         <tbody>
           <tr class="pl-0">
@@ -76,7 +72,7 @@
               <input type="text" class="form-control form-control-custom variationName" id="variationName"  placeholder='Variation name' v-model="variationName" disabled>
             </td>
             <td class="pl-0 pr-0">
-              <button class="btn btn-primary form-control-custom" @click="addOrDelete(null, true)" :disabled="isEdit===false || errorInput"><i class="fa fa-plus p-0"></i></button>
+              <button class="btn btn-primary form-control-custom" @click="addOrDelete(null, true)" :disabled="isEdit===false || newAttribute.payload_value < 1 || newAttribute.payload_value === '' "><i class="fa fa-plus p-0"></i></button>
             </td>
           </tr>
         </tbody>
@@ -146,7 +142,7 @@ import Convertion from 'src/services/conversion.js'
 import Confirmation from 'src/components/increment/generic/modal/Confirmation.vue'
 export default {
   mounted(){
-    // this.variationName = `${this.item.title} (${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.newAttribute.payload)})`
+    this.variationName = `${this.item.title} (${this.newAttribute.payload_value}${this.convertion.getUnitsAbbreviation(this.newAttribute.payload)})`
   },
   props: ['item', 'isEdit', 'variationData'],
   data(){
@@ -156,12 +152,11 @@ export default {
       config: CONFIG,
       common: COMMON,
       errorMessage: null,
-      errorMessage1: null,
       deletedId: null,
       newAttribute: {
         product_id: this.item.id,
-        payload: ' ',
-        payload_value: ' '
+        payload: 'Litres (L)',
+        payload_value: ''
       },
       createProductTraceModal: ProductTrace,
       productId: this.item.id,
@@ -169,8 +164,7 @@ export default {
       variationName: null,
       confirmationMessage: null,
       toDeleteVariation: null,
-      isDelete: null,
-      errorInput: false
+      isDelete: null
     }
   },
   components: {
@@ -185,7 +179,6 @@ export default {
     },
     processData(event){
       console.log(this.isDelete)
-      $('.collapse').collapse('hide')
       if(this.isDelete === false){
         this.create()
         console.log('Reading in create')
@@ -249,8 +242,6 @@ export default {
           this.variationName = `${this.item.title} (${this.newAttribute.payload_value})`
         }
       }
-      this.errorMessage1 = null
-      this.errorInput = false
       var varName = document.getElementById('variationName').value
       var varHolder = document.getElementById('variationName')
       // varHolder.style.width = varHolder.style.width = ((this.variationName.length + 1) * 10) + 'px'
@@ -316,8 +307,8 @@ export default {
         this.APIRequest('product_attributes/create', this.newAttribute).then(response => {
           console.log('After IN CREATE', this.newAttribute)
           if(response.data > 0){
-            this.variationName = ' '
-            this.newAttribute.payload_value = ''
+            this.variationName = ''
+            this.newAttribute.payload_value = 0
             // this.newAttribute.payload = null
             this.errorMessage = null
             this.$parent.retrieveVariation()
