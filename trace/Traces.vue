@@ -54,7 +54,8 @@
             <td>{{item.created_at_human}}</td>
             <td>
               <button class="btn btn-warning" @click="editTrace(item)">Edit</button>
-              <button class="btn btn-warning" @click="item.status === 'inactive' ? showModal(item, returnHasData[0].product) : showInventoryTable(item)">{{item.status === 'inactive' ? 'Order Labels' : 'View Inventory'}}</button>
+              <button class="btn btn-warning" @click="showInventoryTable(item)" v-if="item.active_qty !== 0">View Inventory</button>
+              <button class="btn btn-warning" @click="showModal(item, returnHasData[0].product)" v-if="item.active_qty !== item.total_qty">Order Labels</button>
             </td>
           </tr>
         </tbody>
@@ -439,7 +440,7 @@ export default {
         useBom: true,
         // useKeysAsHeaders: true,
         filename: COMMON.APP_NAME + ' - ' + this.date,
-        headers: ['trace_code', 'batch_number', 'manufacturing_date', 'status', 'created_at', 'nfc']
+        headers: ['TEXT FIELD', 'NFC_STRING', 'TEXT FIELD', 'BLANK', 'TEXT FIELD', 'TEXT_FIELD', 'TEXT_FIELD', '', 'Status', 'Created_at']
       }
       var exportData = []
       let parameter = {
@@ -454,12 +455,22 @@ export default {
         response.data.map(el => {
           var code = `${selectedBatch.product.title} (${selectedBatch.product.variation[0].payload_value} ${this.conversion.getUnitsAbbreviation(selectedBatch.product.variation[0].payload)})` + '<>' + selectedBatch.product.merchant.name + '<>' + el.batch_number + '<>' + el.manufacturing_date + '<>' + el.code + '<>' + selectedBatch.product.merchant.website
           var object = {
-            trace_code: el.code,
-            batch_number: el.batch_number,
-            manufacturing_date: el.manufacturing_date,
+            // trace_code: el.code,
+            // batch_number: el.batch_number,
+            // manufacturing_date: el.manufacturing_date,
+            // status: el.status,
+            // created_at: el.created_at_human,
+            // nfc: code
+            text_field1: 'Text',
+            nfc_string: code,
+            text_field2: 'en',
+            blank: '',
+            text_field3: 'no',
+            text_field4: 'no',
+            text_field5: 'no',
+            empty: '',
             status: el.status,
-            created_at: el.created_at_human,
-            nfc: code
+            created_at: el.created_at_human
           }
           exportData.push(object)
         })
