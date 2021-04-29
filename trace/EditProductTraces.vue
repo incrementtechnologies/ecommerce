@@ -25,7 +25,7 @@
                   <input type="number" min="1" class="form-control" placeholder="Type qty here..." v-model="data.total_qty">
                 </div>
               </div>
-              <span>#{{data.total_qty - currQty}}</span>
+              <span>Add {{data.total_qty - currQty}} unit(s) to batch</span>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-danger" @click="cancel()">Cancel</button>
