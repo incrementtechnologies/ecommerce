@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="modal fade" id="editProductTracesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-l" role="document">
+      <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary">
               <h5 class="modal-title" id="exampleModalLabel">Edit Item</h5>
@@ -17,6 +17,14 @@
               <br>
               <div v-if="data !== null">
                 <div class="form-group">
+                  <label for="exampleInputEmail1">Variation Name <b class="text-danger">*</b></label>
+                  <input type="text" min="1" class="form-control" :placeholder="`${variations.title} (${variations.variation[0].payload_value} ${convertion.getUnitsAbbreviation(variations.variation[0].payload)})`" disabled>
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Manufactured Date <b class="text-danger">*</b></label>
+                  <input type="text" min="1" class="form-control" :placeholder="`${data.manufacturing_date}`" disabled>
+                </div>
+                <div class="form-group">
                   <label for="exampleInputEmail1">Batch Number <b class="text-danger">*</b></label>
                   <input type="text" min="1" class="form-control" placeholder="Type qty here..." v-model="data.batch_number" disabled>
                 </div>
@@ -29,7 +37,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-danger" @click="cancel()">Cancel</button>
-              <button type="button" class="btn btn-primary" @click="submit()">Update</button>
+              <button type="button" class="btn btn-primary" @click="submit()">Confirm</button>
           </div>
         </div>
       </div>

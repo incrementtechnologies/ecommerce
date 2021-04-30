@@ -53,9 +53,10 @@
             <!-- <td style="text-transform: UPPERCASE">{{item.status}}</td> -->
             <td>{{item.created_at_human}}</td>
             <td>
-              <button class="btn btn-warning" @click="editTrace(item)">Edit</button>
+              <button class="btn btn-warning" @click="editTrace(item, returnHasData[0].product)">Edit</button>
               <button class="btn btn-warning" @click="showInventoryTable(item)" v-if="item.active_qty !== 0">View Inventory</button>
               <button class="btn btn-warning" @click="showModal(item, returnHasData[0].product)" v-if="item.active_qty !== item.total_qty">Order Labels</button>
+              <button class="btn btn-danger" @click="deleteItem(item)" v-if="item.active_qty === 0">Delete</button>
             </td>
           </tr>
         </tbody>
@@ -100,9 +101,15 @@
       </div>
     </div>
     <InventoryEnhance v-if="showInventory === true"  :inventory="inventoryList"/>
-    <edit-product-trace-modal :data="trace" :currQty="qty"></edit-product-trace-modal>
+    <edit-product-trace-modal :data="trace"  :currQty="qty" :variations="selectedBatch !== null ? selectedBatch.product : null"></edit-product-trace-modal>
     <create-product-traces-modal ref="addTrace" :params="productId" :variations="selectedVariation"></create-product-traces-modal>
     <empty :title="viewInactive === false ? 'Empty Active Batches!' : 'Empty Inactive Batches!'" v-if="returnHasData.length <= 0"></empty>
+    <Confirmation
+        :title="'Confirm Delete'"
+        :message="'Delete means deleting all traces in batch, Are you sure you want to continue'"
+        ref="confirmationModal"
+        @onConfirm="deleteData($event)"
+      />
   </div>
 </template>
 <style>
@@ -227,6 +234,7 @@ import Conversion from 'src/services/conversion.js'
 import { ExportToCsv } from 'export-to-csv'
 import InventoryEnhance from './InventoryEnhance.vue'
 import EditProductTraces from './EditProductTraces.vue'
+import Confirmation from 'src/components/increment/generic/modal/Confirmation.vue'
 export default {
   mounted(){
     this.retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'active')
@@ -286,7 +294,8 @@ export default {
       inventoryList: null,
       selectedVariation: null,
       trace: null,
-      qty: null
+      qty: null,
+      itemIdTobeDelete: null
     }
   },
   components: {
@@ -295,7 +304,8 @@ export default {
     'create-product-traces-modal': require('../product/CreateProductTraces'),
     'edit-product-trace-modal': require('./EditProductTraces'),
     InventoryEnhance,
-    EditProductTraces
+    EditProductTraces,
+    Confirmation
   },
   computed: {
     returnHasData(){
@@ -339,13 +349,29 @@ export default {
         $('#createProductTracesModal').modal('show')
       }, 100)
     },
-    editTrace(item){
+    editTrace(item, product){
       this.trace = item
       this.qty = item.total_qty
+      item['product'] = product
+      this.selectedBatch = item
       console.log(this.trace)
       setTimeout(() => {
         $('#editProductTracesModal').modal('show')
       }, 100)
+    },
+    deleteItem(item){
+      this.itemIdTobeDelete = item
+      this.$refs.confirmationModal.show()
+    },
+    deleteData(){
+      let parameter = {
+        batch_number: this.itemIdTobeDelete.batch_number
+      }
+      $('#loading').css({'display': 'block'})
+      this.APIRequest('product_traces/delete_all', parameter).then(response => {
+        $('#loading').css({'display': 'block'})
+        this.retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'active')
+      })
     },
     showModal(item, product){
       item['product'] = product
