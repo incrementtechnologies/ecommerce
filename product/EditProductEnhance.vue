@@ -8,7 +8,10 @@
     </div>
     <div class="product-item-holder">
       <div class="product-item-details">
-      <button class="btn btn-primary" style="float:right" @click="isEdit = true" v-if="isEdit === false">Edit</button>
+        <div style="float:right;">
+          <button class="btn btn-warning" v-if="isEdit === false" @click="redirect('/marketplace/product/' + data.code + '/' + 'preview')" >Preview</button>
+          <button class="btn btn-primary" @click="isEdit = true" v-if="isEdit === false">Edit</button>
+        </div>
         <div class="product-item-title">
           <label>Title <label class="text-danger">*</label></label>
           <br>
@@ -64,7 +67,7 @@
         </div> -->
         <div :hidden="isEdit===false" class="mt-2">
           <div class="product-item-title mt-1" style="width: 90%" >
-            <label :hidden="isEdit===false">Activity Group</label>
+            <label :hidden="isEdit===false" :style="[]" >Activity Group</label>
             <label class="text-danger">{{errorMessageGroups}}</label>
             <br>
             <select class="form-control form-control-custom"  v-model="group" :hidden="isEdit===false">
@@ -76,18 +79,18 @@
           </div>
         </div>
         <div class="table-responsive">
-          <label style="margin-top: 5%" :hidden="isEdit"><strong>Activity Group</strong></label>      
-          <table class="table table-hover mt-3 table-bordered table-sm w-50" v-if="listGroup.length !== 0 && listGroup !== null">
+          <label style="margin-top: 5%" :hidden="isEdit"><strong style="font-weight: 600;margin-top: -20px !important;">Activity Group</strong></label>      
+          <table :class="isEdit ? 'table table-hover mt-3 table-bordered table-sm w-50' : 'table table-hover mt-3 table-bordered table-sm w-25'" v-if="listGroup.length !== 0 && listGroup !== null">
               <thead>
                   <tr>
                     <td>Group</td>
-                    <td>Action</td>
+                    <td v-if="isEdit">Action</td>
                   </tr>
               </thead>
               <tbody>
                 <tr v-for="(group, index) in listGroup" :key="index">
                   <td v-if="group.group !== null">{{group.group}}</td>
-                  <td v-if="group.group !== null"><button class="btn" @click="showConfirmationModal(index, 'group')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
+                  <td v-if="group.group !== null && isEdit"><button class="btn" @click="showConfirmationModal(index, 'group')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                 </tr>
               </tbody>
           </table>
@@ -95,12 +98,13 @@
             <label v-if="!isEdit">No Groups Available</label>
           </div>
         </div>
-        <div v-if="data.tags !== null && data.tags === 'Herbicide' && data.tags !== ''" class="mt-2"><strong><label>HRAC Mode of Action</label></strong></div>
-        <div v-if="showHrac === true || (data.tags !== null && data.tags === 'Herbicide')">
-          <div v-if="isEdit" class="mt-2"><strong><label>HRAC Mode of Action</label></strong></div>
+        <div v-if="data.tags === 'Herbicide' || tags === 'Herbicide'" class="mt-2 d-flex">
+          <label :style="[isEdit === false ? { 'margin-bottom': '-15px', 'font-weight': '600'} : {'font-weight': '600'}]">HRAC Mode of Action</label>
+          <label class="text-danger" style="font-weight: 600;" v-if="errorMessageHracs !== null">&nbsp;&nbsp;{{errorMessageHracs}}</label>
+        </div>
+        <div v-if="showHrac === true || (data.tags !== null && data.tags === 'Herbicide') || tags === 'Herbicide' ">
           <div class="mt-0" v-if="isEdit">
             <div class="product-item-title mt-0" style="width: 90%">
-              <label class="text-danger" v-if="errorMessageHracs !== null">{{errorMessageHracs}}</label>
             <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="isEdit===false">
                 <option v-for="(el, index) in formulations.HRAC" :key="index" :value="el" >{{el}}</option>
             </select>
@@ -111,29 +115,26 @@
           </div>
           <div class="">
             <div v-if="(listOfHracs.length > 0)">
-              <table class="mb-0 table table-hover table-bordered table-sm w-50" style="margin-top: 3% !important;" >
+              <table :class="isEdit ? 'mb-0 table table-hover table-bordered table-sm w-50' : 'mb-0 table table-hover table-bordered table-sm w-25'" style="margin-top: 3% !important;" >
                   <thead>
                       <tr>
                         <td>HRACS</td>
-                        <td>Action</td>
+                        <td v-if="isEdit">Action</td>
                       </tr>
                   </thead>
                   <tbody>
                     <tr v-for="(el, index) in listOfHracs" :key="index">
                       <td>{{el}}</td>
-                      <td><button class="btn" @click="showConfirmationModal(index, 'hrac')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
+                      <td v-if="isEdit"><button class="btn" @click="showConfirmationModal(index, 'hrac')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                     </tr>
                   </tbody>
               </table>
             </div>
           </div>
         </div>
-        <div v-if="data.tags !== null && data.tags === 'Herbicide' && !isEdit">
-          <!-- <label class="mt-2"><strong>HRAC Mode of Action</strong></label> <br> -->
-          <label>
-            No HRAC Available
-          </label>
-        </div>
+        <label v-if="(data.details.hracs.length === 0 || data.details.hracs === null) && (data.tags === 'Herbicide') && !isEdit">
+          No HRAC Available
+        </label>
         <div class="row" v-if="isEdit">
           <div class="product-item-title ml-4" :hidden="isEdit===false" style="margin-bottom:-5%">
             <label>Actives <span class="text-danger">{{errorMessageActives}}</span></label>
@@ -142,11 +143,17 @@
             <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents">
           </div>
           <div class="col-sm-2 pl-0 product-item-title" :hidden="isEdit===false">
-            <input type="number" class="form-control form-control-custom" v-model="active.value" placeholder="value" >
+            <input
+              type="number"
+              class="form-control form-control-custom"
+              v-model="active.value" 
+              @keydown="filterKey" 
+              @input="filterInput"
+              placeholder="value" >
           </div>
           <div class="col-sm-3 pl-0 ml-0 product-item-title"  :hidden="isEdit===false">
             <select class="form-control form-control-custom" v-model="active.attribute" @change="getValue($event, 'attribute1')">
-              <option v-for="(item, index) in formulations.ACTIVE_UNITS" :value="item" :key="index">{{item}}</option>
+              <option v-for="(item, index) in formulations.ACTIVE_UNITS" :style="[active.attribute2 !== item ? {} : {display: 'none'}]" :value="item" :key="index">{{item}}</option>
             </select>
           </div>
             <div class="col-sm-2 product-item-title"  :hidden="isEdit===false">
@@ -161,7 +168,7 @@
           </div>
         </div>
         <div v-else>
-          <label style="margin-top: 1%" ><strong>Actives</strong></label>
+          <label style="margin-top: 1%" ><strong style="font-weight: 600;">Actives</strong></label>
           <p v-if="actives.length === 0">No Actives Available</p>
         </div>
         
@@ -172,7 +179,7 @@
                   <td>Active Constituent</td>
                   <td>Value</td>
                   <td>Attribute</td>
-                  <td>Action</td>
+                  <td v-if="isEdit">Action</td>
                 </tr>
             </thead>
               <tbody v-if="actives === null || actives.length > 0">
@@ -180,7 +187,7 @@
                   <td>{{active.active_name}}</td>
                   <td>{{active.value}}</td>
                   <td>{{conversion.getUnitsAbbreviation(active.attribute)}}/{{conversion.getUnitsAbbreviation(active.attribute2)}}</td>
-                  <td><button class="btn" @click="showConfirmationModal(index, 'active')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
+                  <td v-if="isEdit"><button class="btn" @click="showConfirmationModal(index, 'active')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                 </tr>
               </tbody>
           </table>
@@ -262,7 +269,6 @@
           <button class="btn btn-danger" @click="showConfirmationModal(data.id, 'products')" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'" style="margin-top: 5px;">Delete</button>
           <button class="btn btn-danger pull-right" @click="isEdit = false" style="margin-right: 2px; margin-top: 5px;">Cancel</button>
           <button class="btn btn-primary pull-right" @click="updateProduct()" style="margin-right: 2px; margin-top: 5px;">Update</button>
-          <button class="btn btn-warning pull-right" @click="redirect('/marketplace/product/' + data.code + '/' + 'preview')" style="margin-right: 10px; margin-top: 5px;">Preview</button>
         </div>
       </div>
       <images :data="data" :isEditing="isEdit"/>
@@ -719,6 +725,7 @@ export default {
         this.retrieve()
         this.retrieveBundled()
         this.retrieveVariation()
+        this.errorMessageHracs = null
         this.isEdit = false
       })
     },
@@ -802,6 +809,22 @@ export default {
         this.retrieve()
         this.selectedImage = null
       })
+    },
+    filterKey(e){
+      const key = e.key
+      // If is '.' key, stop it
+      if(key === '-'){
+        return e.preventDefault()
+      }
+      // OPTIONAL
+      // If is 'e' key, stop it
+      if(key === 'e'){
+        return e.preventDefault()
+      }
+    },
+    filterInput(e){
+      // This can also prevent copy + paste invalid character
+      e.target.value = e.target.value.replace(/[^0-9]+/g, '')
     }
   }
 }
