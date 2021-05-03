@@ -17,7 +17,7 @@
             </thead>
             <tbody>
               <tr  v-for="(itemVariation, indexVariation) in item.bundled" :key="indexVariation">
-                <td>{{`${itemVariation.qty} X ${item.title} (${itemVariation.variation[0].payload_value}${convertion.getUnitsAbbreviation(itemVariation.variation[0].payload)})`}}</td>
+                <td>{{`${itemVariation.qty} X ${item.title} (${itemVariation.variation[0].payload_value} ${convertion.getUnitsAbbreviation(itemVariation.variation[0].payload)})`}}</td>
                 <td>{{itemVariation.scanned_qty}}</td>
                 <td v-if="isEdit"><button v-if="itemVariation.scanned_qty === 0 || itemVariation.scanned_qty === null" class="btn btn-danger" @click="addOrDelete(itemVariation, false)" title="Delete Inventory" :disabled="isEdit===false">Delete</button></td>
               </tr>
@@ -58,7 +58,7 @@
         @onConfirm="processData($event.id, $event)"
       />
     <create-modal :property="createProductTraceModal"></create-modal>
-    <!-- <create-product-traces-modal ref="addTrace" :params="productId" :variations="selectedVariation"></create-product-traces-modal> -->
+    <create-product-traces-modal ref="addTrace" :params="productId" :variations="selectedVariation"></create-product-traces-modal>
   </div>
 </template>
 <style scoped>
@@ -137,8 +137,8 @@ export default {
   components: {
     Confirmation,
     'create-modal': require('components/increment/generic/modal/Modal.vue'),
-    'confirmation': require('components/increment/generic/modal/Confirmation.vue')
-    // 'create-product-traces-modal': require('./CreateProductTraces.vue')
+    'confirmation': require('components/increment/generic/modal/Confirmation.vue'),
+    'create-product-traces-modal': require('./CreateProductTraces.vue')
   },
   methods: {
     redirect(parameter){
@@ -197,7 +197,7 @@ export default {
       }else{
         let parameter = {
           account_id: this.user.userID,
-          title: `${this.newAttribute.qty} X ${this.item.title} (${this.variantPayloadValue} ${this.convertion.getUnitsAbbreviation(this.variantPayload)})`,
+          title: `${this.newAttribute.qty} X ${this.item.title}(${this.convertion.getUnitsAbbreviation(this.variantPayload)}${this.variantPayloadValue})`,
           description: this.item.description,
           status: 'pending',
           type: 'bundled',
@@ -213,20 +213,23 @@ export default {
               product_id: response.data
             }
             this.APIRequest('product_attributes/create', varParams).then(res => {
-              this.newAttribute.product_attribute_id = this.variantId
+              this.newAttribute.product_attribute_id = this.item.variation.id
               this.newAttribute.bundled = response.data
               this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
-                this.$parent.retrieveBundled()
+                // this.$parent.retrieve()
                 if(response.data > 0){
                   this.errorMessage = null
+                  // this.variantId = null
+                  // this.variantPayload = null
+                  // this.variantPayloadValue = null
                   this.selectedVariation = null
                   this.newAttribute.qty = null
+                  this.$parent.retrieveBundled()
                 }
               })
             })
             this.$parent.retrieveBundled()
           }
-          this.$parent.retrieveBundled()
         })
       }
     },
@@ -234,7 +237,6 @@ export default {
       this.variantId = this.selectedVariation.id
       this.variantPayload = this.selectedVariation.payload
       this.variantPayloadValue = this.selectedVariation.payload_value
-      console.log('[SELECTED VARATION ID]', this.selectedVariation)
     },
     payloadValueExit(newValue, payload, payloadValue){
       console.log(this.item)
@@ -242,7 +244,7 @@ export default {
         this.item.bundled.map(el => {
           if(el.variation !== null){
             el.variation.map(each => {
-              if((each.payload === payload && each.payload_value === payloadValue)){
+              if(parseInt(newValue) === el.qty || (each.payload === payload && each.payload_value === payloadValue)){
                 this.errorMessage = 'Value is already existed in the list'
                 return true
               }else{
@@ -254,6 +256,53 @@ export default {
         })
       }
     },
+    // create(){
+    //   console.log('updateed 18-03-2021 2:16')
+    //   console.log(this.newAttribute.product_attribute_id, this.newAttribute.qty)
+    //   if(this.selectedVariation !== null && this.newAttribute.qty !== null){
+    //     this.payloadValueExit(this.newAttribute.qty, this.variantPayload, this.variantPayloadValue)
+    //     if(this.errorMessage !== null){
+    //       return
+    //     }
+    //     let parameter = {
+    //       account_id: this.user.userID,
+    //       title: `${this.newAttribute.qty} X ${this.item.title}(${this.variantPayloadValue}${this.convertion.getUnitsAbbreviation(this.variantPayload)})`,
+    //       description: this.item.description,
+    //       status: 'pending',
+    //       type: 'bundled',
+    //       merchant_id: this.user.subAccount.merchant.id
+    //     }
+    //     $('#loading').css({display: 'block'})
+    //     this.APIRequest('products/create', parameter).then(response => {
+    //       $('#loading').css({display: 'none'})
+    //       if(response.data > 0){
+    //         let varParams = {
+    //           payload: this.variantPayload,
+    //           payload_value: this.variantPayloadValue,
+    //           product_id: response.data
+    //         }
+    //         this.APIRequest('product_attributes/create', varParams).then(res => {
+    //           this.newAttribute.product_attribute_id = res.data
+    //           this.newAttribute.bundled = response.data
+    //           this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
+    //             this.$parent.retrieve()
+    //             if(response.data > 0){
+    //               this.errorMessage = null
+    //               // this.variantId = null
+    //               // this.variantPayload = null
+    //               // this.variantPayloadValue = null
+    //               this.selectedVariation = null
+    //               this.newAttribute.qty = null
+    //               // this.$parent.retrieve()
+    //             }
+    //           })
+    //         })
+    //       }
+    //     })
+    //   }else{
+    //     this.errorMessage = 'Fill up the required fields.'
+    //   }
+    // },
     confirmAdd(){
       $('#connectionError').modal('show')
     }
