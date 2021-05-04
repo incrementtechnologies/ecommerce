@@ -1,10 +1,11 @@
 <template>
   <div class="variations-holder">
-    <div class="form-group" v-if="item.bundled !== null && item.bundled.length > 0">
+    <div class="form-group">
       <label for="exampleInputEmail1" style="font-weight: 600;">Created Bundles</label>
     </div>
-    <center v-if="item === null"><i class="fa fa-circle-o-notch fa-spin" style="font-size:50px;color:#cae166"></i><br>Loading</center>
-    <div class="variations-content" v-if="item.bundled !== null && item.bundled.length > 0">
+    <!-- {{item}}; -->
+    <!-- <center v-if="item === null"><i class="fa fa-circle-o-notch fa-spin" style="font-size:50px;color:#cae166"></i><br>Loading</center> -->
+    <div class="variations-content" v-if="item !== null &&  item.bundled !== null && item.bundled.length > 0">
       <!-- <div class="attribute-item"> -->
         <div class="table-responsive"> 
           <table class="table table-hover">
@@ -26,7 +27,7 @@
         </div>
       <!-- </div> -->
     </div>
-    <div v-if="(item.bundled.length === 0 || item.bundled === null) && !isEdit">
+    <div v-if="item !== null && (item.bundled.length === 0 || item.bundled === null) && !isEdit">
       <p style="color:black;">No bundle configurations added. Click edit to add a bundle configuration.</p>
     </div>
     <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="item !== null && isEdit === true">Create new bundle configuration</button>
@@ -118,7 +119,7 @@ export default {
       errorMessage: null,
       deletedId: null,
       newAttribute: {
-        product_id: this.item.id,
+        product_id: null,
         bundled: null,
         qty: null,
         product_attribute_id: null
@@ -127,7 +128,7 @@ export default {
       variantPayload: null,
       variantPayloadValue: null,
       createProductTraceModal: ProductTrace,
-      productId: this.item.id,
+      productId: null,
       selectedVariation: null,
       toDeleteBundle: null,
       confirmationMessage: null,
@@ -139,6 +140,11 @@ export default {
     'create-modal': require('components/increment/generic/modal/Modal.vue'),
     'confirmation': require('components/increment/generic/modal/Confirmation.vue'),
     'create-product-traces-modal': require('./CreateProductTraces.vue')
+  },
+  watch: {
+    item(_new, old){
+      return _new
+    }
   },
   methods: {
     redirect(parameter){
@@ -157,6 +163,8 @@ export default {
       if(bool === true) {
         if(this.selectedVariation !== null && this.newAttribute.qty !== null) {
           this.isDelete = false
+          this.productId = this.item.id
+          this.newAttribute.product_id = this.item.id
           this.$refs.confirmModal.show()
         } else {
           this.errorMessage = 'Fill up the required fields.'
@@ -181,9 +189,6 @@ export default {
       }
       this.APIRequest('products/delete', product).then(response => {
         this.APIRequest('bundled_settings/delete', bundleSetting).then(response => {})
-        this.APIRequest('product_attributes/delete', attribute).then(response => {
-          return this.$parent.retrieveBundled()
-        })
         return this.$parent.retrieveBundled()
       })
 
