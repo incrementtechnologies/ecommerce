@@ -189,9 +189,6 @@ export default {
       }
       this.APIRequest('products/delete', product).then(response => {
         this.APIRequest('bundled_settings/delete', bundleSetting).then(response => {})
-        this.APIRequest('product_attributes/delete', attribute).then(response => {
-          return this.$parent.retrieveBundled()
-        })
         return this.$parent.retrieveBundled()
       })
 
