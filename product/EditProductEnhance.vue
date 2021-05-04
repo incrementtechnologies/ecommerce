@@ -20,7 +20,7 @@
         <div class="product-item-title">
           <label>Description <label class="text-danger">*</label></label>
           <br>
-          <textarea class="form-control" rows="20" v-model="data.description" placeholder="Type product description here..." :disabled="isEdit===false"></textarea>
+          <textarea class="form-control" rows="20" v-model="data.description" placeholder="Type product description here..." :disabled="data.status === 'published' || isEdit===false"></textarea>
         </div>
         <div v-if="errorMessage !== null">
           <label class="text-danger">Opps! {{errorMessage}}</label>
@@ -28,10 +28,10 @@
         <div class="product-item-title mb-3">
           <label>Classification</label>
           <br>
-         <select class="form-control form-control-custom" :disabled="isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
+         <select class="form-control form-control-custom" :disabled="data.status !== 'published' || isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
             <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag" :selected="data.tags === tag ? true : false">{{tag}}</option>
           </select>
-          <select class="form-control form-control-custom" :disabled="isEdit===false" @change="tagChecker($event)" v-else>
+          <select class="form-control form-control-custom" :disabled="data.status !== 'published' || isEdit===false" @change="tagChecker($event)" v-else>
             <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag">{{tag}}</option>
           </select>
         </div>
@@ -65,7 +65,7 @@
             </div>
           </div>
         </div> -->
-        <div :hidden="isEdit===false" class="mt-2">
+        <div :hidden="data.status === 'published' || isEdit===false" class="mt-2">
           <div class="product-item-title mt-1" style="width: 90%" >
             <label :hidden="isEdit===false" :style="[]" >Activity Group</label>
             <label class="text-danger">{{errorMessageGroups}}</label>
@@ -79,18 +79,18 @@
           </div>
         </div>
         <div class="table-responsive">
-          <label style="margin-top: 5%" :hidden="isEdit"><strong style="font-weight: 600;margin-top: -20px !important;">Activity Group</strong></label>      
-          <table :class="isEdit ? 'table table-hover mt-3 table-bordered table-sm w-50' : 'table table-hover mt-3 table-bordered table-sm w-25'" v-if="listGroup.length !== 0 && listGroup !== null">
+          <label style="margin-top: 5%" :hidden="data.status === 'published' || isEdit"><strong style="font-weight: 600;margin-top: -20px !important;">Activity Group</strong></label>      
+          <table :class="data.status !== 'published' && isEdit ? 'table table-hover mt-3 table-bordered table-sm w-50' : 'table table-hover mt-3 table-bordered table-sm w-25'" v-if="listGroup.length !== 0 && listGroup !== null">
               <thead>
                   <tr>
                     <td>Group</td>
-                    <td v-if="isEdit">Action</td>
+                    <td v-if="data.status !== 'published' && isEdit ">Action</td>
                   </tr>
               </thead>
               <tbody>
                 <tr v-for="(group, index) in listGroup" :key="index">
                   <td v-if="group.group !== null">{{group.group}}</td>
-                  <td v-if="group.group !== null && isEdit"><button class="btn" @click="showConfirmationModal(index, 'group')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
+                  <td v-if="data.status !== 'published' && (group.group !== null && isEdit)"><button class="btn" @click="showConfirmationModal(index, 'group')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                 </tr>
               </tbody>
           </table>
@@ -98,34 +98,34 @@
             <label v-if="!isEdit">No Groups Available</label>
           </div>
         </div>
-        <div v-if="data.tags === 'Herbicide' || tags === 'Herbicide'" class="mt-2 d-flex">
-          <label :style="[isEdit === false ? { 'margin-bottom': '-15px', 'font-weight': '600'} : {'font-weight': '600'}]">HRAC Mode of Action</label>
+        <div v-if="data.tags === 'Herbicide' || tags === 'Herbicide'" class="d-flex">
+          <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]">HRAC Mode of Action</label>
           <label class="text-danger" style="font-weight: 600;" v-if="errorMessageHracs !== null">&nbsp;&nbsp;{{errorMessageHracs}}</label>
         </div>
         <div v-if="showHrac === true || (data.tags !== null && data.tags === 'Herbicide') || tags === 'Herbicide' ">
-          <div class="mt-0" v-if="isEdit">
+          <div class="mt-0" v-show="data.status !== 'published' && isEdit">
             <div class="product-item-title mt-0" style="width: 90%">
-            <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="isEdit===false">
+            <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="data.status === 'published' || isEdit===false">
                 <option v-for="(el, index) in formulations.HRAC" :key="index" :value="el" >{{el}}</option>
             </select>
             </div>
             <div class="product-item-title pl-3 " style="width: 10%; margin-top: 1%;">
-                <button class="btn btn-primary" @click="addHrac" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
+                <button class="btn btn-primary" @click="addHrac" :disabled="data.status === 'published' || isEdit===false"><i class="fa fa-plus"></i></button>
             </div>
           </div>
           <div class="">
             <div v-if="(listOfHracs.length > 0)">
-              <table :class="isEdit ? 'mb-0 table table-hover table-bordered table-sm w-50' : 'mb-0 table table-hover table-bordered table-sm w-25'" style="margin-top: 3% !important;" >
+              <table :class="data.status !== 'published' && isEdit ? 'mb-0 table table-hover table-bordered table-sm w-50' : 'mb-0 table table-hover table-bordered table-sm w-25'" style="margin-top: 3% !important;" >
                   <thead>
                       <tr>
                         <td>HRACS</td>
-                        <td v-if="isEdit">Action</td>
+                        <td v-if="data.status !== 'published' && isEdit">Action</td>
                       </tr>
                   </thead>
                   <tbody>
                     <tr v-for="(el, index) in listOfHracs" :key="index">
                       <td>{{el}}</td>
-                      <td v-if="isEdit"><button class="btn" @click="showConfirmationModal(index, 'hrac')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
+                      <td v-if="data.status !== 'published' && isEdit"><button class="btn" @click="showConfirmationModal(index, 'hrac')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                     </tr>
                   </tbody>
               </table>
@@ -135,14 +135,14 @@
         <label v-if="(data.details.hracs.length === 0 || data.details.hracs === null) && (data.tags === 'Herbicide') && !isEdit">
           No HRAC Available
         </label>
-        <div class="row" v-if="isEdit">
-          <div class="product-item-title ml-4" :hidden="isEdit===false" style="margin-bottom:-5%">
+        <div class="row" v-if="data.status !== 'published' && isEdit">
+          <div class="product-item-title ml-4" :hidden="data.status === 'published' || isEdit===false" style="margin-bottom:-5%">
             <label>Actives <span class="text-danger">{{errorMessageActives}}</span></label>
           </div>
-          <div class="col-sm-4 mb-0 product-item-title" :hidden="isEdit===false">
+          <div class="col-sm-4 mb-0 product-item-title" :hidden="data.status === 'published' || isEdit===false">
             <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents">
           </div>
-          <div class="col-sm-2 pl-0 product-item-title" :hidden="isEdit===false">
+          <div class="col-sm-2 pl-0 product-item-title" :hidden="data.status === 'published' || isEdit===false">
             <input
               type="number"
               class="form-control form-control-custom"
@@ -151,19 +151,19 @@
               @input="filterInput"
               placeholder="value" >
           </div>
-          <div class="col-sm-3 pl-0 ml-0 product-item-title"  :hidden="isEdit===false">
+          <div class="col-sm-3 pl-0 ml-0 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
             <select class="form-control form-control-custom" v-model="active.attribute" @change="getValue($event, 'attribute1')">
               <option v-for="(item, index) in formulations.ACTIVE_UNITS" :style="[active.attribute2 !== item ? {} : {display: 'none'}]" :value="item" :key="index">{{item}}</option>
             </select>
           </div>
-            <div class="col-sm-2 product-item-title"  :hidden="isEdit===false">
+            <div class="col-sm-2 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
             <select class="form-control pl-0 ml-0 form-control-custom" v-model="active.attribute2" @change="getValue($event, 'attribute2')">
               <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :style="[active.attribute !== item ? {} : {display: 'none'}]" :value="item" :key="index" >
                 {{item}}
               </option>
             </select>
           </div>
-          <div class="col-sm-1 product-item-title pl-0" style="margin-top: 3%;" :hidden="isEdit===false"> 
+          <div class="col-sm-1 product-item-title pl-0" style="margin-top: 3%;" :hidden="data.status === 'published' || isEdit===false"> 
             <button class="btn btn-primary" @click="addActive"><i class="fa fa-plus" ></i></button>
           </div>
         </div>
@@ -179,7 +179,7 @@
                   <td>Active Constituent</td>
                   <td>Value</td>
                   <td>Attribute</td>
-                  <td v-if="isEdit">Action</td>
+                  <td v-if="data.status !== 'published' && isEdit">Action</td>
                 </tr>
             </thead>
               <tbody v-if="actives === null || actives.length > 0">
@@ -187,7 +187,7 @@
                   <td>{{active.active_name}}</td>
                   <td>{{active.value}}</td>
                   <td>{{conversion.getUnitsAbbreviation(active.attribute)}}/{{conversion.getUnitsAbbreviation(active.attribute2)}}</td>
-                  <td v-if="isEdit"><button class="btn" @click="showConfirmationModal(index, 'active')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
+                  <td v-if="data.status !== 'published' && isEdit"><button class="btn" @click="showConfirmationModal(index, 'active')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                 </tr>
               </tbody>
           </table>
@@ -195,22 +195,22 @@
         <div class="product-item-title">
           <label>Solvent (if applicable)</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.solvent" placeholder="Solvent" :disabled="isEdit===false">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.solvent" placeholder="Solvent" :disabled="data.status === 'published' || isEdit===false">
         </div>
          <div class="product-item-title">
           <label>Other scheduled ingredients</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.other_ingredient" placeholder="Other ingredients" :disabled="isEdit===false">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.other_ingredient" placeholder="Other ingredients" :disabled="data.status === 'published' || isEdit===false">
         </div>
          <div class="product-item-title">
           <label>Mixing Order</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.mixing_order" placeholder="Type product sku here..." :disabled="isEdit===false">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.mixing_order" placeholder="Type product sku here..." :disabled="data.status === 'published' || isEdit===false">
         </div>
         <div class="product-item-title">
           <label>Formulation</label>
           <br>
-          <select class="form-control form-control-custom" v-model="data.details.formulation" :disabled="isEdit===false">
+          <select class="form-control form-control-custom" v-model="data.details.formulation" :disabled="data.status === 'published' || isEdit===false">
             <option v-for="(formulation, index) in formulations.FORMULATION" :key="index" :value="formulation">{{formulation}}</option>
           </select>
         </div>
@@ -218,14 +218,14 @@
           <label>Application Safety Equipment</label>
           <br>
           <div class="form-check" v-for="(equip, index) in formulations.SAFETY_EQUIPMENTS" :key="index">
-            <div v-if="isEdit === false">
+            <div v-if="data.status !== 'published' && isEdit === false">
               <label class="form-check-label" v-if="data.details.safety_equipment.includes(equip)">
-                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="isEdit===false"><span>{{equip}}</span>
+                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="data.status === 'published' || isEdit===false"><span>{{equip}}</span>
               </label>
             </div>
             <div v-else>
               <label class="form-check-label">
-                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="isEdit===false"><span>{{equip}}</span>
+                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="data.status === 'published' || isEdit===false"><span>{{equip}}</span>
               </label>
             </div>
           </div>
@@ -237,7 +237,7 @@
           <label>Shelf Life</label>
           <br>
           <div class="d-flex">
-            <input type="number" class="form-control form-control-custom"  style="width: 79%;" v-model="data.details.shelf_life" placeholder="Type shelf life" :disabled="isEdit===false">
+            <input type="number" class="form-control form-control-custom"  style="width: 79%;" v-model="data.details.shelf_life" placeholder="Type shelf life" :disabled="data.status === 'published' || isEdit===false">
             <div class="p-2"></div>
             <input type="text" class="form-control form-control-custom" style="width:19%;" placeholder="Month/s" disabled>
           </div>
@@ -245,29 +245,29 @@
          <div class="product-item-title">
           <label>APVMA Approval number</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.approval_number" placeholder="Approval number" :disabled="isEdit===false">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.approval_number" placeholder="Approval number" :disabled="data.status === 'published' || isEdit===false">
         </div>
          <div class="product-item-title">
           <label>APVMA Approval date</label>
           <br>
-          <input type="date" class="form-control form-control-custom" v-model="data.details.approval_date" placeholder="Approval date" :disabled="isEdit===false">
+          <input type="date" class="form-control form-control-custom" v-model="data.details.approval_date" placeholder="Approval date" :disabled="data.status === 'published' || isEdit===false">
         </div>
         <div class="product-item-title">
           <label>SKU</label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here..." :disabled="isEdit===false">
+          <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here..." :disabled="data.status === 'published' || isEdit===false">
         </div>
         <div class="product-item-title">
           <label>Status</label>
           <br>
-          <select class="form-control form-control-custom" v-model="data.status" :disabled="isEdit===false">
+          <select class="form-control form-control-custom" v-model="data.status" :disabled="data.status === 'published' || isEdit===false">
             <option value="pending">Pending</option>
             <option value="published">Published</option>
           </select>
         </div>
         <div class="product-item-title" v-if="isEdit === true">
           <button class="btn btn-danger" @click="showConfirmationModal(data.id, 'products')" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'" style="margin-top: 5px;">Delete</button>
-          <button class="btn btn-danger pull-right" @click="isEdit = false" style="margin-right: 2px; margin-top: 5px;">Cancel</button>
+          <button class="btn btn-danger pull-right" @click="cancel()" style="margin-right: 2px; margin-top: 5px;">Cancel</button>
           <button class="btn btn-primary pull-right" @click="updateProduct()" style="margin-right: 2px; margin-top: 5px;">Update</button>
         </div>
       </div>
@@ -415,6 +415,10 @@ export default {
         this.prevMenuIndex = index
         this.selectedMenu = this.productMenu[index]
       }
+    },
+    cancel() {
+      this.retrieve()
+      this.isEdit = false
     },
     // getValue(event, attribute){
     //   if(attribute === 'attribute1'){
