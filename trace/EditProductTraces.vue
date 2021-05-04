@@ -33,9 +33,13 @@
                   <input type="number" min="1" class="form-control" placeholder="Type qty here..." v-model="data.total_qty">
                 </div>
               </div>
-              <span>Add {{data.total_qty - currQty}} unit(s) to batch</span>
+              <div class="text-right">
+                <button type="button" class="btn btn-primary" @click="showCalc = true">Ok</button>
+              </div>
+              <span v-if="showCalc">Add {{data.total_qty - currQty}} unit(s) to batch</span>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" v-if="showCalc">
+              <button type="button" class="btn btn-danger mr-auto" @click="$emit('deleteBatch', data)" v-if="data.active_qty === 0">Delete</button>
               <button type="button" class="btn btn-danger" @click="cancel()">Cancel</button>
               <button type="button" class="btn btn-primary" @click="submit()">Confirm</button>
           </div>
@@ -125,7 +129,8 @@ export default {
         isEdit: false
       },
       allowDate: false,
-      tempQty: null
+      tempQty: null,
+      showCalc: false
     }
   },
   components: {

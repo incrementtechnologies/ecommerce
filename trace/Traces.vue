@@ -56,7 +56,7 @@
               <button class="btn btn-warning" @click="editTrace(item, returnHasData[0].product)">Edit</button>
               <button class="btn btn-warning" @click="showInventoryTable(item)" v-if="item.active_qty !== 0">View Inventory</button>
               <button class="btn btn-warning" @click="showModal(item, returnHasData[0].product)" v-if="item.active_qty !== item.total_qty">Order Labels</button>
-              <button class="btn btn-danger" @click="deleteItem(item)" v-if="item.active_qty === 0">Delete</button>
+              <!-- <button class="btn btn-danger" @click="deleteItem(item)" v-if="item.active_qty === 0">Delete</button> -->
             </td>
           </tr>
         </tbody>
@@ -101,7 +101,7 @@
       </div>
     </div>
     <InventoryEnhance v-if="showInventory === true"  :inventory="inventoryList"/>
-    <edit-product-trace-modal :data="trace"  :currQty="qty" :variations="selectedBatch !== null ? selectedBatch.product : null"></edit-product-trace-modal>
+    <edit-product-trace-modal :data="trace"  :currQty="qty" :variations="selectedBatch !== null ? selectedBatch.product : null" @deleteBatch="deleteItem($event)"></edit-product-trace-modal>
     <create-product-traces-modal ref="addTrace" :params="productId" :variations="selectedVariation"></create-product-traces-modal>
     <empty :title="viewInactive === false ? 'Empty Active Batches!' : 'Empty Inactive Batches!'" v-if="returnHasData.length <= 0"></empty>
     <Confirmation
@@ -360,6 +360,7 @@ export default {
       }, 100)
     },
     deleteItem(item){
+      console.log(item)
       this.itemIdTobeDelete = item
       this.$refs.confirmationModal.show()
     },
@@ -371,6 +372,7 @@ export default {
       this.APIRequest('product_traces/delete_all', parameter).then(response => {
         $('#loading').css({'display': 'block'})
         this.retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'active')
+        $('#editProductTracesModal').modal('hide')
       })
     },
     showModal(item, product){
