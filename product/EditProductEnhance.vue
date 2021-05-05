@@ -132,7 +132,7 @@
             </div>
           </div>
         </div>
-        <label v-if="(data.details.hracs.length === 0 || data.details.hracs === null) && (data.tags === 'Herbicide') && !isEdit">
+        <label v-if="data.length > 0  && (data.details.hracs.length === 0 || data.details.hracs === null) && (data.tags === 'Herbicide') && !isEdit">
           No HRAC Available
         </label>
         <div class="row" v-if="data.status !== 'published' && isEdit">
