@@ -5,7 +5,7 @@
       <label for="exampleInputEmail1" v-if="variationData.variation.length > 0" style="font-weight: 600;">Product Variations</label>
     </div>
     <center v-if="variationData === null"><i class="fa fa-circle-o-notch fa-spin" style="font-size:50px;color:#cae166" ></i><br>Loading</center>
-    <div v-if="variationData.variation.length === 0 || variationData.variation === null">No variation configurations added. Click edit to add a variation configuration.</div>
+    <div v-if="isEdit === false && variationData.variation.length === 0 || variationData.variation === null">No variation configurations added. Click edit to add a variation configuration.</div>
     <div class="variations-content" v-if="variationData.variation.length > 0">
       <!-- <div class="attribute-item"> -->
         <div class="table-responsive">

@@ -67,7 +67,7 @@
         </div> -->
         <div :hidden="data.status === 'published' || isEdit===false" class="mt-2">
           <div class="product-item-title mt-1" style="width: 90%" >
-            <label :hidden="isEdit===false" :style="[]" >Activity Group</label>
+            <label :hidden="isEdit === false" :style="[]" >Activity Group</label>
             <label class="text-danger">{{errorMessageGroups}}</label>
             <br>
             <select class="form-control form-control-custom"  v-model="group" :hidden="isEdit===false">
@@ -79,7 +79,7 @@
           </div>
         </div>
         <div class="table-responsive">
-          <label style="margin-top: 5%" :hidden="data.status === 'published' || isEdit"><strong style="font-weight: 600;margin-top: -20px !important;">Activity Group</strong></label>      
+          <label style="margin-top: 5%" ><strong style="font-weight: 600;margin-top: -20px !important;">Activity Group</strong></label>      
           <table :class="data.status !== 'published' && isEdit ? 'table table-hover mt-3 table-bordered table-sm w-50' : 'table table-hover mt-3 table-bordered table-sm w-25'" v-if="listGroup.length !== 0 && listGroup !== null">
               <thead>
                   <tr>
@@ -136,7 +136,7 @@
           No HRAC Available
         </label>
         <div class="row" v-if="data.status !== 'published' && isEdit">
-          <div class="product-item-title ml-4" :hidden="data.status === 'published' || isEdit===false" style="margin-bottom:-5%">
+          <div class="product-item-title ml-4" :hidden="data.status === 'published' && isEdit === false" style="margin-bottom:-5%">
             <label>Actives <span class="text-danger">{{errorMessageActives}}</span></label>
           </div>
           <div class="col-sm-4 mb-0 product-item-title" :hidden="data.status === 'published' || isEdit===false">
@@ -220,12 +220,12 @@
           <div class="form-check" v-for="(equip, index) in formulations.SAFETY_EQUIPMENTS" :key="index">
             <div v-if="data.status !== 'published' && isEdit === false">
               <label class="form-check-label" v-if="data.details.safety_equipment.includes(equip)">
-                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="data.status === 'published' || isEdit===false"><span>{{equip}}</span>
+                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="data.status === 'published' || !isEdit"><span>{{equip}}</span>
               </label>
             </div>
             <div v-else>
-              <label class="form-check-label">
-                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="data.status === 'published' || isEdit===false"><span>{{equip}}</span>
+              <label class="form-check-label" v-if="data.details.safety_equipment.includes(equip)">
+                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="data.status === 'published' || !isEdit"><span>{{equip}}</span>
               </label>
             </div>
           </div>
