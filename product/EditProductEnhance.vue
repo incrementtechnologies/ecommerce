@@ -218,9 +218,12 @@
           <label>Application Safety Equipment</label>
           <br>
           <div class="form-check" v-for="(equip, index) in formulations.SAFETY_EQUIPMENTS" :key="index">
-            <div v-if="data.status !== 'published' && isEdit === false">
-              <label class="form-check-label" v-if="data.details.safety_equipment.includes(equip)">
-                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="data.status === 'published' || !isEdit"><span>{{equip}}</span>
+            <div v-if="data.status !== 'published'">
+              <label class="form-check-label" v-if="isEdit">
+                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip"><span>{{equip}}</span>
+              </label>
+              <label class="form-check-label" v-else>
+                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="!isEdit"><span>{{equip}}</span>
               </label>
             </div>
             <div v-else>
