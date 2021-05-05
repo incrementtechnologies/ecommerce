@@ -1,7 +1,7 @@
 <template>
   <div class="variations-holder">
     <div class="form-group">
-      <label for="exampleInputEmail1" style="font-weight: 600;">Created Bundles</label>
+      <label for="exampleInputEmail1" style="font-weight: 600;" v-if="data.bundled.length > 0">Created Bundles</label>
     </div>
     <!-- {{item}}; -->
     <!-- <center v-if="item === null"><i class="fa fa-circle-o-notch fa-spin" style="font-size:50px;color:#cae166"></i><br>Loading</center> -->
