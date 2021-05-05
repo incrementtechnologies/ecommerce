@@ -36,7 +36,7 @@
         <label for="exampleInputEmail1" style="font-weight: 600;">Bundled Products</label>
         <div>
           <select class="form form-control form-control-custom" style="float: left; width: 50%; margin-bottom: 10px;" v-model="selectedId">
-            <!-- <option v-for="(trace, index) in item.product_traces" :key="index" :value="trace.id">{{trace.code}}</option> -->
+            <option v-for="(trace, index) in item.product_traces" :key="index" :value="trace.id">{{trace.code}}</option>
           </select>
         </div>
       </div>

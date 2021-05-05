@@ -1,12 +1,11 @@
 <template>
   <div class="variations-holder">
     <div class="form-group">
-      <label for="exampleInputEmail1" style="font-weight: 600;" v-if="data.bundled.length > 0">Created Bundles</label>
+      <label for="exampleInputEmail1" style="font-weight: 600;" v-if="item !== null">Created Bundles</label>
     </div>
     <!-- {{item}}; -->
     <!-- <center v-if="item === null"><i class="fa fa-circle-o-notch fa-spin" style="font-size:50px;color:#cae166"></i><br>Loading</center> -->
     <div class="variations-content" v-if="item !== null &&  item.bundled !== null && item.bundled.length > 0">
-      <!-- <div class="attribute-item"> -->
         <div class="table-responsive"> 
           <table class="table table-hover">
             <thead>
@@ -25,7 +24,6 @@
             </tbody>
           </table>
         </div>
-      <!-- </div> -->
     </div>
     <div v-if="item !== null && (item.bundled.length === 0 || item.bundled === null) && !isEdit">
       <p style="color:black;">No bundle configurations added. Click edit to add a bundle configuration.</p>
