@@ -28,7 +28,7 @@
         <div class="product-item-title mb-3">
           <label>Classification</label>
           <br>
-         <select class="form-control form-control-custom" :disabled="data.status !== 'published' || isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
+         <select class="form-control form-control-custom" :disabled="data.status !== 'published' && isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
             <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag" :selected="data.tags === tag ? true : false">{{tag}}</option>
           </select>
           <select class="form-control form-control-custom" :disabled="data.status !== 'published' || isEdit===false" @change="tagChecker($event)" v-else>
@@ -217,24 +217,27 @@
         <div class="product-item-title">
           <label>Application Safety Equipment</label>
           <br>
-          <div class="form-check" v-for="(equip, index) in formulations.SAFETY_EQUIPMENTS" :key="index">
-            <div v-if="data.status !== 'published'">
-              <label class="form-check-label" v-if="isEdit">
-                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip"><span>{{equip}}</span>
-              </label>
-              <label class="form-check-label" v-else>
-                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="!isEdit"><span>{{equip}}</span>
-              </label>
-            </div>
-            <div v-else>
-              <label class="form-check-label" v-if="data.details.safety_equipment.includes(equip)">
-                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="data.status === 'published' || !isEdit"><span>{{equip}}</span>
-              </label>
-            </div>
-          </div>
           <div v-if="(!isEdit && data.details.safety_equipment.length <= 0) || (data.details.safety_equipment.length === null && !isEdit) ">
             <p>No safety directions added.</p>
           </div>
+          <div v-else>
+            <div class="form-check" v-for="(equip, index) in formulations.SAFETY_EQUIPMENTS" :key="index">
+              <div v-if="data.status !== 'published'">
+                <label class="form-check-label" v-if="isEdit">
+                  <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip"><span>{{equip}}</span>
+                </label>
+                <label class="form-check-label" v-if="data.details.safety_equipment.includes(equip) && !isEdit">
+                  <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="!isEdit"><span>{{equip}}</span>
+                </label>
+              </div>
+              <div v-else>
+                <label class="form-check-label" v-if="data.details.safety_equipment.includes(equip)">
+                  <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="data.status === 'published' || !isEdit"><span>{{equip}}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+          
         </div>
         <div class="product-item-title">
           <label>Shelf Life</label>
