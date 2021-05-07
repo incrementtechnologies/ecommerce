@@ -28,43 +28,13 @@
         <div class="product-item-title mb-3">
           <label>Classification</label>
           <br>
-         <select class="form-control form-control-custom" :disabled="data.status !== 'published' || isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
+         <select class="form-control form-control-custom" :disabled="data.status !== 'published' && isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
             <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag" :selected="data.tags === tag ? true : false">{{tag}}</option>
           </select>
           <select class="form-control form-control-custom" :disabled="data.status !== 'published' || isEdit===false" @change="tagChecker($event)" v-else>
             <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag">{{tag}}</option>
           </select>
         </div>
-        <!-- <div v-if="common.ecommerce.productUnits !== null">
-          <div v-if="data.variation !== null">
-            <div class="product-item-title" style="width: 79%; margin-right: 1%;">
-              <label>Volume</label>
-              <br>
-              <input type="number" class="form-control form-control-custom" v-model="data.variation[0].payload_value" placeholder="Type volume here...">
-            </div>
-            <div class="product-item-title" style="width: 20%;">
-              <label>Units</label>
-              <br>
-              <select class="form-control form-control-custom" v-model="data.variation[0].payload">
-                <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
-              </select>
-            </div>
-          </div>
-          <div v-else>
-            <div class="product-item-title" style="width: 79%; margin-right: 1%;">
-              <label>Volume</label>
-              <br>
-              <input type="number" class="form-control form-control-custom" v-model="newAttribute.payload_value" placeholder="Type volume here...">
-            </div>
-            <div class="product-item-title" style="width: 20%;">
-              <label>Units</label>
-              <br>
-              <select class="form-control form-control-custom" v-model="newAttribute.payload">
-                <option v-for="(item, index) in common.ecommerce.productUnits" :value="item">{{item}}</option>
-              </select>
-            </div>
-          </div>
-        </div> -->
         <div :hidden="data.status === 'published' || isEdit===false" class="mt-2">
           <div class="product-item-title mt-1" style="width: 90%" >
             <label :hidden="isEdit === false" :style="[]" >Activity Group</label>
@@ -217,24 +187,27 @@
         <div class="product-item-title">
           <label>Application Safety Equipment</label>
           <br>
-          <div class="form-check" v-for="(equip, index) in formulations.SAFETY_EQUIPMENTS" :key="index">
-            <div v-if="data.status !== 'published'">
-              <label class="form-check-label" v-if="isEdit">
-                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip"><span>{{equip}}</span>
-              </label>
-              <label class="form-check-label" v-else>
-                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="!isEdit"><span>{{equip}}</span>
-              </label>
-            </div>
-            <div v-else>
-              <label class="form-check-label" v-if="data.details.safety_equipment.includes(equip)">
-                <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="data.status === 'published' || !isEdit"><span>{{equip}}</span>
-              </label>
-            </div>
-          </div>
           <div v-if="(!isEdit && data.details.safety_equipment.length <= 0) || (data.details.safety_equipment.length === null && !isEdit) ">
             <p>No safety directions added.</p>
           </div>
+          <div v-else>
+            <div class="form-check" v-for="(equip, index) in formulations.SAFETY_EQUIPMENTS" :key="index">
+              <div v-if="data.status !== 'published'">
+                <label class="form-check-label" v-if="isEdit">
+                  <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip"><span>{{equip}}</span>
+                </label>
+                <label class="form-check-label" v-if="data.details.safety_equipment.includes(equip) && !isEdit">
+                  <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="!isEdit"><span>{{equip}}</span>
+                </label>
+              </div>
+              <div v-else>
+                <label class="form-check-label" v-if="data.details.safety_equipment.includes(equip)">
+                  <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="data.status === 'published' || !isEdit"><span>{{equip}}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+          
         </div>
         <div class="product-item-title">
           <label>Shelf Life</label>
@@ -423,18 +396,6 @@ export default {
       this.retrieve()
       this.isEdit = false
     },
-    // getValue(event, attribute){
-    //   if(attribute === 'attribute1'){
-    //     console.log('[GET_VALUE]', this.formulations.ACTIVE_UNITS.indexOf(event.target.value))
-    //     if(event.target.value === 'Grams (g)'){
-    //       let index = this.formulations.ACTIVE_UNITS.indexOf('Grams (g)')
-    //       this.formulations.ACTIVE_UNITS2.splice(index, 1)
-    //       console.log('[Formulations]', this.formulations)
-    //     }
-    //   }
-    //   console.log('[GET_VALUE]', this.formulations.ACTIVE_UNITS2)
-    //   console.log('ATTRIBUTE VALUES')
-    // },
     addActive(){
       if((this.active.active_name === null || this.active.active_name === '') || (this.active.value === null || this.active.value <= 0) || this.active.attribute === null || this.active.attribute2 === null){
         this.errorMessage = 'Empty fields cannot be added'
