@@ -28,7 +28,7 @@
         <div class="product-item-title mb-3">
           <label>Classification</label>
           <br>
-         <select class="form-control form-control-custom" :disabled="data.status !== 'published' && isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
+         <select class="form-control form-control-custom" :disabled="data.status !== 'published' || isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
             <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag" :selected="data.tags === tag ? true : false">{{tag}}</option>
           </select>
           <select class="form-control form-control-custom" :disabled="data.status !== 'published' || isEdit===false" @change="tagChecker($event)" v-else>
@@ -79,7 +79,7 @@
           </div>
         </div>
         <div class="table-responsive">
-          <label style="margin-top: 5%" ><strong style="font-weight: 600;margin-top: -20px !important;">Activity Group</strong></label>      
+          <label :hidden="isEdit" style="margin-top: 5%" ><strong style="font-weight: 600;margin-top: -20px !important;">Activity Group</strong></label>      
           <table :class="data.status !== 'published' && isEdit ? 'table table-hover mt-3 table-bordered table-sm w-50' : 'table table-hover mt-3 table-bordered table-sm w-25'" v-if="listGroup.length !== 0 && listGroup !== null">
               <thead>
                   <tr>
@@ -222,7 +222,7 @@
               <label class="form-check-label" v-if="isEdit">
                 <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip"><span>{{equip}}</span>
               </label>
-              <label class="form-check-label" v-if="!isEdit && data.details.safety_equipment.includes(equip)">
+              <label class="form-check-label" v-else>
                 <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="!isEdit"><span>{{equip}}</span>
               </label>
             </div>
