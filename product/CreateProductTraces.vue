@@ -159,7 +159,7 @@ export default {
         title: 'January',
         code: 1
       }, {
-        title: 'Febuary',
+        title: 'February',
         code: 2
       }, {
         title: 'March',

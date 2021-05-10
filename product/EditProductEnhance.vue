@@ -68,11 +68,12 @@
             <label v-if="!isEdit">No Groups Available</label>
           </div>
         </div>
-        <div v-if="data.tags === 'Herbicide' || tags === 'Herbicide'" class="d-flex">
+        <div v-if="errorMessageHracs !== null && (showHrac === true || (data.tags !== null && data.tags === 'Herbicide') || tags === 'Herbicide')" class="d-flex">
           <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]">HRAC Mode of Action</label>
           <label class="text-danger" style="font-weight: 600;" v-if="errorMessageHracs !== null">&nbsp;&nbsp;{{errorMessageHracs}}</label>
         </div>
         <div v-if="showHrac === true || (data.tags !== null && data.tags === 'Herbicide') || tags === 'Herbicide' ">
+          <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]" v-if="errorMessageHracs === null">HRAC Mode of Action</label>
           <div class="mt-0" v-show="data.status !== 'published' && isEdit">
             <div class="product-item-title mt-0" style="width: 90%">
             <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="data.status === 'published' || isEdit===false">
@@ -213,7 +214,10 @@
           <label>Shelf Life</label>
           <br>
           <div class="d-flex">
-            <input type="number" class="form-control form-control-custom"  style="width: 79%;" v-model="data.details.shelf_life" placeholder="Type shelf life" :disabled="data.status === 'published' || isEdit===false">
+            <input type="number"
+              @keydown="filterKey" 
+              @input="filterInput"
+              class="form-control form-control-custom"  style="width: 79%;" v-model="data.details.shelf_life" placeholder="Type shelf life" :disabled="data.status === 'published' || isEdit===false">
             <div class="p-2"></div>
             <input type="text" class="form-control form-control-custom" style="width:19%;" placeholder="Month/s" disabled>
           </div>
