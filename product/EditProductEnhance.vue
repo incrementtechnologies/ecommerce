@@ -58,7 +58,7 @@
                   </tr>
               </thead>
               <tbody>
-                <tr v-for="(group, index) in listGroup" :key="index">
+                <tr :style="isEdit === false && data.status || data.status === 'published' ? 'background-color: #E9ECEF' : ''" v-for="(group, index) in listGroup" :key="index">
                   <td v-if="group.group !== null">{{group.group}}</td>
                   <td v-if="data.status !== 'published' && (group.group !== null && isEdit)"><button class="btn" @click="showConfirmationModal(index, 'group')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                 </tr>
@@ -94,7 +94,7 @@
                       </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(el, index) in listOfHracs" :key="index">
+                    <tr :style="isEdit === false && data.status || data.status === 'published' ? 'background-color: #E9ECEF' : ''" v-for="(el, index) in listOfHracs" :key="index">
                       <td>{{el}}</td>
                       <td v-if="data.status !== 'published' && isEdit"><button class="btn" @click="showConfirmationModal(index, 'hrac')" style="width:20%; background-color: transparent" :disabled="isEdit===false"><i class="fa fa-trash" style="color: red"></i></button></td>
                     </tr>
@@ -108,9 +108,9 @@
         </label>
         <div class="row" v-if="data.status !== 'published' && isEdit">
           <div class="product-item-title ml-4" :hidden="data.status === 'published' && isEdit === false" style="margin-bottom:-5%">
-            <label>Actives <span class="text-danger">{{errorMessageActives}}</span></label>
+            <label class="mb-5">Actives <span class="text-danger">{{errorMessageActives}}</span></label>
           </div>
-          <div class="col-sm-4 mb-0 product-item-title" :hidden="data.status === 'published' || isEdit===false">
+          <div class="col-sm-3 mb-0 product-item-title" :hidden="data.status === 'published' || isEdit===false">
             <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents">
           </div>
           <div class="col-sm-2 pl-0 product-item-title" :hidden="data.status === 'published' || isEdit===false">
@@ -127,7 +127,7 @@
               <option v-for="(item, index) in formulations.ACTIVE_UNITS" :style="[active.attribute2 !== item ? {} : {display: 'none'}]" :value="item" :key="index">{{item}}</option>
             </select>
           </div>
-            <div class="col-sm-2 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
+            <div class="col-sm-3 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
             <select class="form-control pl-0 ml-0 form-control-custom" v-model="active.attribute2" @change="getValue($event, 'attribute2')">
               <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :style="[active.attribute !== item ? {} : {display: 'none'}]" :value="item" :key="index" >
                 {{item}}
@@ -154,7 +154,7 @@
                 </tr>
             </thead>
               <tbody v-if="actives === null || actives.length > 0">
-                <tr v-for="(active, index) in actives" :key="index">
+                <tr :style="isEdit === false && data.status || data.status === 'published' ? 'background-color: #E9ECEF' : ''" v-for="(active, index) in actives" :key="index">
                   <td>{{active.active_name}}</td>
                   <td>{{active.value}}</td>
                   <td>{{conversion.getUnitsAbbreviation(active.attribute)}}/{{conversion.getUnitsAbbreviation(active.attribute2)}}</td>
