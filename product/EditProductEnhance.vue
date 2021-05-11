@@ -260,7 +260,8 @@
         </ul>
       </div>
       <div class="details-holder" v-if="selectedMenu.title === 'Variation'">
-        <variations :item="data" :isEdit="isEdit" :variationData="variationData"></variations>
+        <variations v-if="data.status === 'published'" :item="data" :isEdit="isEdit" :variationData="variationData"></variations>
+        <p v-else>Publish your product first to create variation.</p>
       </div>
       <div class="details-holder" v-if="selectedMenu.title === 'Price'">
         <prices :item="data"></prices>
@@ -274,7 +275,8 @@
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Bundled Products'">
-        <bundled-products :item="bundledData" :isEdit="isEdit" :variationData="variationData"></bundled-products>
+        <bundled-products v-if="data.status === 'published' && variationData !== null" :item="bundledData" :isEdit="isEdit" :variationData="variationData"></bundled-products>
+        <p v-else>Publish your product first and create variation to create bundle configuration.</p>
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Documentation'">
@@ -566,7 +568,9 @@ export default {
         }],
         account_id: this.user.userID
       }
+      $('#loading').css({display: 'block'})
       this.APIRequest('products/retrieve_bundled', parameter).then(response => {
+        $('#loading').css({display: 'none'})
         if(response.data[0].bundled !== null){
           response.data[0].bundled = response.data[0].bundled.sort(this.getSortOrderBundled('payload_value'))
         }
@@ -583,7 +587,9 @@ export default {
         }],
         account_id: this.user.userID
       }
+      $('#loading').css({display: 'block'})
       this.APIRequest('products/retrieve_variation', parameter).then(response => {
+        $('#loading').css({display: 'none'})
         response.data[0].variation = response.data[0].variation.sort(this.getSortOrder('payload_value'))
         this.variationData = response.data[0]
         console.log('[Variation Data]', this.variationData)
