@@ -261,7 +261,7 @@
       </div>
       <div class="details-holder" v-if="selectedMenu.title === 'Variation'">
         <variations v-if="data.status === 'published'" :item="data" :isEdit="isEdit" :variationData="variationData"></variations>
-        <p v-else>Publish your product first to create variation.</p>
+        <p v-else>You must publish this product before creating variations.</p>
       </div>
       <div class="details-holder" v-if="selectedMenu.title === 'Price'">
         <prices :item="data"></prices>
@@ -276,7 +276,7 @@
 
       <div class="details-holder" v-if="selectedMenu.title === 'Bundled Products'">
         <bundled-products v-if="data.status === 'published' && variationData !== null" :item="bundledData" :isEdit="isEdit" :variationData="variationData"></bundled-products>
-        <p v-else>Publish your product first and create variation to create bundle configuration.</p>
+        <p v-else>Create a product variation before setting bundle configurations.</p>
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Documentation'">
