@@ -16,7 +16,7 @@
       <div class="form-group">
         <div v-for="(pSearch, index) in productSearch" :key="index" style="width: 100%; float: left;">
           <label class="alert alert-success" style="float: left; paddingTop: 15px; paddingLeft: 15px; width: 40%">{{pSearch.title}}</label>
-          <input type="number" class="form-control form-control-custom" style="float: left; width: 9%; margin-left: 1%;" placeholder="Qty"  v-model="pSearch.qtyI" @keyup.enter="create(pSearch)">
+          <input type="number" @keydown="filterKey" @input="filterInput" class="form-control form-control-custom" style="float: left; width: 9%; margin-left: 1%;" placeholder="Qty"  v-model="pSearch.qtyI" @keyup.enter="create(pSearch)">
           <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="create(pSearch)"><i class="fa fa-plus"></i></button>
         </div>
       </div>
@@ -257,6 +257,22 @@ export default {
       this.APIRequest('bundled_settings/delete', parameter).then(response => {
         this.retrieve()
       })
+    },
+    filterKey(e){
+      const key = e.key
+      // If is '.' key, stop it
+      if(key === '-'){
+        return e.preventDefault()
+      }
+      // OPTIONAL
+      // If is 'e' key, stop it
+      if(key === 'e'){
+        return e.preventDefault()
+      }
+    },
+    filterInput(e){
+      // This can also prevent copy + paste invalid character
+      e.target.value = e.target.value.replace(/[^0-9]+/g, '')
     }
   }
 }

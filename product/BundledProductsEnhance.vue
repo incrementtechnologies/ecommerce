@@ -38,6 +38,7 @@
           </select>
           <input 
             type="number"
+            @keydown="filterKey" @input="filterInput" 
             class="form-control form-control-custom"
             style="float: left; width: 40%; margin-left: 10px;"
             placeholder="Qty"
@@ -308,6 +309,22 @@ export default {
     // },
     confirmAdd(){
       $('#connectionError').modal('show')
+    },
+    filterKey(e){
+      const key = e.key
+      // If is '.' key, stop it
+      if(key === '-'){
+        return e.preventDefault()
+      }
+      // OPTIONAL
+      // If is 'e' key, stop it
+      if(key === 'e'){
+        return e.preventDefault()
+      }
+    },
+    filterInput(e){
+      // This can also prevent copy + paste invalid character
+      e.target.value = e.target.value.replace(/[^0-9]+/g, '')
     }
   }
 }

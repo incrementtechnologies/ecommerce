@@ -174,7 +174,7 @@ export default {
           type: 'text'
         }]
       }, {
-        title: 'Merchant',
+        title: 'Manufacturer',
         level: false,
         sorting: [{
           title: 'Name at ascending',
@@ -280,8 +280,8 @@ export default {
           this.numPages = null
           this.selectedItem = null
           this.empty = {
-            title: 'Empty Consignments!',
-            guide: 'Start asking to transfer item to your account.'
+            title: 'No Products Available.',
+            guide: 'Products will appear here when you take delivery of your first order through Agricord.'
           }
         }
       })

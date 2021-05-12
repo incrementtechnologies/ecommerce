@@ -4,7 +4,7 @@
       <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
           <div class="modal-header bg-primary">
-            <h5 class="modal-title" id="exampleModalLabel">Add Item</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Create Batch</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true" class="text-white">&times;</span>
             </button>
@@ -19,7 +19,7 @@
               <div class="col-sm-12"> 
                 <label>Variations</label>
                 <br>
-                <input type="text" class="form-control" :placeholder="`${variations.product}(${variations.variation.payload_value} ${convertion.getUnitsAbbreviation(variations.variation.payload)})`" disabled>
+                <input type="text" class="form-control" :placeholder="`${variations.product} (${variations.variation.payload_value} ${convertion.getUnitsAbbreviation(variations.variation.payload)})`" disabled>
                 <!-- <select class="form-control form-control-custom" v-model="newData.product_attribute_id">
                   <option v-for="(item, index) in variations" :value="item.id">{{item.payload_value}} - {{item.payload}}</option>
                 </select> -->
@@ -72,7 +72,7 @@
             </div> -->
 
             <div class="form-group">
-              <label for="exampleInputEmail1">Quantity <b class="text-danger">*</b></label>
+              <label for="exampleInputEmail1">Batch Quantity <b class="text-danger">*</b></label>
               <input type="number" min="1" class="form-control" placeholder="Type qty here..." v-model="newData.qty">
             </div>
           </div>
@@ -278,6 +278,7 @@ export default {
       $('#createProductTracesModal').modal('hide')
       this.newData.batch_number = null
       this.manufacturing.date = null
+      this.errorMessage = false
     }
   }
 }

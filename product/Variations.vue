@@ -60,7 +60,7 @@
         <tbody>
           <tr class="pl-0">
             <td>
-              <input type="number" class="form-control form-control-custom" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @input="getVariationName($event, 'payload_value')" :disabled="isEdit===false">
+              <input type="number" @keydown="filterKey" class="form-control form-control-custom" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @input="getVariationName($event, 'payload_value') && filterInput" :disabled="isEdit===false">
             </td>
             <td class="pl-0">
               <select class="form-control form-control-custom" v-model="newAttribute.payload" v-if="variationData.variation.length <= 0" :disabled="isEdit===false" @change="getVariationName($event, 'payload')">
@@ -334,6 +334,22 @@ export default {
       }else{
         this.errorMessage = 'Fill up the required fields.'
       }
+    },
+    filterKey(e){
+      const key = e.key
+      // If is '.' key, stop it
+      if(key === '-'){
+        return e.preventDefault()
+      }
+      // OPTIONAL
+      // If is 'e' key, stop it
+      if(key === 'e'){
+        return e.preventDefault()
+      }
+    },
+    filterInput(e){
+      // This can also prevent copy + paste invalid character
+      e.target.value = e.target.value.replace(/[^0-9]+/g, '')
     }
   }
 }
