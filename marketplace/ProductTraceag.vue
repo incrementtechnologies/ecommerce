@@ -3,7 +3,8 @@
   <div class="col-sm-6 m-0 p-0">
     <div v-if="data !== null" class="">
       <div class="title">
-        <i v-if="user.type !== 'USER'" class="fa fa-reply" style="color:#cae166; font-size:20px;cursor:pointer;" title="Back" @click="$router.push('/product/edit/' + $route.params.code)"></i>
+        <i v-if="user.type !== 'USER' && user.type !== 'DISTRIBUTOR'" class="fa fa-reply" style="color:#cae166; font-size:20px;cursor:pointer;" title="Back" @click="$router.push('/product/edit/' + $route.params.code)"></i>
+        <i v-else class="fa fa-reply" style="color:#cae166; font-size:20px;cursor:pointer;" title="Back" @click="$router.push('/d/products')"></i>
         <br>
         <h3>{{data.title}}</h3>
         <div class="product-row-merchant w-100" v-if="data.merchant !== null">

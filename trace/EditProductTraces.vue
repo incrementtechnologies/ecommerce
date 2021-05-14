@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="modal fade" id="editProductTracesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div data-backdrop="static" data-keyboard="false" class="modal fade" id="editProductTracesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary">
@@ -180,7 +180,9 @@ export default {
     },
     cancel(){
       $('#editProductTracesModal').modal('hide')
-      this.data.qty = this.currQty
+      this.errorMessage = null
+      this.qty = null
+      this.data.total_qty = this.currQty
       this.showCalc = false
     }
   }
