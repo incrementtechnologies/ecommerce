@@ -391,6 +391,7 @@ export default {
       ROUTER.push(parameter)
     },
     selectMenu(index){
+      console.log(this.productMenu[index].flag, this.productMenu[index], 'hellllo')
       if(this.prevMenuIndex !== index){
         this.productMenu[this.prevMenuIndex].flag = false
         this.productMenu[index].flag = true
@@ -513,6 +514,7 @@ export default {
         account_id: this.user.userID,
         inventory_type: this.common.ecommerce.inventoryType
       }
+      this.selectedMenu.title = 'Documentation'
       $('#loading').css({display: 'block'})
       this.APIRequest('products/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})

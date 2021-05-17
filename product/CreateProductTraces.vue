@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="modal fade" id="createProductTracesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div data-backdrop="static" data-keyboard="false" class="modal fade" id="createProductTracesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-md" role="document">
         <div class="modal-content">
           <div class="modal-header bg-primary">
             <h5 class="modal-title" id="exampleModalLabel">Create Batch</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <button @click="cancel()" type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true" class="text-white">&times;</span>
             </button>
           </div>
@@ -278,7 +278,8 @@ export default {
       $('#createProductTracesModal').modal('hide')
       this.newData.batch_number = null
       this.manufacturing.date = null
-      this.errorMessage = false
+      this.errorMessage = null
+      this.newData.qty = this.qty
     }
   }
 }
