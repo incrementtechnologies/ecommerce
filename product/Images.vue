@@ -101,7 +101,7 @@ export default {
     },
     cancel(){
       this.retrieveImage()
-      this.$parent.retrieve()
+      // this.$parent.retrieve()
       this.selectedImage = null
     },
     setUpFileUpload(event){
@@ -149,10 +149,10 @@ export default {
         $('#loading').css({'display': 'none'})
         this.hasError = false
         this.retrieveImage()
-        this.$parent.retrieve()
+        // this.$parent.retrieve()
         if(response.data.data !== null){
           this.retrieveImage()
-          this.$parent.retrieve()
+          // this.$parent.retrieve()
         }
       })
       this.prevIndex = null
@@ -163,7 +163,7 @@ export default {
       }
       this.APIRequest('product_images/delete', parameter).then(response => {
         this.retrieveImage()
-        this.$parent.retrieve()
+        // this.$parent.retrieve()
         this.selectedImage = null
       })
     },
@@ -175,7 +175,7 @@ export default {
       axios.post(this.config.BACKEND_URL + '/images/delete?token=' + AUTH.tokenData.token, params).then(response => {
         $('#loading').css({display: 'none'})
         this.retrieveImage()
-        this.$parent.retrieve()
+        // this.$parent.retrieve()
       })
     },
     retrieveImage(){

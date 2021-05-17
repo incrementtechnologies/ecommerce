@@ -10,7 +10,7 @@
       <div class="product-item-details">
         <div style="float:right;">
           <button class="btn btn-warning" v-if="isEdit === false" @click="redirect('/marketplace/product/' + data.code + '/' + 'preview')" >Preview</button>
-          <button class="btn btn-primary" @click="isEdit = true" v-if="isEdit === false">Edit</button>
+          <button class="btn btn-primary" @click="isEditing()" v-if="isEdit === false">Edit</button>
         </div>
         <div class="product-item-title">
           <label>Title <label class="text-danger">*</label></label>
@@ -386,6 +386,18 @@ export default {
     'images': require('components/increment/ecommerce/product/Images.vue'),
     'other-details': require('components/increment/ecommerce/product/OtherDetailsEnhance.vue')
   },
+  beforeRouteLeave(to, from, next){
+    if(localStorage.getItem('editing') !== null){
+      if(confirm('You are currently in edit mode, would you like to exit this page?')){
+        localStorage.removeItem('editing')
+        next()
+      }else{
+        next(false)
+      }
+    }else if(localStorage.getItem('editing') === null){
+      next()
+    }
+  },
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
@@ -402,6 +414,7 @@ export default {
     cancel() {
       this.retrieve()
       this.isEdit = false
+      localStorage.removeItem('editing')
     },
     addActive(){
       if((this.active.active_name === null || this.active.active_name === '') || (this.active.value === null || this.active.value <= 0) || this.active.attribute === null || this.active.attribute2 === null){
@@ -483,6 +496,10 @@ export default {
     },
     samples(data){
       console.log(data)
+    },
+    isEditing(){
+      this.isEdit = true
+      localStorage.setItem('editing', 'true')
     },
     getFiles(data, fileNumber){
       if(data !== null){
@@ -707,6 +724,7 @@ export default {
         this.retrieveVariation()
         this.errorMessageHracs = null
         this.isEdit = false
+        localStorage.removeItem('isEditing')
       })
     },
     createAttribute(){
