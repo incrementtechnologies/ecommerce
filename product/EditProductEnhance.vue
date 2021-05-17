@@ -302,6 +302,22 @@ export default {
     this.retrieveVariation()
     this.isEdit = false
   },
+  created(){
+    document.onkeydown = function(e){
+      console.log(e.keyCode)
+      if(e.keyCode === 116){
+        if(localStorage.getItem('editing') !== null){
+          if(confirm('You are currently in edit mode, would you like to exit this page?')){
+            window.location.reload()
+            localStorage.removeItem('editing')
+            return
+          }else{
+            return (e.which || e.keyCode) !== 116
+          }
+        }
+      }
+    }
+  },
   data(){
     return {
       user: AUTH.user,
