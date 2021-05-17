@@ -194,30 +194,6 @@
         <p v-else>{{data.details.shelf_life}}&nbsp;Month/s</p>
       </div>
     </div>
-    <!-- <div class="row mt-3">
-      <div class="col-sm-5">
-        <p><b>Variations:</b></p>
-      </div>
-      <div class="col-sm-7 p-0" style="color: grey;">
-        <p v-if="data.variation === null">No Data</p>
-        <ul v-else class="p-0" style="list-style:none;">
-          <li v-for="(variation, index) in data.variation" :key="index">{{data.title}}-{{variation.payload_value}}&nbsp;{{variation.payload}}</li>
-        </ul>
-      </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-sm-5">
-        <p><b>Bundled Products:</b></p>
-      </div>
-      <div class="col-sm-7 p-0" style="color: grey;">
-        <p v-if="data.bundled === null || data.bundled.length === 0">No Data</p>
-        <ul v-else class="p-0" style="list-style:none;">
-          <li v-for="(bundle, index) in data.bundled" :key="index">
-            {{bundle.qty}}&nbsp;X&nbsp;{{data.title}}{{bundle.variation[0].payload}}-{{bundle.variation[0].payload_value}}
-          </li>
-        </ul>
-      </div>
-    </div> -->
     <div class="row mt-3">
       <div class="col-sm-5">
         <p><b>Label:</b></p>
