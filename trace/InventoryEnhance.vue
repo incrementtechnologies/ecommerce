@@ -47,7 +47,7 @@ export default {
   created(){
     let parameter = {
       product_attribute_id: this.inventory.product_attribute_id,
-      status: 'active',
+      status: '',
       batch_number: this.inventory.batch_number
     }
     console.log('paramter', parameter)
