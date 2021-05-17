@@ -3,8 +3,7 @@
   <div class="col-sm-6 m-0 p-0">
     <div v-if="data !== null" class="">
       <div class="title">
-        <i v-if="user.type !== 'USER' && user.type !== 'DISTRIBUTOR'" class="fa fa-reply" style="color:#cae166; font-size:20px;cursor:pointer;" title="Back" @click="$router.push('/product/edit/' + $route.params.code)"></i>
-        <i v-else class="fa fa-reply" style="color:#cae166; font-size:20px;cursor:pointer;" title="Back" @click="$router.push('/d/products')"></i>
+        <i class="fa fa-reply" style="color:#cae166; font-size:20px;cursor:pointer;" title="Back" @click="toCheck()"></i>
         <br>
         <h3>{{data.title}}</h3>
         <div class="product-row-merchant w-100" v-if="data.merchant !== null">
@@ -709,6 +708,22 @@ export default {
           }
         }
         this.retrieveImage()
+      })
+    },
+    toCheck(){
+      let parameter = {
+        merchant: this.data.merchant.id,
+        merchant_id: this.user.subAccount.merchant.id,
+        user_type: this.user.type
+      }
+      this.APIRequest('customers/retrieve_accounts', parameter).then(response => {
+        console.log(response, 'helllooooooo', parameter)
+        $('#loading').css({display: 'none'})
+        if(response.data === true){
+          this.$router.push('/d/products')
+        }else{
+          this.$router.push('/product/edit/' + this.$route.params.code)
+        }
       })
     }
   }
