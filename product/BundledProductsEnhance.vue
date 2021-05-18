@@ -32,10 +32,13 @@
     <div id="demo" class="collapse">
       <div>
       <div class="error text-danger" v-if="errorMessage !== null">{{errorMessage}}</div>
+      <div class="error text-danger" v-if="responseError !== null">{{responseError}}</div>
         <br>
-          <select class="form-control form-control-custom"  style="float: left; width: 40%;" @change="getAttribute($event)" v-model="selectedVariation" :disabled="isEdit===false">
-              <option v-for="(itemVariation, indexVariation) in variationData.variation" :key="indexVariation" :value="{id: itemVariation.id, payload: itemVariation.payload, payload_value: itemVariation.payload_value}" >{{itemVariation.payload_value}}&nbsp;{{convertion.getUnitsAbbreviation(itemVariation.payload)}}</option>
+          <select class="form-control form-control-custom"  style="float: left; width: 40%;"  @change="getAttribute($event)" v-model="selectedTemp"  :disabled="isEdit===false">
+              <option selected></option>
+              <option v-for="(itemVariation, indexVariation) in variationData.variation" :key="indexVariation" :value="itemVariation.id">{{itemVariation.payload_value}}&nbsp;{{convertion.getUnitsAbbreviation(itemVariation.payload)}}</option>
           </select>
+        <!-- fasdfasdf -->
           <input 
             type="number"
             @keydown="filterKey" @input="filterInput" 
@@ -44,7 +47,6 @@
             placeholder="Qty"
             v-model="newAttribute.qty"
             :disabled="isEdit===false"
-            @keyup="getAttribute(null)"
           >
           <i class="fa fa-check mt-2" style="color: #cae166; font-size: 30px;" v-if="newAttribute.product_attribute_id !== null && newAttribute.qty !== null"></i>
           <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="addOrDelete(null, true)" :disabled="isEdit===false"><i class="fa fa-plus"></i></button>
@@ -107,6 +109,7 @@ import ProductTrace from './CreateProductTrace.js'
 import Confirmation from 'src/components/increment/generic/modal/Confirmation.vue'
 export default {
   mounted(){
+    console.log('fdsfsfasd', this.selectedAttr)
   },
   props: ['item', 'isEdit', 'variationData'],
   data(){
@@ -116,7 +119,9 @@ export default {
       config: CONFIG,
       common: COMMON,
       errorMessage: null,
+      responseError: null,
       deletedId: null,
+      selectedTemp: null,
       newAttribute: {
         product_id: null,
         bundled: null,
@@ -131,7 +136,8 @@ export default {
       selectedVariation: null,
       toDeleteBundle: null,
       confirmationMessage: null,
-      isDelete: null
+      isDelete: null,
+      selectedAttr: null
     }
   },
   components: {
@@ -157,11 +163,12 @@ export default {
       }
     },
     addOrDelete(item, bool){
-      console.log(this.item.bundled)
+      console.log(this.selectedVariation !== null, this.newAttribute.qty)
       bool === true ? this.confirmationMessage = 'Are you sure you want to create this new bundle configuration?' : this.confirmationMessage = 'Are you sure you want to delete this bundle configuration?'
       if(bool === true) {
         if(this.selectedVariation !== null && this.newAttribute.qty !== null) {
           this.isDelete = false
+          this.errorMessage = null
           this.productId = this.item.id
           this.newAttribute.product_id = this.item.id
           this.$refs.confirmModal.show()
@@ -170,6 +177,7 @@ export default {
         }
       } else{
         this.toDeleteBundle = item
+        this.errorMessage = null
         this.isDelete = true
         this.$refs.confirmModal.show()
       }
@@ -193,19 +201,20 @@ export default {
 
     },
     create(){
-      console.log('item', this.item)
-      console.log(this.newAttribute.product_attribute_id, this.newAttribute.qty)
-      this.payloadValueExit(this.newAttribute.qty, this.variantPayload, this.variantPayloadValue)
+      // this.payloadValueExit(this.newAttribute.qty, this.variantPayload, this.variantPayloadValue)
+      console.log(this.errorMessage)
       if(this.errorMessage !== null){
         return
       }else{
         let parameter = {
           account_id: this.user.userID,
-          title: `${this.newAttribute.qty} X ${this.item.title}(${this.convertion.getUnitsAbbreviation(this.variantPayload)}${this.variantPayloadValue})`,
+          title: `${this.newAttribute.qty} X ${this.item.title}(${this.selectedVariation.payload_value} ${this.convertion.getUnitsAbbreviation(this.selectedVariation.payload)})`,
           description: this.item.description,
           status: 'pending',
           type: 'bundled',
-          merchant_id: this.user.subAccount.merchant.id
+          merchant_id: this.user.subAccount.merchant.id,
+          qty: this.newAttribute.qty,
+          product_attribute_id: this.selectedVariation.id
         }
         $('#loading').css({display: 'block'})
         this.APIRequest('products/create', parameter).then(response => {
@@ -217,30 +226,43 @@ export default {
               product_id: response.data
             }
             this.APIRequest('product_attributes/create', varParams).then(res => {
-              this.newAttribute.product_attribute_id = this.item.variation.id
+              this.newAttribute.product_attribute_id = this.selectedVariation.id
               this.newAttribute.bundled = response.data
               this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
                 // this.$parent.retrieve()
                 if(response.data > 0){
                   this.errorMessage = null
-                  // this.variantId = null
-                  // this.variantPayload = null
-                  // this.variantPayloadValue = null
+                  this.responseError = null
                   this.selectedVariation = null
                   this.newAttribute.qty = null
+                  this.selectedTemp = null
                   this.$parent.retrieveBundled()
                 }
               })
             })
             this.$parent.retrieveBundled()
+          }else if(response.error !== null){
+            this.responseError = response.error
+            return
           }
         })
       }
     },
     getAttribute(data){
-      this.variantId = this.selectedVariation.id
-      this.variantPayload = this.selectedVariation.payload
-      this.variantPayloadValue = this.selectedVariation.payload_value
+      this.variationData.variation.map(el => {
+        if(el.id.toString() === data.target.value){
+          let tempdata = {
+            id: el.id,
+            payload: el.payload,
+            payload_value: el.payload_value
+          }
+          this.selectedVariation = tempdata
+
+          this.variantId = this.selectedVariation.id
+          this.variantPayload = this.selectedVariation.payload
+          this.variantPayloadValue = this.selectedVariation.payload_value
+        }
+      })
     },
     payloadValueExit(newValue, payload, payloadValue){
       console.log(this.item)
@@ -260,53 +282,6 @@ export default {
         })
       }
     },
-    // create(){
-    //   console.log('updateed 18-03-2021 2:16')
-    //   console.log(this.newAttribute.product_attribute_id, this.newAttribute.qty)
-    //   if(this.selectedVariation !== null && this.newAttribute.qty !== null){
-    //     this.payloadValueExit(this.newAttribute.qty, this.variantPayload, this.variantPayloadValue)
-    //     if(this.errorMessage !== null){
-    //       return
-    //     }
-    //     let parameter = {
-    //       account_id: this.user.userID,
-    //       title: `${this.newAttribute.qty} X ${this.item.title}(${this.variantPayloadValue}${this.convertion.getUnitsAbbreviation(this.variantPayload)})`,
-    //       description: this.item.description,
-    //       status: 'pending',
-    //       type: 'bundled',
-    //       merchant_id: this.user.subAccount.merchant.id
-    //     }
-    //     $('#loading').css({display: 'block'})
-    //     this.APIRequest('products/create', parameter).then(response => {
-    //       $('#loading').css({display: 'none'})
-    //       if(response.data > 0){
-    //         let varParams = {
-    //           payload: this.variantPayload,
-    //           payload_value: this.variantPayloadValue,
-    //           product_id: response.data
-    //         }
-    //         this.APIRequest('product_attributes/create', varParams).then(res => {
-    //           this.newAttribute.product_attribute_id = res.data
-    //           this.newAttribute.bundled = response.data
-    //           this.APIRequest('bundled_settings/create', this.newAttribute).then(response => {
-    //             this.$parent.retrieve()
-    //             if(response.data > 0){
-    //               this.errorMessage = null
-    //               // this.variantId = null
-    //               // this.variantPayload = null
-    //               // this.variantPayloadValue = null
-    //               this.selectedVariation = null
-    //               this.newAttribute.qty = null
-    //               // this.$parent.retrieve()
-    //             }
-    //           })
-    //         })
-    //       }
-    //     })
-    //   }else{
-    //     this.errorMessage = 'Fill up the required fields.'
-    //   }
-    // },
     confirmAdd(){
       $('#connectionError').modal('show')
     },
