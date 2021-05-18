@@ -655,8 +655,12 @@ export default {
         if(response.data.length > 0){
           console.log('RESPONSE IMAGE', response.data)
           this.imagesList = response.data
-          this.selectedImage = this.imagesList[0].url
-          console.log('[IMAGE LIST]', this.imagesList)
+          // this.selectedImage = this.imagesList[0].url
+          response.data.map(el => {
+            if(el.url === this.data.featured[0].url){
+              this.selectedImage = el.url
+            }
+          })
         }
       })
     },
