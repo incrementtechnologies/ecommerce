@@ -130,15 +130,15 @@ export default {
       })
     },
     validate(){
-      if(this.title === null || this.title === ''){
+      if((this.title === null || this.title === '') && (this.description === '' || this.description === null)){
+        this.errorMessage = 'Fields with (*) are required.'
+      }else if(this.title === null || this.title === ''){
         this.errorMessage = 'Title is required.'
         return false
-      }
-      if(this.description === '' || this.description === null){
+      }else if(this.description === '' || this.description === null){
         this.errorMessage = 'Description is required.'
         return false
-      }
-      if(typeof this.common.ecommerce.productTitleLimit !== undefined && typeof this.common.ecommerce.productTitleLimit !== 'undefined' && this.title.length > this.common.ecommerce.productTitleLimit){
+      }else if(typeof this.common.ecommerce.productTitleLimit !== undefined && typeof this.common.ecommerce.productTitleLimit !== 'undefined' && this.title.length > this.common.ecommerce.productTitleLimit){
         this.errorMessage = 'Product title length should not exceed to ' + this.common.ecommerce.productTitleLimit + ' characters.'
         return false
       }
