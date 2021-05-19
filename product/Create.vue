@@ -18,11 +18,11 @@
             <br v-if="errorMessage !== null">
             <br>
             <div class="form-group">
-              <label for="exampleInputEmail1">Title</label>
+              <label for="exampleInputEmail1">Title <label class="text-danger">*</label></label>
               <input type="text" class="form-control" placeholder="Type title here..." v-model="title">
             </div>
             <div class="form-group">
-              <label for="exampleInputEmail1">Description</label>
+              <label for="exampleInputEmail1">Description <label class="text-danger">*</label></label>
               <input type="text" class="form-control" placeholder="Type description here..." v-model="description">
             </div>
             <!-- <div class="form-group" v-if="type !== 'd'">
@@ -31,6 +31,7 @@
                 Create as Bundled Product
               </label>
             </div> -->
+            <!-- <p>Just add</p> -->
             <div class="form-group" v-if="type === 'd'">
               <label class="form-check" for="defaultCheck1">
                 Automatically create as Bundled Product
@@ -129,15 +130,15 @@ export default {
       })
     },
     validate(){
-      if(this.title === null || this.title === ''){
+      if((this.title === null || this.title === '') && (this.description === '' || this.description === null)){
+        this.errorMessage = 'Fields with (*) are required.'
+      }else if(this.title === null || this.title === ''){
         this.errorMessage = 'Title is required.'
         return false
-      }
-      if(this.description === '' || this.description === null){
+      }else if(this.description === '' || this.description === null){
         this.errorMessage = 'Description is required.'
         return false
-      }
-      if(typeof this.common.ecommerce.productTitleLimit !== undefined && typeof this.common.ecommerce.productTitleLimit !== 'undefined' && this.title.length > this.common.ecommerce.productTitleLimit){
+      }else if(typeof this.common.ecommerce.productTitleLimit !== undefined && typeof this.common.ecommerce.productTitleLimit !== 'undefined' && this.title.length > this.common.ecommerce.productTitleLimit){
         this.errorMessage = 'Product title length should not exceed to ' + this.common.ecommerce.productTitleLimit + ' characters.'
         return false
       }
