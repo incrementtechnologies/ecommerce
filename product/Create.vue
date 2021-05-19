@@ -31,6 +31,7 @@
                 Create as Bundled Product
               </label>
             </div> -->
+            <!-- <p>Just add</p> -->
             <div class="form-group" v-if="type === 'd'">
               <label class="form-check" for="defaultCheck1">
                 Automatically create as Bundled Product
