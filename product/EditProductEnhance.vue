@@ -251,7 +251,7 @@
           <button class="btn btn-primary pull-right" @click="updateProduct()" style="margin-right: 2px; margin-top: 5px;">Update</button>
         </div>
       </div>
-      <images :data="images" :isEditing="isEdit"/>
+      <images :productImages="images" :isEditing="isEdit"/>
     </div>
     <div class="product-more-details">
       <div class="pagination-holder">

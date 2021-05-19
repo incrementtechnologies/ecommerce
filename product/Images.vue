@@ -7,9 +7,9 @@
           </label>
         </div>
         <img :src="config.BACKEND_URL + selectedImage" class="main-image" v-if="selectedImage !== null">
-        <img :src="`${config.BACKEND_URL}${data.featured !== null  ? data.featured[0].url : null}`" class="main-image" v-if="selectedImage === null && data.featured !== null">
-        <i class="fa fa-image" v-if="selectedImage === null && data.featured === null"></i>
-        <label class="remove-image text-danger" id="featured-image-remove" @click="removeImage(data.featured !== null ? data.featured[0].id : null)" v-if="selectedImage === null && data.featured !== null">
+        <img :src="`${config.BACKEND_URL}${imagesData.featured !== null  ? imagesData.featured[0].url : null}`" class="main-image" v-if="selectedImage === null && imagesData.featured !== null">
+        <i class="fa fa-image" v-if="selectedImage === null && imagesData.featured === null"></i>
+        <label class="remove-image text-danger" id="featured-image-remove" @click="removeImage(imagesData.featured !== null ? imagesData.featured[0].id : null)" v-if="selectedImage === null && imagesData.featured !== null">
           <i class="fa fa-times" :hidden="isEditing===false"></i>
         </label>
        <div class="images-holder">
@@ -35,8 +35,8 @@
                   <label class="middle"  @click="deleteImage(item.id)" v-if="item.status !== 'featured'">
                     <i class="fa fa-times-circle text" :hidden="isEditing===false"></i>
                   </label>
-                  <div v-if="data.featured !== null">
-                    <p style="position:relative;font-weight:bold" :class="{'ImageLabel': item.url !== data.featured[0].url}"><i class="fa fa-check" style="color: #cae166"></i> Featured</p>
+                  <div v-if="imagesData.featured !== null">
+                    <p style="position:relative;font-weight:bold" :class="{'ImageLabel': item.url !== imagesData.featured[0].url}"><i class="fa fa-check" style="color: #cae166"></i> Featured</p>
                   </div>
               </div>
              <!-- </div> -->
@@ -59,7 +59,7 @@ import Image from '../../generic/modal/Image.vue'
 import axios from 'axios'
 export default {
   components: { Image },
-  props: ['data', 'isEditing'],
+  props: ['productImages', 'isEditing'],
   data: () => ({
     user: AUTH.user,
     config: CONFIG,
@@ -78,7 +78,7 @@ export default {
     if(this.imagesList.length > 0){
       this.imagesList.map(el => {
         console.log('true')
-        if(el.id === this.data.featured[0].id){
+        if(el.id === this.productImages.featured[0].id){
           $(`.${el.id}image`).removeAttr('hidden')
         }
       })
@@ -87,6 +87,11 @@ export default {
   computed: {
     returnImageList(){
       return this.imagesList
+    },
+    imagesData(){
+      if(this.productImages !== null){
+        return this.productImages
+      }
     }
   },
   methods: {
@@ -179,7 +184,7 @@ export default {
       })
     },
     retrieveImage(){
-      this.productId = this.data.id
+      this.productId = this.productImages.id
       const parameter = {
         condition: [{
           value: this.user.userID,
@@ -189,7 +194,7 @@ export default {
         sort: {
           created_at: 'desc'
         },
-        category: `product${this.data.id}`
+        category: `product${this.productImages.id}`
       }
       $('#loading').css({display: 'block'})
       this.APIRequest('images/retrieve_with_category', parameter).done(response => {
@@ -198,7 +203,7 @@ export default {
           this.imagesList = response.data
           this.filteredData = response.data
         }else{
-          this.data = null
+          this.productImages = null
           this.filteredData = null
         }
       })
