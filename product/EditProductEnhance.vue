@@ -124,7 +124,7 @@
           </div>
           <div class="col-sm-3 pl-0 ml-0 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
             <select class="form-control form-control-custom" v-model="active.attribute" @change="getValue($event, 'attribute1')">
-              <option v-for="(item, index) in formulations.ACTIVE_UNITS" :style="[active.attribute2 !== item ? {} : {display: 'none'}]" :value="item" :key="index">{{item}}</option>
+              <option v-for="(item, index) in formulations.ACTIVE_UNITS1"  :value="item" :key="index">{{item}}</option>
             </select>
           </div>
             <div class="col-sm-3 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
@@ -251,7 +251,7 @@
           <button class="btn btn-primary pull-right" @click="updateProduct()" style="margin-right: 2px; margin-top: 5px;">Update</button>
         </div>
       </div>
-      <images :data="data" :isEditing="isEdit"/>
+      <images :data="images" :isEditing="isEdit"/>
     </div>
     <div class="product-more-details">
       <div class="pagination-holder">
@@ -300,6 +300,7 @@ export default {
     this.retrieve()
     this.retrieveBundled()
     this.retrieveVariation()
+    this.retrieveFeaturedImages()
     this.isEdit = false
   },
   created(){
@@ -375,7 +376,8 @@ export default {
       confirmationMessage: null,
       tagName: null,
       bundledData: null,
-      variationData: null
+      variationData: null,
+      images: []
     }
   },
   computed: {
@@ -415,6 +417,23 @@ export default {
     }
   },
   methods: {
+    getValue(event, type){
+      if(type === 'attribute2'){
+        if(this.formulations.ACTIVE_UNITS1.includes(event.target.value)){
+          let idx = this.formulations.ACTIVE_UNITS1.filter(function(value, index, arr){
+            return value !== event.target.value
+          })
+          this.formulations.ACTIVE_UNITS1 = idx
+        }
+      }else{
+        if(this.formulations.ACTIVE_UNITS2.includes(event.target.value)){
+          let idx = this.formulations.ACTIVE_UNITS2.filter(function(value, index, arr){
+            return value !== event.target.value
+          })
+          this.formulations.ACTIVE_UNITS2 = idx
+        }
+      }
+    },
     redirect(parameter){
       ROUTER.push(parameter)
     },
@@ -592,6 +611,22 @@ export default {
             this.showHrac = true
           }
         }
+      })
+    },
+    retrieveFeaturedImages(){
+      let parameter = {
+        condition: [{
+          value: this.code,
+          column: 'code',
+          clause: '='
+        }],
+        account_id: this.user.userID,
+        inventory_type: this.common.ecommerce.inventoryType
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('products/retrieve_featured_images', parameter).then(response => {
+        $('#loading').css({display: 'none'})
+        this.images = response.data
       })
     },
     retrieveBundled(){
@@ -800,14 +835,14 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('product_images/create', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        this.retrieve()
+        this.retrieveFeaturedImages()
       })
     },
     updateRequest(parameter){
       $('#loading').css({display: 'block'})
       this.APIRequest('product_images/update', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        this.retrieve()
+        this.retrieveFeaturedImages()
       })
     },
     manageImageUrl(url, status){
