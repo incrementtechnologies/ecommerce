@@ -56,15 +56,15 @@ export default {
     'Wear a full respirator'
   ],
 
-  ACTIVE_UNITS: [
+  ACTIVE_UNITS1: [
     'Grams (g)',
     'Milligrams (mg)'
   ],
 
   ACTIVE_UNITS2: [
-    'Kilogram (kg)',
-    'Gram (g)',
-    'Litre (L)',
-    'Millilitre (mL)'
+    'Kilograms (kg)',
+    'Grams (g)',
+    'Litres (L)',
+    'Millilitres (mL)'
   ]
 }

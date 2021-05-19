@@ -124,7 +124,7 @@
           </div>
           <div class="col-sm-3 pl-0 ml-0 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
             <select class="form-control form-control-custom" v-model="active.attribute" @change="getValue($event, 'attribute1')">
-              <option v-for="(item, index) in formulations.ACTIVE_UNITS" :style="[active.attribute2 !== item ? {} : {display: 'none'}]" :value="item" :key="index">{{item}}</option>
+              <option v-for="(item, index) in formulations.ACTIVE_UNITS1"  :value="item" :key="index">{{item}}</option>
             </select>
           </div>
             <div class="col-sm-3 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
@@ -417,6 +417,23 @@ export default {
     }
   },
   methods: {
+    getValue(event, type){
+      if(type === 'attribute2'){
+        if(this.formulations.ACTIVE_UNITS1.includes(event.target.value)){
+          let idx = this.formulations.ACTIVE_UNITS1.filter(function(value, index, arr){
+            return value !== event.target.value
+          })
+          this.formulations.ACTIVE_UNITS1 = idx
+        }
+      }else{
+        if(this.formulations.ACTIVE_UNITS2.includes(event.target.value)){
+          let idx = this.formulations.ACTIVE_UNITS2.filter(function(value, index, arr){
+            return value !== event.target.value
+          })
+          this.formulations.ACTIVE_UNITS2 = idx
+        }
+      }
+    },
     redirect(parameter){
       ROUTER.push(parameter)
     },
