@@ -18,11 +18,11 @@
             <br v-if="errorMessage !== null">
             <br>
             <div class="form-group">
-              <label for="exampleInputEmail1">Title</label>
+              <label for="exampleInputEmail1">Title <label class="text-danger">*</label></label>
               <input type="text" class="form-control" placeholder="Type title here..." v-model="title">
             </div>
             <div class="form-group">
-              <label for="exampleInputEmail1">Description</label>
+              <label for="exampleInputEmail1">Description <label class="text-danger">*</label></label>
               <input type="text" class="form-control" placeholder="Type description here..." v-model="description">
             </div>
             <!-- <div class="form-group" v-if="type !== 'd'">
