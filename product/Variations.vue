@@ -64,7 +64,7 @@
             </td>
             <td class="pl-0">
               <select class="form-control form-control-custom" v-model="newAttribute.payload" v-if="variationData.variation.length <= 0" :disabled="isEdit===false" @change="getVariationName($event, 'payload')">
-                <option :key="'blank'" :value="' '">&nbsp;</option>
+                <option selected></option>
                 <option v-for="(item, index) in common.ecommerce.productUnits" :value="item" :key="index">{{item}}</option>
               </select>
               <input class="form-control form-control-custom" id="payload" :placeholder="`${item.title}(${convertion.getUnitsAbbreviation(variationData.variation[0].payload)})`" :value="variationData.variation[0].payload" v-else disabled>
