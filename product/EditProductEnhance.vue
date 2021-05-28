@@ -10,7 +10,7 @@
       <div class="product-item-details">
         <div style="float:right;">
           <button class="btn btn-warning" v-if="isEdit === false" @click="redirect('/marketplace/product/' + data.code + '/' + 'preview')" >Preview</button>
-          <button class="btn btn-primary" @click="isEditing()" v-if="isEdit === false">Edit</button>
+          <button class="btn btn-primary" @click="isEdit = true" v-if="isEdit === false">Edit</button>
         </div>
         <div class="product-item-title">
           <label>Title <label class="text-danger">*</label></label>
@@ -72,7 +72,7 @@
           <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]">HRAC Mode of Action</label>
           <label class="text-danger" style="font-weight: 600;" v-if="errorMessageHracs !== null">&nbsp;&nbsp;{{errorMessageHracs}}</label>
         </div>
-        <div v-if="showHrac === true || (data.tags !== null && data.tags === 'Herbicide') || tags === 'Herbicide' ">
+        <div v-if="showHrac === true && (data.tags !== null && data.tags === 'Herbicide')">
           <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]" v-if="errorMessageHracs === null">HRAC Mode of Action</label>
           <div class="mt-0" v-show="data.status !== 'published' && isEdit">
             <div class="product-item-title mt-0" style="width: 90%">
@@ -124,7 +124,7 @@
           </div>
           <div class="col-sm-3 pl-0 ml-0 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
             <select class="form-control form-control-custom" v-model="active.attribute" @change="getValue($event, 'attribute1')">
-              <option v-for="(item, index) in formulations.ACTIVE_UNITS1"  :value="item" :key="index">{{item}}</option>
+              <option v-for="(item, index) in formulations.ACTIVE_UNITS" :style="[active.attribute2 !== item ? {} : {display: 'none'}]" :value="item" :key="index">{{item}}</option>
             </select>
           </div>
             <div class="col-sm-3 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
@@ -251,7 +251,7 @@
           <button class="btn btn-primary pull-right" @click="updateProduct()" style="margin-right: 2px; margin-top: 5px;">Update</button>
         </div>
       </div>
-      <images :productImages="images" :isEditing="isEdit"/>
+      <images :data="data" :isEditing="isEdit"/>
     </div>
     <div class="product-more-details">
       <div class="pagination-holder">
@@ -300,24 +300,7 @@ export default {
     this.retrieve()
     this.retrieveBundled()
     this.retrieveVariation()
-    this.retrieveFeaturedImages()
     this.isEdit = false
-  },
-  created(){
-    document.onkeydown = function(e){
-      console.log(e.keyCode)
-      if(e.keyCode === 116){
-        if(localStorage.getItem('editing') !== null){
-          if(confirm('You are currently in edit mode, would you like to exit this page?')){
-            window.location.reload()
-            localStorage.removeItem('editing')
-            return
-          }else{
-            return (e.which || e.keyCode) !== 116
-          }
-        }
-      }
-    }
   },
   data(){
     return {
@@ -376,8 +359,7 @@ export default {
       confirmationMessage: null,
       tagName: null,
       bundledData: null,
-      variationData: null,
-      images: []
+      variationData: null
     }
   },
   computed: {
@@ -404,41 +386,11 @@ export default {
     'images': require('components/increment/ecommerce/product/Images.vue'),
     'other-details': require('components/increment/ecommerce/product/OtherDetailsEnhance.vue')
   },
-  beforeRouteLeave(to, from, next){
-    if(localStorage.getItem('editing') !== null){
-      if(confirm('You are currently in edit mode, would you like to exit this page?')){
-        localStorage.removeItem('editing')
-        next()
-      }else{
-        next(false)
-      }
-    }else if(localStorage.getItem('editing') === null){
-      next()
-    }
-  },
   methods: {
-    getValue(event, type){
-      if(type === 'attribute2'){
-        if(this.formulations.ACTIVE_UNITS1.includes(event.target.value)){
-          let idx = this.formulations.ACTIVE_UNITS1.filter(function(value, index, arr){
-            return value !== event.target.value
-          })
-          this.formulations.ACTIVE_UNITS1 = idx
-        }
-      }else{
-        if(this.formulations.ACTIVE_UNITS2.includes(event.target.value)){
-          let idx = this.formulations.ACTIVE_UNITS2.filter(function(value, index, arr){
-            return value !== event.target.value
-          })
-          this.formulations.ACTIVE_UNITS2 = idx
-        }
-      }
-    },
     redirect(parameter){
       ROUTER.push(parameter)
     },
     selectMenu(index){
-      console.log(this.productMenu[index].flag, this.productMenu[index], 'hellllo')
       if(this.prevMenuIndex !== index){
         this.productMenu[this.prevMenuIndex].flag = false
         this.productMenu[index].flag = true
@@ -449,7 +401,6 @@ export default {
     cancel() {
       this.retrieve()
       this.isEdit = false
-      localStorage.removeItem('editing')
     },
     addActive(){
       if((this.active.active_name === null || this.active.active_name === '') || (this.active.value === null || this.active.value <= 0) || this.active.attribute === null || this.active.attribute2 === null){
@@ -532,10 +483,6 @@ export default {
     samples(data){
       console.log(data)
     },
-    isEditing(){
-      this.isEdit = true
-      localStorage.setItem('editing', 'true')
-    },
     getFiles(data, fileNumber){
       if(data !== null){
         if(fileNumber === 'file1'){
@@ -566,7 +513,6 @@ export default {
         account_id: this.user.userID,
         inventory_type: this.common.ecommerce.inventoryType
       }
-      this.selectedMenu.title = 'Documentation'
       $('#loading').css({display: 'block'})
       this.APIRequest('products/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
@@ -611,22 +557,6 @@ export default {
             this.showHrac = true
           }
         }
-      })
-    },
-    retrieveFeaturedImages(){
-      let parameter = {
-        condition: [{
-          value: this.code,
-          column: 'code',
-          clause: '='
-        }],
-        account_id: this.user.userID,
-        inventory_type: this.common.ecommerce.inventoryType
-      }
-      $('#loading').css({display: 'block'})
-      this.APIRequest('products/retrieve_featured_images', parameter).then(response => {
-        $('#loading').css({display: 'none'})
-        this.images = response.data
       })
     },
     retrieveBundled(){
@@ -775,7 +705,6 @@ export default {
         this.retrieveVariation()
         this.errorMessageHracs = null
         this.isEdit = false
-        localStorage.removeItem('isEditing')
       })
     },
     createAttribute(){
@@ -835,14 +764,14 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('product_images/create', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        this.retrieveFeaturedImages()
+        this.retrieve()
       })
     },
     updateRequest(parameter){
       $('#loading').css({display: 'block'})
       this.APIRequest('product_images/update', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        this.retrieveFeaturedImages()
+        this.retrieve()
       })
     },
     manageImageUrl(url, status){
