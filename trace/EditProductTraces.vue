@@ -30,13 +30,13 @@
                 </div>
                 <div class="form-group">
                   <label for="exampleInputEmail1">Batch Quantity <b class="text-danger">*</b></label>
-                  <input type="number" min="1" class="form-control" placeholder="Type qty here..." v-model="data.total_qty">
+                  <input type="number" min="1" class="form-control" placeholder="Type qty here..." v-model="newData.qty">
                 </div>
               </div>
               <div class="text-right" v-if="!showCalc">
                 <button type="button" class="btn btn-primary" @click="showCalc = true">OK</button>
               </div>
-              <span v-if="showCalc">Add {{data.total_qty - currQty}} unit(s) to batch</span>
+              <span v-if="showCalc">Add {{newData.qty - currQty}} unit(s) to batch</span>
             </div>
             <div class="modal-footer" v-if="showCalc">
               <button type="button" class="btn btn-danger mr-auto" @click="$emit('deleteBatch', data)" v-if="data.active_qty === 0">Delete</button>
@@ -149,7 +149,7 @@ export default {
       if(this.validate()){
         this.newData.batch_number = this.data.batch_number
         this.newData.product_id = this.data.product_id
-        this.newData.qty = this.data.total_qty
+        // this.newData.qty = this.data.total_qty
         this.newData.account_id = this.data.account_id
         this.newData.product_attribute_id = this.data.product_attribute_id
         this.newData.manufacturing_date = this.data.manufacturing_date
