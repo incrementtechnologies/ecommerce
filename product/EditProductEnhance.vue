@@ -28,11 +28,11 @@
         <div class="product-item-title mb-3">
           <label>Classification</label>
           <br>
-         <select class="form-control form-control-custom" :disabled="data.status !== 'published' && isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
-            <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag" :selected="data.tags === tag ? true : false">{{tag}}</option>
+         <select class="form-control form-control-custom"  v-model="tempTags" :disabled="data.status !== 'published' && isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
+            <option v-for="(tag, index) in returnTags.TAGS" :key="index" :value="tag" :selected="data.tags === tag ? true : false">{{tag}}</option>
           </select>
-          <select class="form-control form-control-custom" :disabled="data.status !== 'published' || isEdit===false" @change="tagChecker($event)" v-else>
-            <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag">{{tag}}</option>
+          <select class="form-control form-control-custom"  v-model="tempTags" :disabled="data.status !== 'published' || isEdit===false" @change="tagChecker($event)" v-else>
+            <option v-for="(tag, index) in returnTags.TAGS" :key="index" :value="tag">{{tag}}</option>
           </select>
         </div>
         <div :hidden="data.status === 'published' || isEdit===false" class="mt-2">
@@ -72,7 +72,7 @@
           <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]">HRAC Mode of Action</label>
           <label class="text-danger" style="font-weight: 600;" v-if="errorMessageHracs !== null">&nbsp;&nbsp;{{errorMessageHracs}}</label>
         </div>
-        <div v-if="showHrac === true && (data.tags !== null && data.tags === 'Herbicide')">
+        <div v-if="showHrac === true && (tags === 'Herbicide' || data.tags === 'Herbicide')">
           <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]" v-if="errorMessageHracs === null">HRAC Mode of Action</label>
           <div class="mt-0" v-show="data.status !== 'published' && isEdit">
             <div class="product-item-title mt-0" style="width: 90%">
@@ -103,7 +103,7 @@
             </div>
           </div>
         </div>
-        <label v-if="data.length > 0  && (data.details.hracs.length === 0 || data.details.hracs === null) && (data.tags === 'Herbicide') && !isEdit">
+        <label v-if="data !== null && data.details.hracs.length === 0 && data.tags === 'Herbicide' && data.status === 'published'">
           No HRAC Available
         </label>
         <div class="row" v-if="data.status !== 'published' && isEdit">
@@ -124,12 +124,12 @@
           </div>
           <div class="col-sm-3 pl-0 ml-0 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
             <select class="form-control form-control-custom" v-model="active.attribute" @change="getValue($event, 'attribute1')">
-              <option v-for="(item, index) in formulations.ACTIVE_UNITS" :style="[active.attribute2 !== item ? {} : {display: 'none'}]" :value="item" :key="index">{{item}}</option>
+              <option v-for="(item, index) in formulations.ACTIVE_UNITS1" :style="[active.attribute !== item ? {} : {display: 'none'}]" :value="item" :key="index">{{item}}</option>
             </select>
           </div>
             <div class="col-sm-3 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
             <select class="form-control pl-0 ml-0 form-control-custom" v-model="active.attribute2" @change="getValue($event, 'attribute2')">
-              <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :style="[active.attribute !== item ? {} : {display: 'none'}]" :value="item" :key="index" >
+              <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :style="[active.attribute2 !== item ? {} : {display: 'none'}]" :value="item" :key="index" >
                 {{item}}
               </option>
             </select>
@@ -345,7 +345,8 @@ export default {
       active: {
         active_name: null,
         value: null,
-        attribute: null
+        attribute: null,
+        attribute2: null
       },
       group: null,
       listGroup: [],
@@ -359,7 +360,8 @@ export default {
       confirmationMessage: null,
       tagName: null,
       bundledData: null,
-      variationData: null
+      variationData: null,
+      tempTags: null
     }
   },
   computed: {
@@ -371,6 +373,9 @@ export default {
             flag: false
           }] : COMMON.ecommerce.editProductMenu
       }
+    },
+    returnTags(){
+      return this.formulations
     }
   },
   components: {
@@ -389,6 +394,27 @@ export default {
   methods: {
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    getValue(event, type){
+      if(type === 'attribute2'){
+        if(event.target.value === 'Gram (g)'){
+          let idx = this.formulations.ACTIVE_UNITS1.filter(function(value, index, arr){
+            return value !== 'Grams (g)'
+          })
+          this.formulations.ACTIVE_UNITS1 = idx
+        }else{
+          this.formulations.ACTIVE_UNITS1.push('Grams (g)')
+        }
+      }else{
+        if(event.target.value === 'Grams (g)'){
+          let idx = this.formulations.ACTIVE_UNITS2.filter(function(value, index, arr){
+            return value !== 'Gram (g)'
+          })
+          this.formulations.ACTIVE_UNITS2 = idx
+        }else{
+          this.formulations.ACTIVE_UNITS2.push('Gram (g)')
+        }
+      }
     },
     selectMenu(index){
       if(this.prevMenuIndex !== index){
@@ -520,6 +546,12 @@ export default {
         if(response.data.length > 0){
           this.data = response.data[0]
           this.tagChecker(null)
+          if(this.data.tags === null){
+            this.tempTags = null
+            this.tags = null
+          }else{
+            this.tempTags = this.data.tags
+          }
           let group = {
             group: null
           }
@@ -555,6 +587,8 @@ export default {
           if(this.data.details.hracs !== undefined){
             this.listOfHracs = this.data.details.hracs
             this.showHrac = true
+          }else{
+            this.data.details['hracs'] = []
           }
         }
       })
@@ -628,7 +662,7 @@ export default {
     tagChecker(data){
       // console.log('[TARGET]', data.target.value)
       console.log('[DATA]', this.data.tags)
-      this.tags = data !== null ? data.target.value : this.data.tags
+      this.tags = data !== null ? data.target.value : this.data.tags !== null
       if(data === null){
         if(this.data.tags === 'Insecticide'){
           this.groups = GROUP.INSECTICIDE
@@ -704,7 +738,7 @@ export default {
         this.retrieveBundled()
         this.retrieveVariation()
         this.errorMessageHracs = null
-        this.isEdit = false
+        this.isEdit = true
       })
     },
     createAttribute(){
