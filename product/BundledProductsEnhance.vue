@@ -237,6 +237,7 @@ export default {
                   this.newAttribute.qty = null
                   this.selectedTemp = null
                   this.$parent.retrieveBundled()
+                  $('#demo').collapse('hide')
                 }
               })
             })

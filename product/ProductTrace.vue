@@ -45,7 +45,7 @@
       </table>
     </div>
     <create-modal :property="createProductTraceModal"></create-modal>
-    <create-product-traces-modal ref="addTrace" :params="productId" :variations="item.variation"></create-product-traces-modal>
+    <!-- <create-product-traces-modal ref="addTrace" :params="productId" :variations="item.variation"></create-product-traces-modal> -->
   </div>
 </template>
 <style scoped>

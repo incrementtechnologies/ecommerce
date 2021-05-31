@@ -33,13 +33,13 @@
                   <input type="number" min="1" class="form-control" placeholder="Type qty here..." v-model="newData.qty">
                 </div>
               </div>
-              <div class="text-right" v-if="!showCalc">
+              <div  v-if="!showCalc" class="modal-footer">
+                <button type="button" class="btn btn-danger mr-auto" @click="$emit('deleteBatch', data)" v-if="data.active_qty === 0">Delete</button>
                 <button type="button" class="btn btn-primary" @click="showCalc = true">OK</button>
               </div>
               <span v-if="showCalc">Add {{newData.qty - currQty}} unit(s) to batch</span>
             </div>
             <div class="modal-footer" v-if="showCalc">
-              <button type="button" class="btn btn-danger mr-auto" @click="$emit('deleteBatch', data)" v-if="data.active_qty === 0">Delete</button>
               <button type="button" class="btn btn-danger" @click="cancel()">Cancel</button>
               <button type="button" class="btn btn-primary" @click="submit()">Confirm</button>
           </div>
