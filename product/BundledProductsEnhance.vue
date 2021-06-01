@@ -208,7 +208,7 @@ export default {
       }else{
         let parameter = {
           account_id: this.user.userID,
-          title: `${this.newAttribute.qty} X ${this.item.title}(${this.selectedVariation.payload_value} ${this.convertion.getUnitsAbbreviation(this.selectedVariation.payload)})`,
+          title: `${this.newAttribute.qty} X ${this.item.title} (${this.selectedVariation.payload_value} ${this.convertion.getUnitsAbbreviation(this.selectedVariation.payload)})`,
           description: this.item.description,
           status: 'pending',
           type: 'bundled',
