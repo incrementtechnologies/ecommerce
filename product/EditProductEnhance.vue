@@ -403,7 +403,7 @@ export default {
           })
           this.formulations.ACTIVE_UNITS1 = idx
         }else{
-          this.formulations.ACTIVE_UNITS1.push('Grams (g)')
+          // this.formulations.ACTIVE_UNITS1.push('Grams (g)')
         }
       }else{
         if(event.target.value === 'Grams (g)'){
@@ -412,7 +412,7 @@ export default {
           })
           this.formulations.ACTIVE_UNITS2 = idx
         }else{
-          this.formulations.ACTIVE_UNITS2.push('Gram (g)')
+          // this.formulations.ACTIVE_UNITS2.push('Gram (g)')
         }
       }
     },
@@ -430,39 +430,85 @@ export default {
     },
     addActive(){
       if((this.active.active_name === null || this.active.active_name === '') || (this.active.value === null || this.active.value <= 0) || this.active.attribute === null || this.active.attribute2 === null){
-        this.errorMessage = 'Empty fields cannot be added'
+        this.errorMessageActives = 'Empty fields cannot be added'
         return
       }
+
       let active = {
         active_name: this.active.active_name,
         value: this.active.value,
         attribute: this.active.attribute,
         attribute2: this.active.attribute2
       }
-      if(this.actives.length < 3){
-        this.actives.push(active)
-        this.active.active_name = null
-        this.active.value = null
-        this.active.attribute = null
-        this.active.attribute2 = null
-        console.log(this.actives)
+
+      if(this.actives.length > 0){
+        this.actives.map(el => {
+          if(el.active_name === this.active.active_name && el.value === this.active.value && el.attribute === this.active.attribute && el.attribute2 === this.active.attribute2){
+            this.errorMessageActives = 'Active is already added'
+            return
+          }
+          if(this.actives.length < 3){
+            this.errorMessageActives = null
+            this.actives.push(active)
+            this.active.active_name = null
+            this.active.value = null
+            this.active.attribute = null
+            this.active.attribute2 = null
+            console.log(this.actives)
+          }else{
+            this.errorMessageActives = 'Active already reach max number(3)'
+          }
+        })
       }else{
-        this.errorMessageActives = 'Active already reach max number(3)'
+        if(this.actives.length < 3){
+          this.actives.push(active)
+          this.active.active_name = null
+          this.active.value = null
+          this.active.attribute = null
+          this.active.attribute2 = null
+          console.log(this.actives)
+        }else{
+          this.errorMessageActives = 'Active already reach max number(3)'
+        }
       }
+      this.actives.map(el => {
+        if(el.attribute !== null && el.attribute2 !== null){
+          this.formulations.ACTIVE_UNITS1 = [el.attribute]
+          this.formulations.ACTIVE_UNITS2 = [el.attribute2]
+        }
+      })
     },
     addGroup(){
       if(this.group === null || this.group === ''){
-        this.errorMessage = 'Empty field cannot be added'
+        this.errorMessageGroups = 'Empty field cannot be added'
         return
       }
       let group = {
         group: this.group
       }
-      if(this.listGroup.length < 3){
-        this.listGroup.push(group)
-        this.group = null
+      if(this.listGroup.length > 0){
+        this.listGroup.map(el => {
+          if(el.group === this.group){
+            this.errorMessageGroups = 'Group is already added'
+            return
+          }else{
+            this.errorMessageGroups = null
+            if(this.listGroup.length < 3){
+              this.listGroup.push(group)
+              this.group = null
+            }else{
+              this.errorMessageGroups = 'Groups already reach max number(3)'
+            }
+          }
+        })
       }else{
-        this.errorMessageGroups = 'Groups already reach max number(3)'
+        if(this.listGroup.length < 3){
+          this.errorMessageGroups = null
+          this.listGroup.push(group)
+          this.group = null
+        }else{
+          this.errorMessageGroups = 'Groups already reach max number(3)'
+        }
       }
     },
     addHrac(){
