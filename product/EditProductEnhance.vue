@@ -76,9 +76,9 @@
           <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]" v-if="errorMessageHracs === null">HRAC Mode of Action</label>
           <div class="mt-0" v-show="data.status !== 'published' && isEdit">
             <div class="product-item-title mt-0" style="width: 90%">
-            <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="data.status === 'published' || isEdit===false">
-                <option v-for="(el, index) in formulations.HRAC" :key="index" :value="el" >{{el}}</option>
-            </select>
+              <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="data.status === 'published' || isEdit===false">
+                  <option v-for="(el, index) in formulations.HRAC" :key="index" :value="el" >{{el}}</option>
+              </select>
             </div>
             <div class="product-item-title pl-3 " style="width: 10%; margin-top: 1%;">
                 <button class="btn btn-primary" @click="addHrac" :disabled="data.status === 'published' || isEdit===false"><i class="fa fa-plus"></i></button>
@@ -103,7 +103,7 @@
             </div>
           </div>
         </div>
-        <label v-if="data !== null && data.details.hracs.length === 0 && data.tags === 'Herbicide' && data.status === 'published'">
+        <label v-if="data !== null && data.details.hracs.length === 0 && data.tags === 'Herbicide' && data.status === 'published'  && !isEdit">
           No HRAC Available
         </label>
         <div class="row" v-if="data.status !== 'published' && isEdit">
