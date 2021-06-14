@@ -569,16 +569,29 @@ export default {
                 this.actives = this.data.details.active
               }
               this.actives = this.data.details.active
+              let temp1 = []
+              let temp2 = []
+              temp1.push(this.data.details.active[0].attribute)
+              temp2.push(this.data.details.active[0].attribute2)
+              this.formulations.ACTIVE_UNITS1.splice(0, this.formulations.ACTIVE_UNITS1.length, ...temp1)
+              this.formulations.ACTIVE_UNITS2.splice(0, this.formulations.ACTIVE_UNITS2.length, ...temp2)
             }else{
               this.actives = []
             }
+            console.log('=====================', this.formulations.ACTIVE_UNITS1)
           }else{
             if(this.data.details.active.active_name !== null){
-              if(this.data.details.active.attribute2 === undefined){
+              if(this.data.details.active.attribute2 === undefined || this.data.details.active.attribute2 === null){
                 this.data.details.active['attribute2'] = null
                 this.actives.push(this.data.details.active)
               }else{
                 this.actives.push(this.data.details.active)
+                let temp1 = []
+                let temp2 = []
+                temp1.push(this.data.details.active.attribute)
+                temp2.push(this.data.details.active.attribute2)
+                this.formulations.ACTIVE_UNITS1.splice(0, this.formulations.ACTIVE_UNITS1.length, ...temp1)
+                this.formulations.ACTIVE_UNITS2.splice(0, this.formulations.ACTIVE_UNITS2.length, ...temp2)
               }
             }else{
               this.actives = []
@@ -591,6 +604,23 @@ export default {
             this.data.details['hracs'] = []
           }
         }
+      })
+    },
+    retrieveFeturedImage(){
+      let parameter = {
+        condition: [{
+          value: this.code,
+          column: 'code',
+          clause: '='
+        }],
+        account_id: this.user.userID,
+        inventory_type: this.common.ecommerce.inventoryType
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('products/retrieve', parameter).then(response => {
+        $('#loading').css({display: 'none'})
+        this.data.featured = response.data[0].featured
+        console.log('[DATAS]', response.data)
       })
     },
     retrieveBundled(){
@@ -798,14 +828,14 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('product_images/create', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        this.retrieve()
+        this.retrieveFeturedImage()
       })
     },
     updateRequest(parameter){
       $('#loading').css({display: 'block'})
       this.APIRequest('product_images/update', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        this.retrieve()
+        this.retrieveFeturedImage()
       })
     },
     manageImageUrl(url, status){
@@ -818,7 +848,7 @@ export default {
         id: id
       }
       this.APIRequest('product_images/delete', parameter).then(response => {
-        this.retrieve()
+        this.featured()
         this.selectedImage = null
       })
     },
