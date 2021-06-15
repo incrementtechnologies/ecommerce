@@ -70,12 +70,8 @@
               <input class="form-control form-control-custom" id="payload" :placeholder="`${item.title}(${convertion.getUnitsAbbreviation(variationData.variation[0].payload)})`" :value="variationData.variation[0].payload" v-else disabled>
             </td>
             <td class="pl-0" id="variationTD">
-<<<<<<< HEAD
-              <input style="width:100px" type="text" onkeypress="this.style.width = ((this.value.length + 1) * 10) + 'px'" class="form-control form-control-custom variationName" id="variationName"  placeholder='Variation name' v-model="variationName" disabled>
-=======
               <span class="input form-control form-control-custom variationName pt-3" style="background-color:#E9ECEF" aria-disabled="true">{{variationName}}</span>
               <!-- <input style="width:200px" type="text" class="form-control form-control-custom variationName" id="variationName"  placeholder='Variation name' v-model="variationName" disabled> -->
->>>>>>> 2a2a4ba9ca320b67500aa3a177857f43b832547c
             </td>
             <td class="pl-0 pr-0">
               <button class="btn btn-primary form-control-custom" @click="addOrDelete(null, true)" :disabled="isEdit===false || newAttribute.payload_value < 1 || newAttribute.payload_value === '' "><i class="fa fa-plus p-0"></i></button>
