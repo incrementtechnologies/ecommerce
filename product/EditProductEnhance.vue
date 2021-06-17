@@ -28,10 +28,10 @@
         <div class="product-item-title mb-3">
           <label>Classification</label>
           <br>
-         <select class="form-control form-control-custom"  v-model="tempTags" :disabled="data.status !== 'published' && isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
+         <select class="form-control form-control-custom"  v-model="tempTags" :disabled="data.status === 'published' || isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
             <option v-for="(tag, index) in returnTags.TAGS" :key="index" :value="tag" :selected="data.tags === tag ? true : false">{{tag}}</option>
           </select>
-          <select class="form-control form-control-custom"  v-model="tempTags" :disabled="data.status !== 'published' || isEdit===false" @change="tagChecker($event)" v-else>
+          <select class="form-control form-control-custom"  v-model="tempTags" :disabled="data.status === 'published' || isEdit===false" @change="tagChecker($event)" v-else>
             <option v-for="(tag, index) in returnTags.TAGS" :key="index" :value="tag">{{tag}}</option>
           </select>
         </div>
@@ -240,9 +240,9 @@
         <div class="product-item-title">
           <label>Status</label>
           <br>
-          <select class="form-control form-control-custom" v-model="data.status" :disabled="data.status === 'published' || isEdit===false">
-            <option value="pending">Pending</option>
-            <option value="published">Published</option>
+          <select class="form-control form-control-custom" @change="publishProduct($event)" :disabled="data.status === 'published' || isEdit===false">
+            <option value="pending" :selected="data.status !== 'published' ? true : false">Pending</option>
+            <option value="published" :selected="data.status === 'published' ? true : false">Published</option>
           </select>
         </div>
         <div class="product-item-title" v-if="isEdit === true">
@@ -285,6 +285,7 @@
     </div>
     <browse-images-modal></browse-images-modal>
     <confirmation ref="confirmationModal" :title="'Confirmation Message'" :message="confirmationMessage" @onConfirm="removeBySplice($event.id, $event)"></confirmation>
+    <confirmation ref="confirmationPublish" id="confirmationPublish" :title="'Confirmation Message'" :message="confirmationMessage" @onConfirm="confirmPublished($event)"></confirmation>
   </div>
 </template>
 <script>
@@ -317,6 +318,7 @@ export default {
       selectedImage: null,
       errorMessageActives: null,
       errorMessageGroups: null,
+      productStatus: null,
       qty: 1,
       priceFlag: false,
       newImage: {
@@ -477,6 +479,19 @@ export default {
           this.formulations.ACTIVE_UNITS2 = [el.attribute2]
         }
       })
+    },
+    publishProduct(event){
+      if(event.target.value === 'published'){
+        this.confirmationMessage = 'Are you sure you want to publish this product? After publishing, you will not be able to update product details.Cancel Publish'
+        this.productStatus = event.target.value
+        $('#confirmationPublish').modal('show')
+      }else{
+        this.productStatus = event.target.value
+      }
+    },
+    confirmPublished(){
+      this.data.status = this.productStatus
+      $('#confirmationPublish').modal('hide')
     },
     addGroup(){
       if(this.group === null || this.group === ''){
@@ -804,7 +819,11 @@ export default {
       }
       this.data.details.group = this.listGroup
       this.data.details.active = this.actives
-      this.data.tags = this.tags
+      if(this.tags !== true){
+        this.data.tags = this.tags
+      }else{
+        this.data.tags = this.data.tags
+      }
       this.data.details = JSON.stringify(this.data.details)
       console.log(this.data.details)
       $('#loading').css({display: 'block'})
