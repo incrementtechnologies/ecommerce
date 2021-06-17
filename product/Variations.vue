@@ -78,6 +78,7 @@
             </td>
           </tr>
         </tbody>
+        <label><i>Note: You cannot add variations with decimal</i></label>
       </div>
         <!-- <input type="number" class="form-control form-control-custom" style="float: left; width: 30%; " placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup.enter="getVariationName()" :disabled="isEdit===false">
         <select class="form-control form-control-custom"  style="float: left; width: 30%;margin-left: 10px;" v-model="newAttribute.payload" v-if="item.variation === null" :disabled="isEdit===false" @change="getVariationName()">
