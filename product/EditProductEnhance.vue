@@ -400,19 +400,13 @@ export default {
     getValue(event, type){
       if(type === 'attribute2'){
         if(event.target.value === 'Gram (g)'){
-          let idx = this.formulations.ACTIVE_UNITS1.filter(function(value, index, arr){
-            return value !== 'Grams (g)'
-          })
-          this.formulations.ACTIVE_UNITS1 = idx
+          this.formulations.ACTIVE_UNITS1 = ['Milligrams (mg)']
         }else{
           // this.formulations.ACTIVE_UNITS1.push('Grams (g)')
         }
       }else{
         if(event.target.value === 'Grams (g)'){
-          let idx = this.formulations.ACTIVE_UNITS2.filter(function(value, index, arr){
-            return value !== 'Gram (g)'
-          })
-          this.formulations.ACTIVE_UNITS2 = idx
+          this.formulations.ACTIVE_UNITS2 = ['Kilogram (kg)', 'Litre (L)']
         }else{
           // this.formulations.ACTIVE_UNITS2.push('Gram (g)')
         }
@@ -833,7 +827,7 @@ export default {
         this.retrieveBundled()
         this.retrieveVariation()
         this.errorMessageHracs = null
-        this.isEdit = true
+        this.isEdit = false
       })
     },
     createAttribute(){
