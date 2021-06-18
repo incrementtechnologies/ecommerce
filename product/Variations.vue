@@ -55,12 +55,13 @@
       <!-- </div> -->
     </div>
     <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="isEdit===true">Create new product variation</button>
+    <div class="error text-danger">{{errorMessage1}}</div>
     <div id="demo" class="collapse"><br>
       <div class="table table-borderless">
         <tbody>
           <tr class="pl-0">
             <td>
-              <input type="number" @keydown="filterKey" class="form-control form-control-custom" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @input="getVariationName($event, 'payload_value') && filterInput" :disabled="isEdit===false">
+              <input type="number"  @keydown="filterKey" class="form-control form-control-custom" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @input="getVariationName($event, 'payload_value') && filterInput" :disabled="isEdit===false">
             </td>
             <td class="pl-0">
               <select class="form-control form-control-custom" v-model="newAttribute.payload" v-if="variationData.variation.length <= 0" :disabled="isEdit===false" @change="getVariationName($event, 'payload')">
@@ -155,6 +156,7 @@ export default {
       config: CONFIG,
       common: COMMON,
       errorMessage: null,
+      errorMessage1: null,
       deletedId: null,
       newAttribute: {
         product_id: this.item.id,
@@ -339,8 +341,13 @@ export default {
     },
     filterKey(e){
       const key = e.key
-      // If is '.' key, stop it
+      // If is '-' key, stop it
       if(key === '-'){
+        return e.preventDefault()
+      }
+
+      if(key === '.'){
+        this.errorMessage1 = 'Variation value should be an integer!'
         return e.preventDefault()
       }
       // OPTIONAL
