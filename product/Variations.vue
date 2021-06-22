@@ -60,8 +60,8 @@
       <div class="table table-borderless">
         <tbody>
           <tr class="pl-0">
-            <td>
-              <input type="number"  @keydown="filterKey" class="form-control form-control-custom" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @input="getVariationName($event, 'payload_value') && filterInput" :disabled="isEdit===false">
+            <td class="pl-0">
+              <input type="number"  @keydown="filterKey" class="form-control form-control-custom mr-5" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @input="getVariationName($event, 'payload_value') && filterInput" :disabled="isEdit===false">
             </td>
             <td class="pl-0">
               <select class="form-control form-control-custom" v-model="newAttribute.payload" v-if="variationData.variation.length <= 0" :disabled="isEdit===false" @change="getVariationName($event, 'payload')">
@@ -187,6 +187,7 @@ export default {
       if(this.isDelete === false){
         this.create()
         console.log('Reading in create')
+        this.errorMessage1 = ''
       } else {
         this.deleteVariation()
       }
