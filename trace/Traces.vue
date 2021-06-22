@@ -350,6 +350,7 @@ export default {
       }, 100)
     },
     editTrace(item, product){
+      console.log('test:', item)
       this.trace = item
       this.qty = item.total_qty
       item['product'] = product
