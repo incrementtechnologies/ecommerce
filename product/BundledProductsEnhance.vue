@@ -210,6 +210,9 @@ export default {
       console.log(this.errorMessage)
       if(this.errorMessage !== null){
         return
+      }else if(this.newAttribute.qty <= 0){
+        this.errorMessage = 'You cannot add 0 qty.'
+        return
       }else{
         let parameter = {
           account_id: this.user.userID,
