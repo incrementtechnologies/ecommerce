@@ -283,9 +283,10 @@ export default {
       }, 100)
     },
     payloadValueExit(newValue){
-      console.log(this.item)
+      console.log('>>>>>>>>', this.variationData.variation)
       if(this.variationData.variation !== null){
         this.variationData.variation.map(el => {
+          console.log('-----------', parseInt(newValue), parseInt(el.payload_value))
           if(parseInt(newValue) === parseInt(el.payload_value)){
             this.errorMessage = 'Value is already existed in the list'
             return true
@@ -301,7 +302,7 @@ export default {
       //   this.newAttribute.payload = this.variationData.variation[0].payload
       // }
       if(parseInt(this.newAttribute.payload_value) > 0 && this.newAttribute.payload_value !== null && this.newAttribute.payload_value !== ''){
-        this.payloadValueExit(this.newAttribute.payload_value)
+        // this.payloadValueExit(this.newAttribute.payload_value)
         if(this.errorMessage !== null){
           return
         }
@@ -319,6 +320,8 @@ export default {
             this.errorMessage = null
             $('#demo').collapse({toggle: false}).collapse('hide')
             this.$parent.retrieveVariation()
+          }else if(response.error !== null){
+            this.errorMessage = response.error
           }
         })
       }else{

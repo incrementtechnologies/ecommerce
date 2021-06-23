@@ -240,7 +240,7 @@
         <div class="product-item-title">
           <label>Status</label>
           <br>
-          <select class="form-control form-control-custom" @change="publishProduct($event)" :disabled="data.status === 'published' || isEdit===false">
+          <select class="form-control form-control-custom" v-model="data.status" @change="publishProduct($event)" :disabled="data.status === 'published' || isEdit===false">
             <option value="pending" :selected="data.status !== 'published' ? true : false">Pending</option>
             <option value="published" :selected="data.status === 'published' ? true : false">Published</option>
           </select>
@@ -248,7 +248,7 @@
         <div class="product-item-title" v-if="isEdit === true">
           <button class="btn btn-danger" @click="showConfirmationModal(data.id, 'products')" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'" style="margin-top: 5px;">Delete</button>
           <button class="btn btn-danger pull-right" @click="cancel()" style="margin-right: 2px; margin-top: 5px;">Cancel</button>
-          <button class="btn btn-primary pull-right" @click="updateProduct()" style="margin-right: 2px; margin-top: 5px;">Update</button>
+          <button class="btn btn-primary pull-right" @click="confirmPublished($event)" style="margin-right: 2px; margin-top: 5px;">Update</button>
         </div>
       </div>
       <images :productImages="data" :isEditing="isEdit"/>
@@ -285,7 +285,7 @@
     </div>
     <browse-images-modal></browse-images-modal>
     <confirmation ref="confirmationModal" :title="'Confirmation Message'" :message="confirmationMessage" @onConfirm="removeBySplice($event.id, $event)"></confirmation>
-    <confirmation ref="confirmationPublish" id="confirmationPublish" :title="'Confirmation Message'" :message="confirmationMessage" @onConfirm="confirmPublished($event)"></confirmation>
+    <confirmation ref="confirmationPublish" id="confirmationPublish" :title="'Confirmation Message'" :message="confirmationMessage" @onConfirm="updateProduct()"></confirmation>
   </div>
 </template>
 <script>
@@ -475,17 +475,13 @@ export default {
       })
     },
     publishProduct(event){
-      if(event.target.value === 'published'){
-        this.confirmationMessage = 'Are you sure you want to publish this product? After publishing, you will not be able to update product details.Cancel Publish'
-        this.productStatus = event.target.value
-        $('#confirmationPublish').modal('show')
-      }else{
-        this.productStatus = event.target.value
-      }
+      this.productStatus = event.target.value
     },
     confirmPublished(){
-      this.data.status = this.productStatus
-      $('#confirmationPublish').modal('hide')
+      if(this.productStatus === 'published'){
+        this.confirmationMessage = 'Are you sure you want to publish this product? After publishing, you will not be able to update product details.Cancel Publish'
+        $('#confirmationPublish').modal('show')
+      }
     },
     addGroup(){
       if(this.group === null || this.group === ''){
@@ -823,6 +819,7 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('products/update', this.data).then(response => {
         $('#loading').css({display: 'none'})
+        $('#confirmationPublish').modal('hide')
         this.retrieve()
         this.retrieveBundled()
         this.retrieveVariation()

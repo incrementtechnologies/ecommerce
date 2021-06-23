@@ -30,14 +30,15 @@
                 </div>
                 <div class="form-group">
                   <label for="exampleInputEmail1">Batch Quantity <b class="text-danger">*</b></label>
-                  <input type="number" min="1" class="form-control" placeholder="Type qty here..." v-model="newData.qty">
+                  <input type="number" min="1" class="form-control" :placeholder="currQty" v-model="newData.qty">
                 </div>
               </div>
               <div  v-if="!showCalc" class="modal-footer">
                 <button type="button" class="btn btn-danger mr-auto" @click="$emit('deleteBatch', data)" v-if="data.active_qty === 0">Delete</button>
                 <button type="button" class="btn btn-primary" @click="showCalc = true">OK</button>
               </div>
-              <span v-if="showCalc">Add {{newData.qty - currQty}} unit(s) to batch</span>
+              <span v-if="showCalc && newData.qty > currQty">Add {{newData.qty - currQty}} unit(s) to batch</span>
+              <span v-if="showCalc && newData.qty < currQty">Sorry, batch quantity can only be reduced created.</span>
             </div>
             <div class="modal-footer" v-if="showCalc">
               <button type="button" class="btn btn-danger" @click="cancel()">Cancel</button>
