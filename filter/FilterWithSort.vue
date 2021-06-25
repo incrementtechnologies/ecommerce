@@ -291,6 +291,7 @@ export default {
       this.$emit('changeStyle', this.grid[this.toggleStyle])
     },
     selectCategory(){
+      this.searchValue = ''
       this.activeSort = this.category[this.filterValue].sorting
       this.activeCategory = this.category[this.filterValue]
       this.sortValue = this.activeCategoryIndex

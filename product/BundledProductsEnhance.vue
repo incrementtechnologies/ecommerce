@@ -28,7 +28,12 @@
     <div v-if="item !== null && (item.bundled.length === 0 || item.bundled === null) && !isEdit">
       <p style="color:black;">No bundle configurations added. Click edit to add a bundle configuration.</p>
     </div>
-    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="item !== null && isEdit === true">Create new bundle configuration</button>
+    <div v-if="variationData.variation.length <= 0 && isEdit === true">
+      <p>
+        Create a product variation before setting bundle configurations
+      </p>
+    </div>
+    <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="variationData.variation.length > 0 && item !== null && isEdit === true">Create new bundle configuration</button>
     <div id="demo" class="collapse">
       <div>
       <div class="error text-danger" v-if="errorMessage !== null">{{errorMessage}}</div>
@@ -205,10 +210,13 @@ export default {
       console.log(this.errorMessage)
       if(this.errorMessage !== null){
         return
+      }else if(this.newAttribute.qty <= 0){
+        this.errorMessage = 'You cannot add 0 qty.'
+        return
       }else{
         let parameter = {
           account_id: this.user.userID,
-          title: `${this.newAttribute.qty} X ${this.item.title}(${this.selectedVariation.payload_value} ${this.convertion.getUnitsAbbreviation(this.selectedVariation.payload)})`,
+          title: `${this.newAttribute.qty} X ${this.item.title} (${this.selectedVariation.payload_value} ${this.convertion.getUnitsAbbreviation(this.selectedVariation.payload)})`,
           description: this.item.description,
           status: 'pending',
           type: 'bundled',
@@ -237,6 +245,7 @@ export default {
                   this.newAttribute.qty = null
                   this.selectedTemp = null
                   this.$parent.retrieveBundled()
+                  $('#demo').collapse('hide')
                 }
               })
             })

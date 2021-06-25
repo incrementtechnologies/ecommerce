@@ -55,12 +55,13 @@
       <!-- </div> -->
     </div>
     <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="isEdit===true">Create new product variation</button>
+    <div class="error text-danger">{{errorMessage1}}</div>
     <div id="demo" class="collapse"><br>
       <div class="table table-borderless">
         <tbody>
           <tr class="pl-0">
-            <td>
-              <input type="number" @keydown="filterKey" class="form-control form-control-custom" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @input="getVariationName($event, 'payload_value') && filterInput" :disabled="isEdit===false">
+            <td class="pl-0">
+              <input type="number"  @keydown="filterKey" class="form-control form-control-custom mr-5" placeholder="Type variation value here..." v-model="newAttribute.payload_value" @input="getVariationName($event, 'payload_value') && filterInput" :disabled="isEdit===false">
             </td>
             <td class="pl-0">
               <select class="form-control form-control-custom" v-model="newAttribute.payload" v-if="variationData.variation.length <= 0" :disabled="isEdit===false" @change="getVariationName($event, 'payload')">
@@ -70,13 +71,15 @@
               <input class="form-control form-control-custom" id="payload" :placeholder="`${item.title}(${convertion.getUnitsAbbreviation(variationData.variation[0].payload)})`" :value="variationData.variation[0].payload" v-else disabled>
             </td>
             <td class="pl-0" id="variationTD">
-              <input type="text" class="form-control form-control-custom variationName" id="variationName"  placeholder='Variation name' v-model="variationName" disabled>
+              <span class="input form-control form-control-custom variationName pt-3" style="background-color:#E9ECEF" aria-disabled="true">{{variationName}}</span>
+              <!-- <input style="width:200px" type="text" class="form-control form-control-custom variationName" id="variationName"  placeholder='Variation name' v-model="variationName" disabled> -->
             </td>
             <td class="pl-0 pr-0">
               <button class="btn btn-primary form-control-custom" @click="addOrDelete(null, true)" :disabled="isEdit===false || newAttribute.payload_value < 1 || newAttribute.payload_value === '' "><i class="fa fa-plus p-0"></i></button>
             </td>
           </tr>
         </tbody>
+        <label><i>Note: You cannot add variations with decimal</i></label>
       </div>
         <!-- <input type="number" class="form-control form-control-custom" style="float: left; width: 30%; " placeholder="Type variation value here..." v-model="newAttribute.payload_value" @keyup.enter="getVariationName()" :disabled="isEdit===false">
         <select class="form-control form-control-custom"  style="float: left; width: 30%;margin-left: 10px;" v-model="newAttribute.payload" v-if="item.variation === null" :disabled="isEdit===false" @change="getVariationName()">
@@ -153,6 +156,7 @@ export default {
       config: CONFIG,
       common: COMMON,
       errorMessage: null,
+      errorMessage1: null,
       deletedId: null,
       newAttribute: {
         product_id: this.item.id,
@@ -183,6 +187,7 @@ export default {
       if(this.isDelete === false){
         this.create()
         console.log('Reading in create')
+        this.errorMessage1 = ''
       } else {
         this.deleteVariation()
       }
@@ -278,9 +283,10 @@ export default {
       }, 100)
     },
     payloadValueExit(newValue){
-      console.log(this.item)
+      console.log('>>>>>>>>', this.variationData.variation)
       if(this.variationData.variation !== null){
         this.variationData.variation.map(el => {
+          console.log('-----------', parseInt(newValue), parseInt(el.payload_value))
           if(parseInt(newValue) === parseInt(el.payload_value)){
             this.errorMessage = 'Value is already existed in the list'
             return true
@@ -296,7 +302,7 @@ export default {
       //   this.newAttribute.payload = this.variationData.variation[0].payload
       // }
       if(parseInt(this.newAttribute.payload_value) > 0 && this.newAttribute.payload_value !== null && this.newAttribute.payload_value !== ''){
-        this.payloadValueExit(this.newAttribute.payload_value)
+        // this.payloadValueExit(this.newAttribute.payload_value)
         if(this.errorMessage !== null){
           return
         }
@@ -314,6 +320,8 @@ export default {
             this.errorMessage = null
             $('#demo').collapse({toggle: false}).collapse('hide')
             this.$parent.retrieveVariation()
+          }else if(response.error !== null){
+            this.errorMessage = response.error
           }
         })
       }else{
@@ -337,8 +345,13 @@ export default {
     },
     filterKey(e){
       const key = e.key
-      // If is '.' key, stop it
+      // If is '-' key, stop it
       if(key === '-'){
+        return e.preventDefault()
+      }
+
+      if(key === '.'){
+        this.errorMessage1 = 'Variation value should be an integer!'
         return e.preventDefault()
       }
       // OPTIONAL

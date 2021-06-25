@@ -28,11 +28,11 @@
         <div class="product-item-title mb-3">
           <label>Classification</label>
           <br>
-         <select class="form-control form-control-custom" :disabled="data.status !== 'published' && isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
-            <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag" :selected="data.tags === tag ? true : false">{{tag}}</option>
+         <select class="form-control form-control-custom"  v-model="tempTags" :disabled="data.status === 'published' || isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
+            <option v-for="(tag, index) in returnTags.TAGS" :key="index" :value="tag" :selected="data.tags === tag ? true : false">{{tag}}</option>
           </select>
-          <select class="form-control form-control-custom" :disabled="data.status !== 'published' || isEdit===false" @change="tagChecker($event)" v-else>
-            <option v-for="(tag, index) in formulations.TAGS" :key="index" :value="tag">{{tag}}</option>
+          <select class="form-control form-control-custom"  v-model="tempTags" :disabled="data.status === 'published' || isEdit===false" @change="tagChecker($event)" v-else>
+            <option v-for="(tag, index) in returnTags.TAGS" :key="index" :value="tag">{{tag}}</option>
           </select>
         </div>
         <div :hidden="data.status === 'published' || isEdit===false" class="mt-2">
@@ -72,13 +72,13 @@
           <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]">HRAC Mode of Action</label>
           <label class="text-danger" style="font-weight: 600;" v-if="errorMessageHracs !== null">&nbsp;&nbsp;{{errorMessageHracs}}</label>
         </div>
-        <div v-if="showHrac === true && (data.tags !== null && data.tags === 'Herbicide')">
+        <div v-if="showHrac === true && (tags === 'Herbicide' || data.tags === 'Herbicide')">
           <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]" v-if="errorMessageHracs === null">HRAC Mode of Action</label>
           <div class="mt-0" v-show="data.status !== 'published' && isEdit">
             <div class="product-item-title mt-0" style="width: 90%">
-            <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="data.status === 'published' || isEdit===false">
-                <option v-for="(el, index) in formulations.HRAC" :key="index" :value="el" >{{el}}</option>
-            </select>
+              <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="data.status === 'published' || isEdit===false">
+                  <option v-for="(el, index) in formulations.HRAC" :key="index" :value="el" >{{el}}</option>
+              </select>
             </div>
             <div class="product-item-title pl-3 " style="width: 10%; margin-top: 1%;">
                 <button class="btn btn-primary" @click="addHrac" :disabled="data.status === 'published' || isEdit===false"><i class="fa fa-plus"></i></button>
@@ -103,7 +103,7 @@
             </div>
           </div>
         </div>
-        <label v-if="data.length > 0  && (data.details.hracs.length === 0 || data.details.hracs === null) && (data.tags === 'Herbicide') && !isEdit">
+        <label v-if="data !== null && data.details.hracs.length === 0 && data.tags === 'Herbicide' && data.status === 'published'  && !isEdit">
           No HRAC Available
         </label>
         <div class="row" v-if="data.status !== 'published' && isEdit">
@@ -124,12 +124,12 @@
           </div>
           <div class="col-sm-3 pl-0 ml-0 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
             <select class="form-control form-control-custom" v-model="active.attribute" @change="getValue($event, 'attribute1')">
-              <option v-for="(item, index) in formulations.ACTIVE_UNITS" :style="[active.attribute2 !== item ? {} : {display: 'none'}]" :value="item" :key="index">{{item}}</option>
+              <option v-for="(item, index) in formulations.ACTIVE_UNITS1" :style="[active.attribute !== item ? {} : {display: 'none'}]" :value="item" :key="index">{{item}}</option>
             </select>
           </div>
             <div class="col-sm-3 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
             <select class="form-control pl-0 ml-0 form-control-custom" v-model="active.attribute2" @change="getValue($event, 'attribute2')">
-              <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :style="[active.attribute !== item ? {} : {display: 'none'}]" :value="item" :key="index" >
+              <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :style="[active.attribute2 !== item ? {} : {display: 'none'}]" :value="item" :key="index" >
                 {{item}}
               </option>
             </select>
@@ -240,18 +240,18 @@
         <div class="product-item-title">
           <label>Status</label>
           <br>
-          <select class="form-control form-control-custom" v-model="data.status" :disabled="data.status === 'published' || isEdit===false">
-            <option value="pending">Pending</option>
-            <option value="published">Published</option>
+          <select class="form-control form-control-custom" v-model="data.status" @change="publishProduct($event)" :disabled="data.status === 'published' || isEdit===false">
+            <option value="pending" :selected="data.status !== 'published' ? true : false">Pending</option>
+            <option value="published" :selected="data.status === 'published' ? true : false">Published</option>
           </select>
         </div>
         <div class="product-item-title" v-if="isEdit === true">
           <button class="btn btn-danger" @click="showConfirmationModal(data.id, 'products')" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'" style="margin-top: 5px;">Delete</button>
           <button class="btn btn-danger pull-right" @click="cancel()" style="margin-right: 2px; margin-top: 5px;">Cancel</button>
-          <button class="btn btn-primary pull-right" @click="updateProduct()" style="margin-right: 2px; margin-top: 5px;">Update</button>
+          <button class="btn btn-primary pull-right" @click="confirmPublished($event)" style="margin-right: 2px; margin-top: 5px;">Update</button>
         </div>
       </div>
-      <images :data="data" :isEditing="isEdit"/>
+      <images :productImages="data" :isEditing="isEdit"/>
     </div>
     <div class="product-more-details">
       <div class="pagination-holder">
@@ -285,6 +285,7 @@
     </div>
     <browse-images-modal></browse-images-modal>
     <confirmation ref="confirmationModal" :title="'Confirmation Message'" :message="confirmationMessage" @onConfirm="removeBySplice($event.id, $event)"></confirmation>
+    <confirmation ref="confirmationPublish" id="confirmationPublish" :title="'Confirmation Message'" :message="confirmationMessage" @onConfirm="updateProduct()"></confirmation>
   </div>
 </template>
 <script>
@@ -317,6 +318,7 @@ export default {
       selectedImage: null,
       errorMessageActives: null,
       errorMessageGroups: null,
+      productStatus: null,
       qty: 1,
       priceFlag: false,
       newImage: {
@@ -345,7 +347,8 @@ export default {
       active: {
         active_name: null,
         value: null,
-        attribute: null
+        attribute: null,
+        attribute2: null
       },
       group: null,
       listGroup: [],
@@ -359,7 +362,8 @@ export default {
       confirmationMessage: null,
       tagName: null,
       bundledData: null,
-      variationData: null
+      variationData: null,
+      tempTags: null
     }
   },
   computed: {
@@ -371,6 +375,9 @@ export default {
             flag: false
           }] : COMMON.ecommerce.editProductMenu
       }
+    },
+    returnTags(){
+      return this.formulations
     }
   },
   components: {
@@ -390,6 +397,21 @@ export default {
     redirect(parameter){
       ROUTER.push(parameter)
     },
+    getValue(event, type){
+      if(type === 'attribute2'){
+        if(event.target.value === 'Gram (g)'){
+          this.formulations.ACTIVE_UNITS1 = ['Milligrams (mg)']
+        }else{
+          // this.formulations.ACTIVE_UNITS1.push('Grams (g)')
+        }
+      }else{
+        if(event.target.value === 'Grams (g)'){
+          this.formulations.ACTIVE_UNITS2 = ['Kilogram (kg)', 'Litre (L)']
+        }else{
+          // this.formulations.ACTIVE_UNITS2.push('Gram (g)')
+        }
+      }
+    },
     selectMenu(index){
       if(this.prevMenuIndex !== index){
         this.productMenu[this.prevMenuIndex].flag = false
@@ -404,39 +426,94 @@ export default {
     },
     addActive(){
       if((this.active.active_name === null || this.active.active_name === '') || (this.active.value === null || this.active.value <= 0) || this.active.attribute === null || this.active.attribute2 === null){
-        this.errorMessage = 'Empty fields cannot be added'
+        this.errorMessageActives = 'Empty fields cannot be added'
         return
       }
+
       let active = {
         active_name: this.active.active_name,
         value: this.active.value,
         attribute: this.active.attribute,
         attribute2: this.active.attribute2
       }
-      if(this.actives.length < 3){
-        this.actives.push(active)
-        this.active.active_name = null
-        this.active.value = null
-        this.active.attribute = null
-        this.active.attribute2 = null
-        console.log(this.actives)
+
+      if(this.actives.length > 0){
+        this.actives.map(el => {
+          if(el.active_name === this.active.active_name && el.value === this.active.value && el.attribute === this.active.attribute && el.attribute2 === this.active.attribute2){
+            this.errorMessageActives = 'Active is already added'
+            return
+          }
+          if(this.actives.length < 3){
+            this.errorMessageActives = null
+            this.actives.push(active)
+            this.active.active_name = null
+            this.active.value = null
+            this.active.attribute = null
+            this.active.attribute2 = null
+            console.log(this.actives)
+          }else{
+            this.errorMessageActives = 'Active already reach max number(3)'
+          }
+        })
       }else{
-        this.errorMessageActives = 'Active already reach max number(3)'
+        if(this.actives.length < 3){
+          this.actives.push(active)
+          this.active.active_name = null
+          this.active.value = null
+          this.active.attribute = null
+          this.active.attribute2 = null
+          console.log(this.actives)
+        }else{
+          this.errorMessageActives = 'Active already reach max number(3)'
+        }
+      }
+      this.actives.map(el => {
+        if(el.attribute !== null && el.attribute2 !== null){
+          this.formulations.ACTIVE_UNITS1 = [el.attribute]
+          this.formulations.ACTIVE_UNITS2 = [el.attribute2]
+        }
+      })
+    },
+    publishProduct(event){
+      this.productStatus = event.target.value
+    },
+    confirmPublished(){
+      if(this.productStatus === 'published'){
+        this.confirmationMessage = 'Are you sure you want to publish this product? After publishing, you will not be able to update product details.Cancel Publish'
+        $('#confirmationPublish').modal('show')
       }
     },
     addGroup(){
       if(this.group === null || this.group === ''){
-        this.errorMessage = 'Empty field cannot be added'
+        this.errorMessageGroups = 'Empty field cannot be added'
         return
       }
       let group = {
         group: this.group
       }
-      if(this.listGroup.length < 3){
-        this.listGroup.push(group)
-        this.group = null
+      if(this.listGroup.length > 0){
+        this.listGroup.map(el => {
+          if(el.group === this.group){
+            this.errorMessageGroups = 'Group is already added'
+            return
+          }else{
+            this.errorMessageGroups = null
+            if(this.listGroup.length < 3){
+              this.listGroup.push(group)
+              this.group = null
+            }else{
+              this.errorMessageGroups = 'Groups already reach max number(3)'
+            }
+          }
+        })
       }else{
-        this.errorMessageGroups = 'Groups already reach max number(3)'
+        if(this.listGroup.length < 3){
+          this.errorMessageGroups = null
+          this.listGroup.push(group)
+          this.group = null
+        }else{
+          this.errorMessageGroups = 'Groups already reach max number(3)'
+        }
       }
     },
     addHrac(){
@@ -520,6 +597,12 @@ export default {
         if(response.data.length > 0){
           this.data = response.data[0]
           this.tagChecker(null)
+          if(this.data.tags === null){
+            this.tempTags = null
+            this.tags = null
+          }else{
+            this.tempTags = this.data.tags
+          }
           let group = {
             group: null
           }
@@ -537,16 +620,29 @@ export default {
                 this.actives = this.data.details.active
               }
               this.actives = this.data.details.active
+              let temp1 = []
+              let temp2 = []
+              temp1.push(this.data.details.active[0].attribute)
+              temp2.push(this.data.details.active[0].attribute2)
+              this.formulations.ACTIVE_UNITS1.splice(0, this.formulations.ACTIVE_UNITS1.length, ...temp1)
+              this.formulations.ACTIVE_UNITS2.splice(0, this.formulations.ACTIVE_UNITS2.length, ...temp2)
             }else{
               this.actives = []
             }
+            console.log('=====================', this.formulations.ACTIVE_UNITS1)
           }else{
             if(this.data.details.active.active_name !== null){
-              if(this.data.details.active.attribute2 === undefined){
+              if(this.data.details.active.attribute2 === undefined || this.data.details.active.attribute2 === null){
                 this.data.details.active['attribute2'] = null
                 this.actives.push(this.data.details.active)
               }else{
                 this.actives.push(this.data.details.active)
+                let temp1 = []
+                let temp2 = []
+                temp1.push(this.data.details.active.attribute)
+                temp2.push(this.data.details.active.attribute2)
+                this.formulations.ACTIVE_UNITS1.splice(0, this.formulations.ACTIVE_UNITS1.length, ...temp1)
+                this.formulations.ACTIVE_UNITS2.splice(0, this.formulations.ACTIVE_UNITS2.length, ...temp2)
               }
             }else{
               this.actives = []
@@ -555,8 +651,27 @@ export default {
           if(this.data.details.hracs !== undefined){
             this.listOfHracs = this.data.details.hracs
             this.showHrac = true
+          }else{
+            this.data.details['hracs'] = []
           }
         }
+      })
+    },
+    retrieveFeturedImage(){
+      let parameter = {
+        condition: [{
+          value: this.code,
+          column: 'code',
+          clause: '='
+        }],
+        account_id: this.user.userID,
+        inventory_type: this.common.ecommerce.inventoryType
+      }
+      $('#loading').css({display: 'block'})
+      this.APIRequest('products/retrieve', parameter).then(response => {
+        $('#loading').css({display: 'none'})
+        this.data.featured = response.data[0].featured
+        console.log('[DATAS]', response.data)
       })
     },
     retrieveBundled(){
@@ -628,7 +743,7 @@ export default {
     tagChecker(data){
       // console.log('[TARGET]', data.target.value)
       console.log('[DATA]', this.data.tags)
-      this.tags = data !== null ? data.target.value : this.data.tags
+      this.tags = data !== null ? data.target.value : this.data.tags !== null
       if(data === null){
         if(this.data.tags === 'Insecticide'){
           this.groups = GROUP.INSECTICIDE
@@ -694,12 +809,17 @@ export default {
       }
       this.data.details.group = this.listGroup
       this.data.details.active = this.actives
-      this.data.tags = this.tags
+      if(this.tags !== true){
+        this.data.tags = this.tags
+      }else{
+        this.data.tags = this.data.tags
+      }
       this.data.details = JSON.stringify(this.data.details)
       console.log(this.data.details)
       $('#loading').css({display: 'block'})
       this.APIRequest('products/update', this.data).then(response => {
         $('#loading').css({display: 'none'})
+        $('#confirmationPublish').modal('hide')
         this.retrieve()
         this.retrieveBundled()
         this.retrieveVariation()
@@ -764,14 +884,14 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('product_images/create', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        this.retrieve()
+        this.retrieveFeturedImage()
       })
     },
     updateRequest(parameter){
       $('#loading').css({display: 'block'})
       this.APIRequest('product_images/update', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        this.retrieve()
+        this.retrieveFeturedImage()
       })
     },
     manageImageUrl(url, status){
@@ -784,7 +904,7 @@ export default {
         id: id
       }
       this.APIRequest('product_images/delete', parameter).then(response => {
-        this.retrieve()
+        this.featured()
         this.selectedImage = null
       })
     },

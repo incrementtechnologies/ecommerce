@@ -350,6 +350,7 @@ export default {
       }, 100)
     },
     editTrace(item, product){
+      console.log('test:', item)
       this.trace = item
       this.qty = item.total_qty
       item['product'] = product
@@ -467,7 +468,7 @@ export default {
         useTextFile: false,
         useBom: true,
         // useKeysAsHeaders: true,
-        filename: COMMON.APP_NAME + ' - ' + this.date,
+        filename: `${selectedBatch.product.title}(${selectedBatch.product.variation[0].payload_value}${this.conversion.getUnitsAbbreviation(selectedBatch.product.variation[0].payload)})` + '_' + selectedBatch.batch_number + '_' + this.date,
         headers: ['TEXT FIELD', 'NFC_STRING', 'TEXT FIELD', 'BLANK', 'TEXT FIELD', 'TEXT_FIELD', 'TEXT_FIELD', '', 'Status', 'Created_at']
       }
       var exportData = []

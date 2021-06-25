@@ -225,6 +225,7 @@ export default {
         this.newData.account_id = this.user.userID
         this.newData.product_attribute_id = this.variations.variation.id
         this.newData.manufacturing_date = this.manufacturing.year + '-' + this.manufacturing.month + ((this.manufacturing.date === null || this.manufacturing.date === '') ? '' : '-' + this.manufacturing.date)
+        console.log(this.newData)
         $('#loading').css({'display': 'block'})
         this.APIRequest('product_traces/create', this.newData).then(response => {
           $('#loading').css({'display': 'none'})

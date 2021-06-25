@@ -13,14 +13,14 @@
           <i class="fa fa-times" :hidden="isEditing===false"></i>
         </label>
        <div class="images-holder">
-        <div class="product-row" style="text-align: left !important;">
+        <div class="product-row" style="text-align: left !important;" :hidden="isEditing===false">
           <label style="width: 100%">
             <label style="width: 20%">Other Images</label>
             <!-- <button class="btn btn-primary pull-right" @click="showImages('images')">Select</button> -->
             <label v-if="hasError === true" style="color: red;font-size:10px;width: 20%">Image already existed</label>
           </label>
         </div>
-        <div>
+        <div :hidden="isEditing===false">
           <div class="other-image">
           </div>
            <!-- <div class="row"> -->
@@ -154,10 +154,10 @@ export default {
         $('#loading').css({'display': 'none'})
         this.hasError = false
         this.retrieveImage()
-        // this.$parent.retrieve()
+        this.$parent.retrieveFeaturedImages()
         if(response.data.data !== null){
           this.retrieveImage()
-          // this.$parent.retrieve()
+          this.$parent.retrieveFeaturedImages()
         }
       })
       this.prevIndex = null
@@ -168,7 +168,7 @@ export default {
       }
       this.APIRequest('product_images/delete', parameter).then(response => {
         this.retrieveImage()
-        // this.$parent.retrieve()
+        this.$parent.retrieveFeaturedImages()
         this.selectedImage = null
       })
     },
