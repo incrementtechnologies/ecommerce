@@ -295,6 +295,7 @@ export default {
       this.activeCategory = this.category[this.filterValue]
       this.sortValue = this.activeCategoryIndex
       this.level = this.category[this.filterValue].level
+      this.searchValue = ''
       this.changeSort()
     },
     changeSort(){
