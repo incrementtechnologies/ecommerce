@@ -1,6 +1,6 @@
 <template>
 	<div class="holder">
-    <create :type="type"></create>
+    <create v-if="merchant && user && merchant.account_id.toString() === user.userID.toString()" :type="type"></create>
     <filter-product v-bind:category="category" 
       :activeCategoryIndex="0"
       :activeSortingIndex="0"
@@ -233,6 +233,7 @@ export default {
         this.type = 'm'
       }
     }
+    this.retrieveSubAccount()
   },
   data(){
     return {
@@ -273,7 +274,8 @@ export default {
         guide: null
       },
       activeSortTitle: 'asc',
-      activeSortInventory: 'asc'
+      activeSortInventory: 'asc',
+      merchant: null
     }
   },
   components: {
@@ -286,6 +288,26 @@ export default {
     Pager
   },
   methods: {
+    retrieveSubAccount(){
+      if(AUTH.user.subAccount !== null && AUTH.user.subAccount.merchant !== null){
+        $('#loading').css({display: 'none'})
+        this.merchant = AUTH.user.subAccount.merchant
+        return
+      }
+      let parameter = {
+        condition: [{
+          value: this.user.userID,
+          column: 'account_id',
+          clause: '='
+        }]
+      }
+      this.APIRequest('merchants/retrieve', parameter).then(response => {
+        $('#loading').css({display: 'none'})
+        if(response.data.length > 0){
+          this.merchant = response.data[0]
+        }
+      })
+    },
     sortArrayTitle(sort){
       this.activeSortTitle = sort
       let result = null
