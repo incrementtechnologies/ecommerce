@@ -313,7 +313,7 @@ export default {
         console.log('READ IN CREATE', this.newAttribute)
         this.APIRequest('product_attributes/create', this.newAttribute).then(response => {
           console.log('After IN CREATE', this.newAttribute)
-          if(response.data > 0){
+          if(response.data !== null){
             this.variationName = ''
             this.newAttribute.payload_value = 0
             // this.newAttribute.payload = null
