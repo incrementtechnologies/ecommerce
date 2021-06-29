@@ -142,7 +142,8 @@ export default {
       toDeleteBundle: null,
       confirmationMessage: null,
       isDelete: null,
-      selectedAttr: null
+      selectedAttr: null,
+      hasActive: false
     }
   },
   components: {
@@ -213,6 +214,9 @@ export default {
       }else if(this.newAttribute.qty <= 0){
         this.errorMessage = 'You cannot add 0 qty.'
         return
+      }else if(this.hasActive === false){
+        this.errorMessage = 'This variation has no active batch, please add and/or activate the batches first.'
+        return
       }else{
         let parameter = {
           account_id: this.user.userID,
@@ -266,7 +270,11 @@ export default {
             payload_value: el.payload_value
           }
           this.selectedVariation = tempdata
-
+          if(el.total_active_variation !== 0){
+            this.hasActive = true
+          }else{
+            this.hasActive = false
+          }
           this.variantId = this.selectedVariation.id
           this.variantPayload = this.selectedVariation.payload
           this.variantPayloadValue = this.selectedVariation.payload_value
