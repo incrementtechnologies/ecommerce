@@ -1,6 +1,6 @@
 <template>
 	<div class="holder">
-    <create v-if="merchant && user && merchant.account_id.toString() === user.userID.toString()" :type="type"></create>
+    <create v-if="merchant && user && status && merchant.account_id.toString() === user.userID.toString() || status.toLowerCase() !== 'normal'" :type="type"></create>
     <filter-product v-bind:category="category" 
       :activeCategoryIndex="0"
       :activeSortingIndex="0"
@@ -275,7 +275,8 @@ export default {
       },
       activeSortTitle: 'asc',
       activeSortInventory: 'asc',
-      merchant: null
+      merchant: null,
+      status: null
     }
   },
   components: {
@@ -289,22 +290,38 @@ export default {
   },
   methods: {
     retrieveSubAccount(){
+      this.checkStatus()
       if(AUTH.user.subAccount !== null && AUTH.user.subAccount.merchant !== null){
         $('#loading').css({display: 'none'})
         this.merchant = AUTH.user.subAccount.merchant
-        return
+      } else {
+        let parameter = {
+          condition: [{
+            value: this.user.userID,
+            column: 'account_id',
+            clause: '='
+          }]
+        }
+        this.APIRequest('merchants/retrieve', parameter).then(response => {
+          $('#loading').css({display: 'none'})
+          if(response.data.length > 0){
+            this.merchant = response.data[0]
+          }
+        })
       }
+    },
+    checkStatus() {
       let parameter = {
         condition: [{
           value: this.user.userID,
-          column: 'account_id',
+          column: 'member',
           clause: '='
         }]
       }
-      this.APIRequest('merchants/retrieve', parameter).then(response => {
+      this.APIRequest('sub_accounts/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         if(response.data.length > 0){
-          this.merchant = response.data[0]
+          this.status = response.data[0].status
         }
       })
     },
