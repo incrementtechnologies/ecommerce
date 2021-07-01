@@ -33,7 +33,7 @@
                 <td>
                   <!-- <button class="btn btn-primary" style="margin-left: 10px;" @click="addTraces(itemVariation)" title="Add Inventory" :disabled="isEdit===false">Inventory</button> -->
                   <button class="btn btn-primary" style="margin-left: 10px;" @click="redirect('/traces/' + itemVariation.id + '/' + item.code)" title="View Batches">View Batches</button>
-                  <button v-if="isEdit === true && (itemVariation.total_active_variation === 0 && itemVariation.is_used === false)" class="btn btn-danger btn-sm" style="margin-left: 10px;" @click="addOrDelete(itemVariation, false)" title="Delete Inventory" :disabled="isEdit===false">Delete</button>
+                  <button v-if="isEdit === true && (itemVariation.total_active_variation === 0 || itemVariation.is_used === false)" class="btn btn-danger btn-sm" style="margin-left: 10px;" @click="addOrDelete(itemVariation, false)" title="Delete Inventory">Delete</button>
                 </td>
               </tr>
             </tbody>
