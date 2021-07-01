@@ -170,6 +170,7 @@ export default {
           clause: '='
         }]
       }
+      $('#loading').css({'display': 'block'})
       this.APIRequest('transfers/retrieve_transferred_items', parameter).then(response => {
         $('#loading').css({'display': 'none'})
         if(response.data.length > 0){

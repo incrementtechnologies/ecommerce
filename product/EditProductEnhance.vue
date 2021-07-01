@@ -299,8 +299,8 @@ import axios from 'axios'
 export default {
   mounted(){
     this.retrieve()
-    this.retrieveBundled()
-    this.retrieveVariation()
+    // this.retrieveBundled()
+    // this.retrieveVariation()
     this.isEdit = false
   },
   data(){
@@ -418,6 +418,11 @@ export default {
         this.productMenu[index].flag = true
         this.prevMenuIndex = index
         this.selectedMenu = this.productMenu[index]
+      }
+      if(index === 1){
+        this.retrieveVariation()
+      }else if(index === 2){
+        this.retrieveBundled()
       }
     },
     cancel() {
