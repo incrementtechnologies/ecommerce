@@ -170,6 +170,9 @@ export default {
           clause: '='
         }]
       }
+      if(this.user.type === 'USER'){
+        parameter['user'] = true
+      }
       $('#loading').css({'display': 'block'})
       this.APIRequest('transfers/retrieve_transferred_items', parameter).then(response => {
         $('#loading').css({'display': 'none'})

@@ -18,7 +18,7 @@
               <div v-if="data !== null">
                 <div class="form-group">
                   <label for="exampleInputEmail1">Variation Name <b class="text-danger">*</b></label>
-                  <input type="text" min="1" class="form-control" :placeholder="`${variations.title} (${variations.variation[0].payload_value} ${convertion.getUnitsAbbreviation(variations.variation[0].payload)})`" disabled>
+                  <input type="text" min="1" class="form-control" :placeholder="`${variations.title} (${parseInt(variations.variation[0].payload_value)} ${convertion.getUnitsAbbreviation(variations.variation[0].payload)})`" disabled>
                 </div>
                 <div class="form-group">
                   <label for="exampleInputEmail1">Manufactured Date <b class="text-danger">*</b></label>
@@ -42,7 +42,7 @@
             </div>
             <div class="modal-footer" v-if="showCalc">
               <button type="button" class="btn btn-danger" @click="cancel()">Cancel</button>
-              <button type="button" class="btn btn-primary" @click="submit()">Confirm</button>
+              <button type="button" class="btn btn-primary" @click="submit()">OK</button>
           </div>
         </div>
       </div>
@@ -159,10 +159,11 @@ export default {
           $('#loading').css({'display': 'none'})
           if(response.error.length > 0 && response.error !== null){
             this.errorMessage = response.error
-            this.newData.qty = this.data.total_qty
+            this.newData.qty = null
           }
           this.errorMessage = null
           this.showCalc = false
+          this.newData.qty = null
           $('#editProductTracesModal').modal('hide')
           this.$parent.retrieve({'created_at': 'asc'}, {column: 'created_at', value: ''})
         })
@@ -183,6 +184,7 @@ export default {
       $('#editProductTracesModal').modal('hide')
       this.errorMessage = null
       this.qty = null
+      this.newData.qty = null
       this.data.total_qty = this.currQty
       this.showCalc = false
     }
