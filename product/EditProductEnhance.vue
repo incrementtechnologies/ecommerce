@@ -244,6 +244,7 @@
             <option value="pending" :selected="data.status !== 'published' ? true : false">Pending</option>
             <option value="published" :selected="data.status === 'published' ? true : false">Published</option>
           </select>
+          <span class="text-danger">{{errorMessagePublished}}</span>
         </div>
         <div class="product-item-title" v-if="isEdit === true">
           <button class="btn btn-danger" @click="showConfirmationModal(data.id, 'products')" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'" style="margin-top: 5px;">Delete</button>
@@ -318,6 +319,7 @@ export default {
       selectedImage: null,
       errorMessageActives: null,
       errorMessageGroups: null,
+      errorMessagePublished: null,
       productStatus: null,
       qty: 1,
       priceFlag: false,
@@ -486,6 +488,8 @@ export default {
       if(this.productStatus === 'published'){
         this.confirmationMessage = 'Are you sure you want to publish this product? After publishing, you will not be able to update product details.Cancel Publish'
         $('#confirmationPublish').modal('show')
+      }else{
+        this.updateProduct()
       }
     },
     addGroup(){
@@ -788,20 +792,24 @@ export default {
     validate(){
       this.errorMessage = null
       if(this.data.title === null || this.data.title === ''){
-        this.errorMessage = 'Title is required.'
+        this.errorMessagePublished = 'Title is required.'
         return false
       }
       if(this.data.description === '' || this.data.description === null){
-        this.errorMessage = 'Description is required.'
+        this.errorMessagePublished = 'Description is required.'
         return false
       }
       if(typeof this.common.ecommerce.productTitleLimit !== undefined && typeof this.common.ecommerce.productTitleLimit !== 'undefined' && this.data.title.length > this.common.ecommerce.productTitleLimit){
-        this.errorMessage = 'Product title length should not exceed to ' + this.common.ecommerce.productTitleLimit + ' characters.'
+        this.errorMessagePublished = 'Product title length should not exceed to ' + this.common.ecommerce.productTitleLimit + ' characters.'
         return false
       }
       if(parseInt(this.data.details.active.value) <= 0 || parseInt(this.data.details.shelf_life) <= 0){
-        this.errorMessage = 'Fields should be greater than 0'
+        this.errorMessagePublished = 'Fields should be greater than 0'
         return false
+      }
+      if(this.data.status === 'published'){
+        if(this.data.tags === 'herbicide'){
+        }
       }
       return true
     },
@@ -819,6 +827,25 @@ export default {
       }else{
         this.data.tags = this.data.tags
       }
+      if(this.data.status === 'published'){
+        if(this.data.tags === 'Herbicide'){
+          if(Object.values(this.data.details).includes(null) === true || Object.values(this.data.details).length <= 0){
+            this.errorMessagePublished = 'All field should have values if published'
+            $('#confirmationPublish').modal('hide')
+            this.data.status = 'pending'
+            console.log('--------------------------------')
+            return
+          }
+        }else{
+          if((Object.values(this.data.details).includes(null) === true && this.data.details.hracs.length <= 0) || Object.values(this.data.details).length <= 0){
+            this.errorMessagePublished = 'All field should have values if published'
+            $('#confirmationPublish').modal('hide')
+            this.data.status = 'pending'
+            console.log('--------------------------------')
+            return
+          }
+        }
+      }
       this.data.details = JSON.stringify(this.data.details)
       console.log(this.data.details)
       $('#loading').css({display: 'block'})
@@ -829,6 +856,7 @@ export default {
         this.retrieveBundled()
         this.retrieveVariation()
         this.errorMessageHracs = null
+        this.errorMessagePublished = null
         this.isEdit = false
       })
     },
