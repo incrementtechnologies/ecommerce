@@ -123,12 +123,12 @@
               placeholder="value" >
           </div>
           <div class="col-sm-3 pl-0 ml-0 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
-            <select class="form-control form-control-custom" v-model="active.attribute" @change="getValue($event, 'attribute1')">
+            <select class="form-control form-control-custom" v-model="active.attribute" @change="onChangeActiveUnits()">
               <option v-for="(item, index) in formulations.ACTIVE_UNITS1" :style="[active.attribute !== item ? {} : {display: 'none'}]" :value="item" :key="index">{{item}}</option>
             </select>
           </div>
-            <div class="col-sm-3 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
-            <select class="form-control pl-0 ml-0 form-control-custom" v-model="active.attribute2" @change="getValue($event, 'attribute2')">
+          <div class="col-sm-3 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
+            <select class="form-control pl-0 ml-0 form-control-custom" v-model="active.attribute2">
               <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :style="[active.attribute2 !== item ? {} : {display: 'none'}]" :value="item" :key="index" >
                 {{item}}
               </option>
@@ -399,16 +399,26 @@ export default {
     redirect(parameter){
       ROUTER.push(parameter)
     },
+    onChangeActiveUnits(){
+      if(this.active.attribute === 'Grams (g)'){
+        this.formulations.ACTIVE_UNITS2 = ['Kilogram (kg)', 'Litre (L)']
+      }else{
+        this.formulations.ACTIVE_UNITS2 = ['Grams (g)', 'Milliliter (ml)', 'Kilogram (kg)', 'Litre (L)']
+      }
+      console.log({
+        attribute: this.active.attribute
+      })
+    },
     getValue(event, type){
       if(type === 'attribute2'){
         if(event.target.value === 'Gram (g)'){
-          this.formulations.ACTIVE_UNITS1 = ['Milligrams (mg)']
+          // this.formulations.ACTIVE_UNITS1 = ['Milligrams (mg)']
         }else{
           // this.formulations.ACTIVE_UNITS1.push('Grams (g)')
         }
       }else{
         if(event.target.value === 'Grams (g)'){
-          this.formulations.ACTIVE_UNITS2 = ['Kilogram (kg)', 'Litre (L)']
+          // this.formulations.ACTIVE_UNITS2 = ['Kilogram (kg)', 'Litre (L)']
         }else{
           // this.formulations.ACTIVE_UNITS2.push('Gram (g)')
         }
@@ -474,30 +484,25 @@ export default {
           this.errorMessageActives = 'Active already reach max number(3)'
         }
       }
-      this.actives.map(el => {
-        if(el.attribute !== null && el.attribute2 !== null){
-          this.formulations.ACTIVE_UNITS1 = [el.attribute]
-          this.formulations.ACTIVE_UNITS2 = [el.attribute2]
-        }
-      })
+      this.formulations.ACTIVE_UNITS1 = ['Grams (g)', 'Milligrams (mg)']
+      this.formulations.ACTIVE_UNITS2 = ['Kilogram (kg)', 'Litre (L)']
+      // this.actives.map(el => {
+      //   if(el.attribute !== null && el.attribute2 !== null){
+      //     this.formulations.ACTIVE_UNITS1 = [el.attribute]
+      //     this.formulations.ACTIVE_UNITS2 = [el.attribute2]
+      //   }
+      // })
     },
     publishProduct(event){
       this.productStatus = event.target.value
     },
     confirmPublished(){
-<<<<<<< HEAD
-      // if(this.productStatus === 'published'){
-      this.confirmationMessage = 'Are you sure you want to publish this product? After publishing, you will not be able to update product details.Cancel Publish'
-      $('#confirmationPublish').modal('show')
-      // }
-=======
-      if(this.productStatus === 'published'){
-        this.confirmationMessage = 'Are you sure you want to publish this product? After publishing, you will not be able to update product details.Cancel Publish'
+      if(this.productStatus === 'published' && this.data.status === 'published'){
+        this.confirmationMessage = 'Are you sure you want to publish this product? After publishing, you will not be able to update product details. Cancel Publish'
         $('#confirmationPublish').modal('show')
       }else{
         this.updateProduct()
       }
->>>>>>> c11cf3ef6e16f2c9fb31531475cf57cb028788d4
     },
     addGroup(){
       if(this.group === null || this.group === ''){
@@ -640,8 +645,8 @@ export default {
               let temp2 = []
               temp1.push(this.data.details.active[0].attribute)
               temp2.push(this.data.details.active[0].attribute2)
-              this.formulations.ACTIVE_UNITS1.splice(0, this.formulations.ACTIVE_UNITS1.length, ...temp1)
-              this.formulations.ACTIVE_UNITS2.splice(0, this.formulations.ACTIVE_UNITS2.length, ...temp2)
+              // this.formulations.ACTIVE_UNITS1.splice(0, this.formulations.ACTIVE_UNITS1.length, ...temp1)
+              // this.formulations.ACTIVE_UNITS2.splice(0, this.formulations.ACTIVE_UNITS2.length, ...temp2)
             }else{
               this.actives = []
             }
@@ -657,8 +662,8 @@ export default {
                 let temp2 = []
                 temp1.push(this.data.details.active.attribute)
                 temp2.push(this.data.details.active.attribute2)
-                this.formulations.ACTIVE_UNITS1.splice(0, this.formulations.ACTIVE_UNITS1.length, ...temp1)
-                this.formulations.ACTIVE_UNITS2.splice(0, this.formulations.ACTIVE_UNITS2.length, ...temp2)
+                // this.formulations.ACTIVE_UNITS1.splice(0, this.formulations.ACTIVE_UNITS1.length, ...temp1)
+                // this.formulations.ACTIVE_UNITS2.splice(0, this.formulations.ACTIVE_UNITS2.length, ...temp2)
               }
             }else{
               this.actives = []

@@ -1,5 +1,5 @@
 <template>
-  <div class="variations-holder">
+  <div class="variations-holder" v-if="variationData">
     <div class="error text-danger" v-if="errorMessage !== null">{{errorMessage}}</div>
     <div class="form-group">
       <label for="exampleInputEmail1" v-if="variationData.variation.length > 0" style="font-weight: 600;">Product Variations</label>
@@ -193,25 +193,31 @@ export default {
       }
     },
     addOrDelete(item, bool){
-      bool === true ? this.confirmationMessage = 'Are you sure you want to add this variation?' : this.confirmationMessage = 'Deleting a variation will permanently remove this product and any dependent bundles. Are you sure you want to delete this variation?'
-      if(bool === true){
-        if(this.newAttribute.payload_value === null || this.newAttribute.payload_value === ''){
-          this.errorMessage = 'Fill up the required fields.'
+      let input = this.newAttribute.payload_value
+      let firstIndex = input && input.length ? parseInt(input[0]) : null
+      if(firstIndex && firstIndex > 0){
+        bool === true ? this.confirmationMessage = 'Are you sure you want to add this variation?' : this.confirmationMessage = 'Deleting a variation will permanently remove this product and any dependent bundles. Are you sure you want to delete this variation?'
+        if(bool === true){
+          if(this.newAttribute.payload_value === null || this.newAttribute.payload_value === ''){
+            this.errorMessage = 'Fill up the required fields.'
+          } else {
+            console.log('TESTING', item)
+            console.log('TESTING', this.confirmationMessage)
+            this.isDelete = false
+            let parameter = {
+              id: this.newAttribute
+            }
+            this.$refs.confirmationModal.show(parameter)
+          }
         } else {
+          this.isDelete = true
           console.log('TESTING', item)
           console.log('TESTING', this.confirmationMessage)
-          this.isDelete = false
-          let parameter = {
-            id: this.newAttribute
-          }
-          this.$refs.confirmationModal.show(parameter)
+          this.toDeleteVariation = item.id
+          this.$refs.confirmationModal.show()
         }
-      } else {
-        this.isDelete = true
-        console.log('TESTING', item)
-        console.log('TESTING', this.confirmationMessage)
-        this.toDeleteVariation = item.id
-        this.$refs.confirmationModal.show()
+      }else{
+        this.errorMessage = 'Variation value should be greater than 1.'
       }
     },
     getVariationName(event, type){
@@ -220,7 +226,6 @@ export default {
       }else{
         this.newAttribute.payload_value = event.target.value
       }
-      console.log('PAYLOAD?', this.newAttribute.payload)
       if(this.variationData.variation[0] !== undefined){
         if(this.variationData.variation[0].payload !== null || this.variationData.variation[0].payload !== '' || this.variationData.variation[0].payload !== undefined){
           this.newAttribute.payload = this.variationData.variation[0].payload
@@ -248,12 +253,6 @@ export default {
           this.variationName = `${this.item.title} (${this.newAttribute.payload_value})`
         }
       }
-      var varName = document.getElementById('variationName').value
-      var varHolder = document.getElementById('variationName')
-      // varHolder.style.width = varHolder.style.width = ((this.variationName.length + 1) * 10) + 'px'
-      // varName.style.width = varName.style.width = ((this.variationName.length + 1) * 8) + 'px'
-      console.log('Variation Length', this.variationName.length)
-
     },
     deleteVariation(){
       let parameter = {

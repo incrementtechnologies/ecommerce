@@ -19,7 +19,7 @@
               <div class="col-sm-12"> 
                 <label>Variations</label>
                 <br>
-                <input type="text" class="form-control" :placeholder="`${variations.product} (${variations.variation.payload_value} ${convertion.getUnitsAbbreviation(variations.variation.payload)})`" disabled>
+                <input type="text" class="form-control" :placeholder="`${vvariations.product} (${variations.variation.payload_value} ${convertion.getUnitsAbbreviation(variations.variation.payload)})`" disabled v-if="variations">
                 <!-- <select class="form-control form-control-custom" v-model="newData.product_attribute_id">
                   <option v-for="(item, index) in variations" :value="item.id">{{item.payload_value}} - {{item.payload}}</option>
                 </select> -->
