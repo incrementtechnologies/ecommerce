@@ -483,10 +483,10 @@ export default {
       this.productStatus = event.target.value
     },
     confirmPublished(){
-      if(this.productStatus === 'published'){
-        this.confirmationMessage = 'Are you sure you want to publish this product? After publishing, you will not be able to update product details.Cancel Publish'
-        $('#confirmationPublish').modal('show')
-      }
+      // if(this.productStatus === 'published'){
+      this.confirmationMessage = 'Are you sure you want to publish this product? After publishing, you will not be able to update product details.Cancel Publish'
+      $('#confirmationPublish').modal('show')
+      // }
     },
     addGroup(){
       if(this.group === null || this.group === ''){

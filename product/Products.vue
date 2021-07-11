@@ -1,6 +1,6 @@
 <template>
 	<div class="holder">
-    <create v-if="merchant && user && status && merchant.account_id.toString() === user.userID.toString() || status.toLowerCase() !== 'normal'" :type="type"></create>
+    <create v-if="merchant && user && status && merchant.account_id.toString() === user.userID.toString() || (status && status.toLowerCase() !== 'normal')" :type="type"></create>
     <filter-product v-bind:category="category" 
       :activeCategoryIndex="0"
       :activeSortingIndex="0"

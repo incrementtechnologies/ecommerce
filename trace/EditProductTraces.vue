@@ -42,7 +42,7 @@
             </div>
             <div class="modal-footer" v-if="showCalc">
               <button type="button" class="btn btn-danger" @click="cancel()">Cancel</button>
-              <button type="button" class="btn btn-primary" @click="submit()">Confirm</button>
+              <button type="button" class="btn btn-primary" @click="submit()">Ok</button>
           </div>
         </div>
       </div>
@@ -180,11 +180,11 @@ export default {
       return true
     },
     cancel(){
-      $('#editProductTracesModal').modal('hide')
       this.errorMessage = null
       this.qty = null
       this.data.total_qty = this.currQty
       this.showCalc = false
+      $('#editProductTracesModal').modal('hide')
     }
   }
 }
