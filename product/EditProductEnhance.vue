@@ -13,12 +13,12 @@
           <button class="btn btn-primary" @click="isEdit = true" v-if="isEdit === false">Edit</button>
         </div>
         <div class="product-item-title">
-          <label>Title <label class="text-danger">*</label></label>
+          <label>Title <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <input type="text" class="form-control form-control-custom" v-model="data.title" placeholder="Type product title here..." :disabled="data.status === 'published' || isEdit === false">
         </div>
         <div class="product-item-title">
-          <label>Description <label class="text-danger">*</label></label>
+          <label>Description <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <textarea class="form-control" rows="20" v-model="data.description" placeholder="Type product description here..." :disabled="data.status === 'published' || isEdit===false"></textarea>
         </div>
@@ -26,7 +26,7 @@
           <label class="text-danger">Opps! {{errorMessage}}</label>
         </div>
         <div class="product-item-title mb-3">
-          <label>Classification</label>
+          <label>Classification <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
          <select class="form-control form-control-custom"  v-model="tempTags" :disabled="data.status === 'published' || isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
             <option v-for="(tag, index) in returnTags.TAGS" :key="index" :value="tag" :selected="data.tags === tag ? true : false">{{tag}}</option>
@@ -37,7 +37,7 @@
         </div>
         <div :hidden="data.status === 'published' || isEdit===false" class="mt-2">
           <div class="product-item-title mt-1" style="width: 90%" >
-            <label :hidden="isEdit === false" :style="[]" >Activity Group</label>
+            <label :hidden="isEdit === false" :style="[]" >Activity Group <label v-if="data.status === 'published'" class="text-danger">*</label></label>
             <label class="text-danger">{{errorMessageGroups}}</label>
             <br>
             <select class="form-control form-control-custom"  v-model="group" :hidden="isEdit===false">
@@ -49,7 +49,7 @@
           </div>
         </div>
         <div class="table-responsive">
-          <label :hidden="isEdit" style="margin-top: 5%" ><strong style="font-weight: 600;margin-top: -20px !important;">Activity Group</strong></label>      
+          <label :hidden="isEdit" style="margin-top: 5%" ><strong style="font-weight: 600;margin-top: -20px !important;">Activity Group</strong> <label class="text-danger">*</label></label>      
           <table :class="data.status !== 'published' && isEdit ? 'table table-hover mt-3 table-bordered table-sm w-50' : 'table table-hover mt-3 table-bordered table-sm w-25'" v-if="listGroup.length !== 0 && listGroup !== null">
               <thead>
                   <tr>
@@ -69,11 +69,11 @@
           </div>
         </div>
         <div v-if="errorMessageHracs !== null && (showHrac === true || (data.tags !== null && data.tags === 'Herbicide') || tags === 'Herbicide')" class="d-flex">
-          <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]">HRAC Mode of Action</label>
+          <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]">HRAC Mode of Action <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <label class="text-danger" style="font-weight: 600;" v-if="errorMessageHracs !== null">&nbsp;&nbsp;{{errorMessageHracs}}</label>
         </div>
         <div v-if="showHrac === true && (tags === 'Herbicide' || data.tags === 'Herbicide')">
-          <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]" v-if="errorMessageHracs === null">HRAC Mode of Action</label>
+          <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]" v-if="errorMessageHracs === null">HRAC Mode of Action <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <div class="mt-0" v-show="data.status !== 'published' && isEdit">
             <div class="product-item-title mt-0" style="width: 90%">
               <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="data.status === 'published' || isEdit===false">
@@ -103,12 +103,12 @@
             </div>
           </div>
         </div>
-        <label v-if="data !== null && data.details.hracs.length === 0 && data.tags === 'Herbicide' && data.status === 'published'  && !isEdit">
+        <label v-if="data.details.hracs !== null && data.details.hracs.length === 0 && data.tags === 'Herbicide' && data.status === 'published'  && !isEdit">
           No HRAC Available
         </label>
         <div class="row" v-if="data.status !== 'published' && isEdit">
           <div class="product-item-title ml-4" :hidden="data.status === 'published' && isEdit === false" style="margin-bottom:-5%">
-            <label class="mb-5">Actives <span class="text-danger">{{errorMessageActives}}</span></label>
+            <label class="mb-5">Actives <span v-if="data.status === 'published'" class="text-danger">{{errorMessageActives}}</span></label>
           </div>
           <div class="col-sm-3 mb-0 product-item-title" :hidden="data.status === 'published' || isEdit===false">
             <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents">
@@ -139,7 +139,7 @@
           </div>
         </div>
         <div v-else>
-          <label style="margin-top: 1%" ><strong style="font-weight: 600;">Actives</strong></label>
+          <label style="margin-top: 1%" ><strong style="font-weight: 600;">Actives</strong> <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <p v-if="actives.length === 0">No Actives Available</p>
         </div>
         
@@ -164,29 +164,29 @@
           </table>
         </div>
         <div class="product-item-title">
-          <label>Solvent (if applicable)</label>
+          <label>Solvent (if applicable) <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <input type="text" class="form-control form-control-custom" v-model="data.details.solvent" placeholder="Solvent" :disabled="data.status === 'published' || isEdit===false">
         </div>
          <div class="product-item-title">
-          <label>Other scheduled ingredients</label>
+          <label>Other scheduled ingredients <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <input type="text" class="form-control form-control-custom" v-model="data.details.other_ingredient" placeholder="Other ingredients" :disabled="data.status === 'published' || isEdit===false">
         </div>
          <div class="product-item-title">
-          <label>Mixing Order</label>
+          <label>Mixing Order <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <input type="text" class="form-control form-control-custom" v-model="data.details.mixing_order" placeholder="Type product sku here..." :disabled="data.status === 'published' || isEdit===false">
         </div>
         <div class="product-item-title">
-          <label>Formulation</label>
+          <label>Formulation <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <select class="form-control form-control-custom" v-model="data.details.formulation" :disabled="data.status === 'published' || isEdit===false">
             <option v-for="(formulation, index) in formulations.FORMULATION" :key="index" :value="formulation">{{formulation}}</option>
           </select>
         </div>
         <div class="product-item-title">
-          <label>Application Safety Equipment</label>
+          <label>Application Safety Equipment <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <div v-if="(!isEdit && data.details.safety_equipment.length <= 0) || (data.details.safety_equipment.length === null && !isEdit) ">
             <p>No safety directions added.</p>
@@ -211,7 +211,7 @@
           
         </div>
         <div class="product-item-title">
-          <label>Shelf Life</label>
+          <label>Shelf Life <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <div class="d-flex">
             <input type="number"
@@ -223,17 +223,17 @@
           </div>
         </div>
          <div class="product-item-title">
-          <label>APVMA Approval number</label>
+          <label>APVMA Approval number <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <input type="text" class="form-control form-control-custom" v-model="data.details.approval_number" placeholder="Approval number" :disabled="data.status === 'published' || isEdit===false">
         </div>
          <div class="product-item-title">
-          <label>APVMA Approval date</label>
+          <label>APVMA Approval date <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <input type="date" class="form-control form-control-custom" v-model="data.details.approval_date" placeholder="Approval date" :disabled="data.status === 'published' || isEdit===false">
         </div>
         <div class="product-item-title">
-          <label>SKU</label>
+          <label>SKU <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here..." :disabled="data.status === 'published' || isEdit===false">
         </div>
@@ -244,6 +244,7 @@
             <option value="pending" :selected="data.status !== 'published' ? true : false">Pending</option>
             <option value="published" :selected="data.status === 'published' ? true : false">Published</option>
           </select>
+          <span class="text-danger">{{errorMessagePublished}}</span>
         </div>
         <div class="product-item-title" v-if="isEdit === true">
           <button class="btn btn-danger" @click="showConfirmationModal(data.id, 'products')" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'" style="margin-top: 5px;">Delete</button>
@@ -318,6 +319,7 @@ export default {
       selectedImage: null,
       errorMessageActives: null,
       errorMessageGroups: null,
+      errorMessagePublished: null,
       productStatus: null,
       qty: 1,
       priceFlag: false,
@@ -483,10 +485,19 @@ export default {
       this.productStatus = event.target.value
     },
     confirmPublished(){
+<<<<<<< HEAD
       // if(this.productStatus === 'published'){
       this.confirmationMessage = 'Are you sure you want to publish this product? After publishing, you will not be able to update product details.Cancel Publish'
       $('#confirmationPublish').modal('show')
       // }
+=======
+      if(this.productStatus === 'published'){
+        this.confirmationMessage = 'Are you sure you want to publish this product? After publishing, you will not be able to update product details.Cancel Publish'
+        $('#confirmationPublish').modal('show')
+      }else{
+        this.updateProduct()
+      }
+>>>>>>> c11cf3ef6e16f2c9fb31531475cf57cb028788d4
     },
     addGroup(){
       if(this.group === null || this.group === ''){
@@ -788,20 +799,24 @@ export default {
     validate(){
       this.errorMessage = null
       if(this.data.title === null || this.data.title === ''){
-        this.errorMessage = 'Title is required.'
+        this.errorMessagePublished = 'Title is required.'
         return false
       }
       if(this.data.description === '' || this.data.description === null){
-        this.errorMessage = 'Description is required.'
+        this.errorMessagePublished = 'Description is required.'
         return false
       }
       if(typeof this.common.ecommerce.productTitleLimit !== undefined && typeof this.common.ecommerce.productTitleLimit !== 'undefined' && this.data.title.length > this.common.ecommerce.productTitleLimit){
-        this.errorMessage = 'Product title length should not exceed to ' + this.common.ecommerce.productTitleLimit + ' characters.'
+        this.errorMessagePublished = 'Product title length should not exceed to ' + this.common.ecommerce.productTitleLimit + ' characters.'
         return false
       }
       if(parseInt(this.data.details.active.value) <= 0 || parseInt(this.data.details.shelf_life) <= 0){
-        this.errorMessage = 'Fields should be greater than 0'
+        this.errorMessagePublished = 'Fields should be greater than 0'
         return false
+      }
+      if(this.data.status === 'published'){
+        if(this.data.tags === 'herbicide'){
+        }
       }
       return true
     },
@@ -819,6 +834,25 @@ export default {
       }else{
         this.data.tags = this.data.tags
       }
+      if(this.data.status === 'published'){
+        if(this.data.tags === 'Herbicide'){
+          if(Object.values(this.data.details).includes(null) === true || Object.values(this.data.details).length <= 0){
+            this.errorMessagePublished = 'All field should have values if published'
+            $('#confirmationPublish').modal('hide')
+            this.data.status = 'pending'
+            console.log('--------------------------------')
+            return
+          }
+        }else{
+          if((Object.values(this.data.details).includes(null) === true && this.data.details.hracs.length <= 0) || Object.values(this.data.details).length <= 0){
+            this.errorMessagePublished = 'All field should have values if published'
+            $('#confirmationPublish').modal('hide')
+            this.data.status = 'pending'
+            console.log('--------------------------------')
+            return
+          }
+        }
+      }
       this.data.details = JSON.stringify(this.data.details)
       console.log(this.data.details)
       $('#loading').css({display: 'block'})
@@ -829,6 +863,7 @@ export default {
         this.retrieveBundled()
         this.retrieveVariation()
         this.errorMessageHracs = null
+        this.errorMessagePublished = null
         this.isEdit = false
       })
     },
