@@ -183,7 +183,6 @@ export default {
       ROUTER.push(parameter)
     },
     processData(event){
-      console.log(this.isDelete)
       if(this.isDelete === false){
         this.create()
         console.log('Reading in create')
@@ -209,15 +208,24 @@ export default {
             }
             this.$refs.confirmationModal.show(parameter)
           }
-        } else {
+        }else {
           this.isDelete = true
-          console.log('TESTING', item)
+          console.log('TESTING----------', item)
+          console.log('TESTING', this.confirmationMessage)
+          this.toDeleteVariation = item.id
+          console.log('id var', this.toDeleteVariation)
+          this.$refs.addOrDelete.show()
+        }
+      }else{
+        bool === true ? this.confirmationMessage = 'Are you sure you want to add this variation?' : this.confirmationMessage = 'Deleting a variation will permanently remove this product and any dependent bundles. Are you sure you want to delete this variation?'
+        if(bool === false){
+          this.isDelete = true
+          console.log('TESTING----------', item)
           console.log('TESTING', this.confirmationMessage)
           this.toDeleteVariation = item.id
           this.$refs.confirmationModal.show()
         }
-      }else{
-        this.errorMessage = 'Variation value should be greater than 1.'
+        console.log('testinggggggggggg', firstIndex)
       }
     },
     getVariationName(event, type){
@@ -284,24 +292,22 @@ export default {
     payloadValueExit(newValue){
       console.log('>>>>>>>>', this.variationData.variation)
       if(this.variationData.variation !== null){
-        this.variationData.variation.map(el => {
-          console.log('-----------', parseInt(newValue), parseInt(el.payload_value))
-          if(parseInt(newValue) === parseInt(el.payload_value)){
-            this.errorMessage = 'Value is already existed in the list'
-            return true
-          }else{
-            this.errorMessage = null
-            return false
-          }
+        let exist = this.variationData.variation.filter(el => {
+          return parseInt(newValue) === parseInt(el.payload_value)
         })
+        if(exist.length > 0){
+          this.errorMessage = 'Value is already existed in the list'
+        }else{
+          this.errorMessage = null
+        }
       }
     },
     create(){
-      // if(this.item && this.variationData.variation.length > 0){
-      //   this.newAttribute.payload = this.variationData.variation[0].payload
-      // }
+      if(this.item && this.variationData.variation.length > 0){
+        this.newAttribute.payload = this.variationData.variation[0].payload
+      }
       if(parseInt(this.newAttribute.payload_value) > 0 && this.newAttribute.payload_value !== null && this.newAttribute.payload_value !== ''){
-        // this.payloadValueExit(this.newAttribute.payload_value)
+        this.payloadValueExit(this.newAttribute.payload_value)
         if(this.errorMessage !== null){
           return
         }
@@ -313,8 +319,8 @@ export default {
         this.APIRequest('product_attributes/create', this.newAttribute).then(response => {
           console.log('After IN CREATE', this.newAttribute)
           if(response.data !== null){
-            this.variationName = ''
-            this.newAttribute.payload_value = 0
+            this.variationName = this.variationData.title
+            this.newAttribute.payload_value = ''
             // this.newAttribute.payload = null
             this.errorMessage = null
             $('#demo').collapse({toggle: false}).collapse('hide')
