@@ -214,7 +214,7 @@ export default {
           console.log('TESTING', item)
           console.log('TESTING', this.confirmationMessage)
           this.toDeleteVariation = item.id
-          this.$refs.confirmationModal.show()
+          this.$refs.addOrDelete.show()
         }
       }else{
         this.errorMessage = 'Variation value should be greater than 1.'
@@ -313,8 +313,8 @@ export default {
         this.APIRequest('product_attributes/create', this.newAttribute).then(response => {
           console.log('After IN CREATE', this.newAttribute)
           if(response.data !== null){
-            this.variationName = ''
-            this.newAttribute.payload_value = 0
+            this.variationName = this.variationData.title
+            this.newAttribute.payload_value = ''
             // this.newAttribute.payload = null
             this.errorMessage = null
             $('#demo').collapse({toggle: false}).collapse('hide')
