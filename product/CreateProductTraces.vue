@@ -196,7 +196,7 @@ export default {
       newData: {
         batch_number: null,
         manufacturing_date: null,
-        qty: 1,
+        qty: null,
         product_id: null,
         account_id: null,
         inventory_type: COMMON.ecommerce.inventoryType,
@@ -235,7 +235,7 @@ export default {
             this.newData = {
               batch_number: null,
               manufacturing_date: null,
-              qty: 1,
+              qty: null,
               product_id: null,
               account_id: null,
               product_attribute_id: null,

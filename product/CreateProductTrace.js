@@ -41,7 +41,7 @@ export default {
     variable: 'qty',
     placeholder: 'Enter Quantity',
     disabled: false,
-    value: 1,
+    value: null,
     required: true,
     id: 'qty',
     type: 'input',
