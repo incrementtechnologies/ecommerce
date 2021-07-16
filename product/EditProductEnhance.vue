@@ -820,7 +820,10 @@ export default {
         return false
       }
       if(this.data.status === 'published'){
-        if(this.data.tags === 'herbicide'){
+        if(this.data.sku === null || this.data.sku === ''){
+          this.errorMessagePublished = 'All Fields are required when publishing product'
+          this.data.status = 'pending'
+          return false
         }
       }
       return true
