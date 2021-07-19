@@ -697,12 +697,12 @@ export default {
         user_type: this.user.type
       }
       this.APIRequest('customers/retrieve_accounts', parameter).then(response => {
-        console.log(response, 'helllooooooo', parameter)
+        console.log(response, 'helllooooooo', parameter.user_type)
         $('#loading').css({display: 'none'})
-        if(response.data === true){
-          this.$router.push('/d/products')
-        }else{
+        if(parameter.user_type === 'MANUFACTURER'){
           this.$router.push('/product/edit/' + this.$route.params.code)
+        }else{
+          this.$router.push('/d/products')
         }
       })
     }
