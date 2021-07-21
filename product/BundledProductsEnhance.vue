@@ -214,9 +214,6 @@ export default {
       }else if(this.newAttribute.qty <= 0){
         this.errorMessage = 'You cannot add 0 qty.'
         return
-      }else if(this.hasActive === false){
-        this.errorMessage = 'This variation has no active batch, please add and/or activate the batches first.'
-        return
       }else{
         let parameter = {
           account_id: this.user.userID,

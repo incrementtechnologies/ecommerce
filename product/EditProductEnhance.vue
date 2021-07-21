@@ -424,6 +424,7 @@ export default {
       if(index === 1){
         this.retrieveVariation()
       }else if(index === 2){
+        this.retrieveVariation()
         this.retrieveBundled()
       }
     },
@@ -831,20 +832,47 @@ export default {
         this.data.tags = this.data.tags
       }
       if(this.data.status === 'published'){
+        console.log('[STATUS]', this.data.status)
         if(this.data.tags === 'Herbicide'){
-          if(Object.values(this.data.details).includes(null) === true || Object.values(this.data.details).length <= 0){
+          console.log('[tags]', this.data.tags)
+          let empty = Object.values(this.data.details).filter(el => {
+            return Array.isArray(el) ? el.length <= 0 : null
+          })
+          console.log('BOOLEAMsssssssss', empty.length)
+          if(empty.length > 0){
+            console.log('[LENGTH]')
             this.errorMessagePublished = 'All field should have values if published'
             $('#confirmationPublish').modal('hide')
             this.data.status = 'pending'
-            console.log('--------------------------------')
+            return
+          }
+          if(Object.values(this.data.details).includes(null) === true){
+            console.log('[NULL]')
+            this.errorMessagePublished = 'All field should have values if published'
+            $('#confirmationPublish').modal('hide')
+            this.data.status = 'pending'
             return
           }
         }else{
-          if((Object.values(this.data.details).includes(null) === true && this.data.details.hracs.length <= 0) || Object.values(this.data.details).length <= 0){
+          let empty = Object.values(this.data.details).filter(el => {
+            console.log('BOOL', Array.isArray(el), this.data.details.hracs.length <= 0, el.length <= 0)
+            if(Array.isArray(el) && this.data.details.hracs.length <= 0 && el.length <= 0){
+              return el
+            }else{
+              return el === null
+            }
+          })
+          console.log('BOOLEAM', empty)
+          if(empty.length > 1){
             this.errorMessagePublished = 'All field should have values if published'
             $('#confirmationPublish').modal('hide')
             this.data.status = 'pending'
-            console.log('--------------------------------')
+            return
+          }
+          if(Object.values(this.data.details).includes(null) === true && this.data.details.hracs.length <= 0){
+            this.errorMessagePublished = 'All field should have values if published'
+            $('#confirmationPublish').modal('hide')
+            this.data.status = 'pending'
             return
           }
         }
