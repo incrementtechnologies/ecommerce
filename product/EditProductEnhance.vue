@@ -882,7 +882,7 @@ export default {
       this.data.details = JSON.stringify(this.data.details)
       console.log(this.data.details)
       $('#loading').css({display: 'block'})
-      this.APIRequest('products/', this.data).then(response => {
+      this.APIRequest('products/update', this.data).then(response => {
         $('#loading').css({display: 'none'})
         $('#confirmationPublish').modal('hide')
         this.retrieve()
