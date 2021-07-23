@@ -248,8 +248,8 @@
         </div>
         <div class="product-item-title" v-if="isEdit === true">
           <button class="btn btn-danger" @click="showConfirmationModal(data.id, 'products')" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'" style="margin-top: 5px;">Delete</button>
-          <button class="btn btn-danger pull-right" @click="cancel()" style="margin-right: 2px; margin-top: 5px;">Cancel</button>
-          <button class="btn btn-primary pull-right" @click="confirmPublished($event)" style="margin-right: 2px; margin-top: 5px;">Update</button>
+          <button class="btn btn-danger pull-right" @click="cancel()" style="margin-right: 2px; margin-top: 5px;" :hidden="showUpdateButton">Cancel</button>
+          <button class="btn btn-primary pull-right" @click="confirmPublished($event)" style="margin-right: 2px; margin-top: 5px;" :hidden="showUpdateButton">Update</button>
         </div>
       </div>
       <images :productImages="data" :isEditing="isEdit"/>
@@ -322,6 +322,7 @@ export default {
       errorMessagePublished: null,
       productStatus: null,
       qty: 1,
+      showUpdateButton: false,
       priceFlag: false,
       newImage: {
         product_id: null,
@@ -607,6 +608,9 @@ export default {
         console.log('[DATAS]', response.data)
         if(response.data.length > 0){
           this.data = response.data[0]
+          if(this.data.status === 'published'){
+            this.showUpdateButton = true
+          }
           this.tagChecker(null)
           if(this.data.tags === null){
             this.tempTags = null
