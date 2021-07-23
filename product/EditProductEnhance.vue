@@ -248,8 +248,8 @@
         </div>
         <div class="product-item-title" v-if="isEdit === true">
           <button class="btn btn-danger" @click="showConfirmationModal(data.id, 'products')" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'" style="margin-top: 5px;">Delete</button>
-          <button class="btn btn-danger pull-right" @click="cancel()" style="margin-right: 2px; margin-top: 5px;">Cancel</button>
-          <button class="btn btn-primary pull-right" @click="confirmPublished($event)" style="margin-right: 2px; margin-top: 5px;">Update</button>
+          <button class="btn btn-danger pull-right" @click="cancel()" style="margin-right: 2px; margin-top: 5px;" :hidden="showUpdateButton">Cancel</button>
+          <button class="btn btn-primary pull-right" @click="confirmPublished($event)" style="margin-right: 2px; margin-top: 5px;" :hidden="showUpdateButton">Update</button>
         </div>
       </div>
       <images :productImages="data" :isEditing="isEdit"/>
@@ -322,6 +322,7 @@ export default {
       errorMessagePublished: null,
       productStatus: null,
       qty: 1,
+      showUpdateButton: false,
       priceFlag: false,
       newImage: {
         product_id: null,
@@ -441,6 +442,7 @@ export default {
     cancel() {
       this.retrieve()
       this.isEdit = false
+      this.errorMessagePublished = null
     },
     addActive(){
       if((this.active.active_name === null || this.active.active_name === '') || (this.active.value === null || this.active.value <= 0) || this.active.attribute === null || this.active.attribute2 === null){
@@ -618,6 +620,9 @@ export default {
         console.log('[DATAS]', response.data)
         if(response.data.length > 0){
           this.data = response.data[0]
+          if(this.data.status === 'published'){
+            this.showUpdateButton = true
+          }
           this.tagChecker(null)
           if(this.data.tags === null){
             this.tempTags = null
@@ -867,11 +872,12 @@ export default {
           }
         }else{
           let empty = Object.values(this.data.details).filter(el => {
-            console.log('BOOL', Array.isArray(el), this.data.details.hracs.length <= 0, el.length <= 0)
-            if(Array.isArray(el) && this.data.details.hracs.length <= 0 && el.length <= 0){
-              return el
-            }else{
-              return el === null
+            // console.log('BOOL', Array.isArray(el), this.data.details.hracs.length <= 0, el.length <= 0, el)
+            if(Array.isArray(el)){
+              if(el.length <= 0 && this.data.details.hracs.length <= 0){
+                console.log('BOOL')
+                return el
+              }
             }
           })
           console.log('BOOLEAM', empty)
@@ -881,7 +887,7 @@ export default {
             this.data.status = 'pending'
             return
           }
-          if(Object.values(this.data.details).includes(null) === true && this.data.details.hracs.length <= 0){
+          if((Object.values(this.data.details).includes(null) === true || Object.values(this.data.details).includes(undefined)) && this.data.details.hracs.length <= 0){
             this.errorMessagePublished = 'All field should have values if published'
             $('#confirmationPublish').modal('hide')
             this.data.status = 'pending'
