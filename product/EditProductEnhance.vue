@@ -431,6 +431,7 @@ export default {
     cancel() {
       this.retrieve()
       this.isEdit = false
+      this.errorMessagePublished = null
     },
     addActive(){
       if((this.active.active_name === null || this.active.active_name === '') || (this.active.value === null || this.active.value <= 0) || this.active.attribute === null || this.active.attribute2 === null){
@@ -855,11 +856,12 @@ export default {
           }
         }else{
           let empty = Object.values(this.data.details).filter(el => {
-            console.log('BOOL', Array.isArray(el), this.data.details.hracs.length <= 0, el.length <= 0)
-            if(Array.isArray(el) && this.data.details.hracs.length <= 0 && el.length <= 0){
-              return el
-            }else{
-              return el === null
+            // console.log('BOOL', Array.isArray(el), this.data.details.hracs.length <= 0, el.length <= 0, el)
+            if(Array.isArray(el)){
+              if(el.length <= 0 && this.data.details.hracs.length <= 0){
+                console.log('BOOL')
+                return el
+              }
             }
           })
           console.log('BOOLEAM', empty)
@@ -869,7 +871,7 @@ export default {
             this.data.status = 'pending'
             return
           }
-          if(Object.values(this.data.details).includes(null) === true && this.data.details.hracs.length <= 0){
+          if((Object.values(this.data.details).includes(null) === true || Object.values(this.data.details).includes(undefined)) && this.data.details.hracs.length <= 0){
             this.errorMessagePublished = 'All field should have values if published'
             $('#confirmationPublish').modal('hide')
             this.data.status = 'pending'
@@ -880,7 +882,7 @@ export default {
       this.data.details = JSON.stringify(this.data.details)
       console.log(this.data.details)
       $('#loading').css({display: 'block'})
-      this.APIRequest('products/update', this.data).then(response => {
+      this.APIRequest('products/', this.data).then(response => {
         $('#loading').css({display: 'none'})
         $('#confirmationPublish').modal('hide')
         this.retrieve()
