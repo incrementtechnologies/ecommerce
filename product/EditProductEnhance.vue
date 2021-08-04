@@ -247,7 +247,7 @@
           <span class="text-danger">{{errorMessagePublished}}</span>
         </div>
         <div class="product-item-title" v-if="isEdit === true">
-          <button class="btn btn-danger" @click="showConfirmationModal(data.id, 'products')" v-if="data.inventories === null && data.product_traces === null && data.status === 'pending'" style="margin-top: 5px;">Delete</button>
+          <button class="btn btn-danger" @click="showConfirmationModal(data.id, 'products')" v-if="(data.inventories === null && data.product_traces === null && data.status === 'pending') || isEmptyVariation===true" style="margin-top: 5px;">Delete</button>
           <button class="btn btn-danger pull-right" @click="cancel()" style="margin-right: 2px; margin-top: 5px;" :hidden="showUpdateButton">Cancel</button>
           <button class="btn btn-primary pull-right" @click="confirmPublished($event)" style="margin-right: 2px; margin-top: 5px;" :hidden="showUpdateButton">Update</button>
         </div>
@@ -301,7 +301,7 @@ export default {
   mounted(){
     this.retrieve()
     // this.retrieveBundled()
-    // this.retrieveVariation()
+    this.retrieveVariation()
     this.isEdit = false
   },
   data(){
@@ -366,7 +366,8 @@ export default {
       tagName: null,
       bundledData: null,
       variationData: null,
-      tempTags: null
+      tempTags: null,
+      isEmptyVariation: false
     }
   },
   computed: {
@@ -732,6 +733,10 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('products/retrieve_variation', parameter).then(response => {
         $('#loading').css({display: 'none'})
+        console.log('================', response.data.length)
+        if(response.data[0].variation.length <= 0){
+          this.isEmptyVariation = true
+        }
         response.data[0].variation = response.data[0].variation.sort(this.getSortOrder('payload_value'))
         this.variationData = response.data[0]
         console.log('[Variation Data]', this.variationData)
