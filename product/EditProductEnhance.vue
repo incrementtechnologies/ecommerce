@@ -238,7 +238,7 @@
           <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here..." :disabled="data.status === 'published' || isEdit===false">
         </div>
         <div class="product-item-title">
-          <label>Status {{isEmptyVariation}}</label>
+          <label>Status</label>
           <br>
           <select class="form-control form-control-custom" v-model="data.status" @change="publishProduct($event)" :disabled="data.status === 'published' || isEdit===false">
             <option value="pending" :selected="data.status !== 'published' ? true : false">Pending</option>
