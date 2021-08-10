@@ -181,12 +181,12 @@ export default {
       return true
     },
     cancel(){
-      $('#editProductTracesModal').modal('hide')
       this.errorMessage = null
       this.qty = null
       this.newData.qty = null
       this.data.total_qty = this.currQty
       this.showCalc = false
+      $('#editProductTracesModal').modal('hide')
     }
   }
 }

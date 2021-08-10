@@ -19,7 +19,7 @@
               <div class="col-sm-12"> 
                 <label>Variations</label>
                 <br>
-                <input type="text" class="form-control" :placeholder="`${variations.product} (${variations.variation.payload_value} ${convertion.getUnitsAbbreviation(variations.variation.payload)})`" disabled>
+                <input type="text" class="form-control" :placeholder="`${variations.product} (${variations.variation.payload_value} ${convertion.getUnitsAbbreviation(variations.variation.payload)})`" disabled v-if="variations">
                 <!-- <select class="form-control form-control-custom" v-model="newData.product_attribute_id">
                   <option v-for="(item, index) in variations" :value="item.id">{{item.payload_value}} - {{item.payload}}</option>
                 </select> -->
@@ -196,7 +196,7 @@ export default {
       newData: {
         batch_number: null,
         manufacturing_date: null,
-        qty: 1,
+        qty: null,
         product_id: null,
         account_id: null,
         inventory_type: COMMON.ecommerce.inventoryType,
@@ -235,7 +235,7 @@ export default {
             this.newData = {
               batch_number: null,
               manufacturing_date: null,
-              qty: 1,
+              qty: null,
               product_id: null,
               account_id: null,
               product_attribute_id: null,

@@ -13,12 +13,12 @@
           <button class="btn btn-primary" @click="isEdit = true" v-if="isEdit === false">Edit</button>
         </div>
         <div class="product-item-title">
-          <label>Title <label class="text-danger">*</label></label>
+          <label>Title <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <input type="text" class="form-control form-control-custom" v-model="data.title" placeholder="Type product title here..." :disabled="data.status === 'published' || isEdit === false">
         </div>
         <div class="product-item-title">
-          <label>Description <label class="text-danger">*</label></label>
+          <label>Description <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <textarea class="form-control" rows="20" v-model="data.description" placeholder="Type product description here..." :disabled="data.status === 'published' || isEdit===false"></textarea>
         </div>
@@ -26,7 +26,7 @@
           <label class="text-danger">Opps! {{errorMessage}}</label>
         </div>
         <div class="product-item-title mb-3">
-          <label>Classification</label>
+          <label>Classification <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
          <select class="form-control form-control-custom"  v-model="tempTags" :disabled="data.status === 'published' || isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
             <option v-for="(tag, index) in returnTags.TAGS" :key="index" :value="tag" :selected="data.tags === tag ? true : false">{{tag}}</option>
@@ -37,7 +37,7 @@
         </div>
         <div :hidden="data.status === 'published' || isEdit===false" class="mt-2">
           <div class="product-item-title mt-1" style="width: 90%" >
-            <label :hidden="isEdit === false" :style="[]" >Activity Group</label>
+            <label :hidden="isEdit === false" :style="[]" >Activity Group <label v-if="data.status === 'published'" class="text-danger">*</label></label>
             <label class="text-danger">{{errorMessageGroups}}</label>
             <br>
             <select class="form-control form-control-custom"  v-model="group" :hidden="isEdit===false">
@@ -49,7 +49,7 @@
           </div>
         </div>
         <div class="table-responsive">
-          <label :hidden="isEdit" style="margin-top: 5%" ><strong style="font-weight: 600;margin-top: -20px !important;">Activity Group</strong></label>      
+          <label :hidden="isEdit" style="margin-top: 5%" ><strong style="font-weight: 600;margin-top: -20px !important;">Activity Group</strong> <label class="text-danger">*</label></label>      
           <table :class="data.status !== 'published' && isEdit ? 'table table-hover mt-3 table-bordered table-sm w-50' : 'table table-hover mt-3 table-bordered table-sm w-25'" v-if="listGroup.length !== 0 && listGroup !== null">
               <thead>
                   <tr>
@@ -69,11 +69,11 @@
           </div>
         </div>
         <div v-if="errorMessageHracs !== null && (showHrac === true || (data.tags !== null && data.tags === 'Herbicide') || tags === 'Herbicide')" class="d-flex">
-          <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]">HRAC Mode of Action</label>
+          <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]">HRAC Mode of Action <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <label class="text-danger" style="font-weight: 600;" v-if="errorMessageHracs !== null">&nbsp;&nbsp;{{errorMessageHracs}}</label>
         </div>
         <div v-if="showHrac === true && (tags === 'Herbicide' || data.tags === 'Herbicide')">
-          <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]" v-if="errorMessageHracs === null">HRAC Mode of Action</label>
+          <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]" v-if="errorMessageHracs === null">HRAC Mode of Action <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <div class="mt-0" v-show="data.status !== 'published' && isEdit">
             <div class="product-item-title mt-0" style="width: 90%">
               <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="data.status === 'published' || isEdit===false">
@@ -103,12 +103,12 @@
             </div>
           </div>
         </div>
-        <label v-if="data !== null && data.details.hracs.length === 0 && data.tags === 'Herbicide' && data.status === 'published'  && !isEdit">
+        <label v-if="data.details.hracs !== null && data.details.hracs.length === 0 && data.tags === 'Herbicide' && data.status === 'published'  && !isEdit">
           No HRAC Available
         </label>
         <div class="row" v-if="data.status !== 'published' && isEdit">
           <div class="product-item-title ml-4" :hidden="data.status === 'published' && isEdit === false" style="margin-bottom:-5%">
-            <label class="mb-5">Actives <span class="text-danger">{{errorMessageActives}}</span></label>
+            <label class="mb-5">Actives <span v-if="data.status === 'published'" class="text-danger">{{errorMessageActives}}</span></label>
           </div>
           <div class="col-sm-3 mb-0 product-item-title" :hidden="data.status === 'published' || isEdit===false">
             <input type="text" class="form-control form-control-custom" v-model="active.active_name" placeholder="Active constituents">
@@ -123,12 +123,12 @@
               placeholder="value" >
           </div>
           <div class="col-sm-3 pl-0 ml-0 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
-            <select class="form-control form-control-custom" v-model="active.attribute" @change="getValue($event, 'attribute1')">
+            <select class="form-control form-control-custom" v-model="active.attribute" @change="onChangeActiveUnits()">
               <option v-for="(item, index) in formulations.ACTIVE_UNITS1" :style="[active.attribute !== item ? {} : {display: 'none'}]" :value="item" :key="index">{{item}}</option>
             </select>
           </div>
-            <div class="col-sm-3 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
-            <select class="form-control pl-0 ml-0 form-control-custom" v-model="active.attribute2" @change="getValue($event, 'attribute2')">
+          <div class="col-sm-3 product-item-title"  :hidden="data.status === 'published' || isEdit===false">
+            <select class="form-control pl-0 ml-0 form-control-custom" v-model="active.attribute2">
               <option v-for="(item, index) in formulations.ACTIVE_UNITS2" :style="[active.attribute2 !== item ? {} : {display: 'none'}]" :value="item" :key="index" >
                 {{item}}
               </option>
@@ -139,7 +139,7 @@
           </div>
         </div>
         <div v-else>
-          <label style="margin-top: 1%" ><strong style="font-weight: 600;">Actives</strong></label>
+          <label style="margin-top: 1%" ><strong style="font-weight: 600;">Actives</strong> <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <p v-if="actives.length === 0">No Actives Available</p>
         </div>
         
@@ -164,29 +164,29 @@
           </table>
         </div>
         <div class="product-item-title">
-          <label>Solvent (if applicable)</label>
+          <label>Solvent (if applicable) <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <input type="text" class="form-control form-control-custom" v-model="data.details.solvent" placeholder="Solvent" :disabled="data.status === 'published' || isEdit===false">
         </div>
          <div class="product-item-title">
-          <label>Other scheduled ingredients</label>
+          <label>Other scheduled ingredients <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <input type="text" class="form-control form-control-custom" v-model="data.details.other_ingredient" placeholder="Other ingredients" :disabled="data.status === 'published' || isEdit===false">
         </div>
          <div class="product-item-title">
-          <label>Mixing Order</label>
+          <label>Mixing Order <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <input type="text" class="form-control form-control-custom" v-model="data.details.mixing_order" placeholder="Type product sku here..." :disabled="data.status === 'published' || isEdit===false">
         </div>
         <div class="product-item-title">
-          <label>Formulation</label>
+          <label>Formulation <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <select class="form-control form-control-custom" v-model="data.details.formulation" :disabled="data.status === 'published' || isEdit===false">
             <option v-for="(formulation, index) in formulations.FORMULATION" :key="index" :value="formulation">{{formulation}}</option>
           </select>
         </div>
         <div class="product-item-title">
-          <label>Application Safety Equipment</label>
+          <label>Application Safety Equipment <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <div v-if="(!isEdit && data.details.safety_equipment.length <= 0) || (data.details.safety_equipment.length === null && !isEdit) ">
             <p>No safety directions added.</p>
@@ -211,7 +211,7 @@
           
         </div>
         <div class="product-item-title">
-          <label>Shelf Life</label>
+          <label>Shelf Life <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <div class="d-flex">
             <input type="number"
@@ -223,17 +223,17 @@
           </div>
         </div>
          <div class="product-item-title">
-          <label>APVMA Approval number</label>
+          <label>APVMA Approval number <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <input type="text" class="form-control form-control-custom" v-model="data.details.approval_number" placeholder="Approval number" :disabled="data.status === 'published' || isEdit===false">
         </div>
          <div class="product-item-title">
-          <label>APVMA Approval date</label>
+          <label>APVMA Approval date <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <input type="date" class="form-control form-control-custom" v-model="data.details.approval_date" placeholder="Approval date" :disabled="data.status === 'published' || isEdit===false">
         </div>
         <div class="product-item-title">
-          <label>SKU</label>
+          <label>SKU <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
           <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here..." :disabled="data.status === 'published' || isEdit===false">
         </div>
@@ -424,16 +424,26 @@ export default {
     redirect(parameter){
       ROUTER.push(parameter)
     },
+    onChangeActiveUnits(){
+      if(this.active.attribute === 'Grams (g)'){
+        this.formulations.ACTIVE_UNITS2 = ['Kilogram (kg)', 'Litre (L)']
+      }else{
+        this.formulations.ACTIVE_UNITS2 = ['Grams (g)', 'Milliliter (ml)', 'Kilogram (kg)', 'Litre (L)']
+      }
+      console.log({
+        attribute: this.active.attribute
+      })
+    },
     getValue(event, type){
       if(type === 'attribute2'){
         if(event.target.value === 'Gram (g)'){
-          this.formulations.ACTIVE_UNITS1 = ['Milligrams (mg)']
+          // this.formulations.ACTIVE_UNITS1 = ['Milligrams (mg)']
         }else{
           // this.formulations.ACTIVE_UNITS1.push('Grams (g)')
         }
       }else{
         if(event.target.value === 'Grams (g)'){
-          this.formulations.ACTIVE_UNITS2 = ['Kilogram (kg)', 'Litre (L)']
+          // this.formulations.ACTIVE_UNITS2 = ['Kilogram (kg)', 'Litre (L)']
         }else{
           // this.formulations.ACTIVE_UNITS2.push('Gram (g)')
         }
@@ -501,19 +511,21 @@ export default {
           this.errorMessageActives = 'Active already reach max number(3)'
         }
       }
-      this.actives.map(el => {
-        if(el.attribute !== null && el.attribute2 !== null){
-          this.formulations.ACTIVE_UNITS1 = [el.attribute]
-          this.formulations.ACTIVE_UNITS2 = [el.attribute2]
-        }
-      })
+      this.formulations.ACTIVE_UNITS1 = ['Grams (g)', 'Milligrams (mg)']
+      this.formulations.ACTIVE_UNITS2 = ['Kilogram (kg)', 'Litre (L)']
+      // this.actives.map(el => {
+      //   if(el.attribute !== null && el.attribute2 !== null){
+      //     this.formulations.ACTIVE_UNITS1 = [el.attribute]
+      //     this.formulations.ACTIVE_UNITS2 = [el.attribute2]
+      //   }
+      // })
     },
     publishProduct(event){
       this.productStatus = event.target.value
     },
     confirmPublished(){
-      if(this.productStatus === 'published'){
-        this.confirmationMessage = 'Are you sure you want to publish this product? After publishing, you will not be able to update product details.Cancel Publish'
+      if(this.productStatus === 'published' && this.data.status === 'published'){
+        this.confirmationMessage = 'Are you sure you want to publish this product? After publishing, you will not be able to update product details. Cancel Publish'
         $('#confirmationPublish').modal('show')
       }else{
         this.updateProduct()
@@ -669,8 +681,8 @@ export default {
               let temp2 = []
               temp1.push(this.data.details.active[0].attribute)
               temp2.push(this.data.details.active[0].attribute2)
-              this.formulations.ACTIVE_UNITS1.splice(0, this.formulations.ACTIVE_UNITS1.length, ...temp1)
-              this.formulations.ACTIVE_UNITS2.splice(0, this.formulations.ACTIVE_UNITS2.length, ...temp2)
+              // this.formulations.ACTIVE_UNITS1.splice(0, this.formulations.ACTIVE_UNITS1.length, ...temp1)
+              // this.formulations.ACTIVE_UNITS2.splice(0, this.formulations.ACTIVE_UNITS2.length, ...temp2)
             }else{
               this.actives = []
             }
@@ -686,8 +698,8 @@ export default {
                 let temp2 = []
                 temp1.push(this.data.details.active.attribute)
                 temp2.push(this.data.details.active.attribute2)
-                this.formulations.ACTIVE_UNITS1.splice(0, this.formulations.ACTIVE_UNITS1.length, ...temp1)
-                this.formulations.ACTIVE_UNITS2.splice(0, this.formulations.ACTIVE_UNITS2.length, ...temp2)
+                // this.formulations.ACTIVE_UNITS1.splice(0, this.formulations.ACTIVE_UNITS1.length, ...temp1)
+                // this.formulations.ACTIVE_UNITS2.splice(0, this.formulations.ACTIVE_UNITS2.length, ...temp2)
               }
             }else{
               this.actives = []

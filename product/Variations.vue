@@ -1,5 +1,5 @@
 <template>
-  <div class="variations-holder">
+  <div class="variations-holder" v-if="variationData">
     <div class="error text-danger" v-if="errorMessage !== null">{{errorMessage}}</div>
     <div class="form-group">
       <label for="exampleInputEmail1" v-if="variationData.variation.length > 0" style="font-weight: 600;">Product Variations</label>
@@ -183,7 +183,6 @@ export default {
       ROUTER.push(parameter)
     },
     processData(event){
-      console.log(this.isDelete)
       if(this.isDelete === false){
         this.create()
         console.log('Reading in create')
@@ -193,25 +192,40 @@ export default {
       }
     },
     addOrDelete(item, bool){
-      bool === true ? this.confirmationMessage = 'Are you sure you want to add this variation?' : this.confirmationMessage = 'Deleting a variation will permanently remove this product and any dependent bundles. Are you sure you want to delete this variation?'
-      if(bool === true){
-        if(this.newAttribute.payload_value === null || this.newAttribute.payload_value === ''){
-          this.errorMessage = 'Fill up the required fields.'
-        } else {
-          console.log('TESTING', item)
-          console.log('TESTING', this.confirmationMessage)
-          this.isDelete = false
-          let parameter = {
-            id: this.newAttribute
+      let input = this.newAttribute.payload_value
+      let firstIndex = input && input.length ? parseInt(input[0]) : null
+      if(firstIndex && firstIndex > 0){
+        bool === true ? this.confirmationMessage = 'Are you sure you want to add this variation?' : this.confirmationMessage = 'Deleting a variation will permanently remove this product and any dependent bundles. Are you sure you want to delete this variation?'
+        if(bool === true){
+          if(this.newAttribute.payload_value === null || this.newAttribute.payload_value === ''){
+            this.errorMessage = 'Fill up the required fields.'
+          } else {
+            console.log('TESTING', item)
+            console.log('TESTING', this.confirmationMessage)
+            this.isDelete = false
+            let parameter = {
+              id: this.newAttribute
+            }
+            this.$refs.confirmationModalVariation.show(parameter)
           }
-          this.$refs.confirmationModalVariation.show(parameter)
+        }else {
+          this.isDelete = true
+          console.log('TESTING----------', item)
+          console.log('TESTING', this.confirmationMessage)
+          this.toDeleteVariation = item.id
+          console.log('id var', this.toDeleteVariation)
+          this.$refs.addOrDelete.show()
         }
-      } else {
-        this.isDelete = true
-        console.log('TESTING', item)
-        console.log('TESTING', this.confirmationMessage)
-        this.toDeleteVariation = item.id
-        this.$refs.confirmationModalVariation.show(item.id)
+      }else{
+        bool === true ? this.confirmationMessage = 'Are you sure you want to add this variation?' : this.confirmationMessage = 'Deleting a variation will permanently remove this product and any dependent bundles. Are you sure you want to delete this variation?'
+        if(bool === false){
+          this.isDelete = true
+          console.log('TESTING----------', item)
+          console.log('TESTING', this.confirmationMessage)
+          this.toDeleteVariation = item.id
+          this.$refs.confirmationModalVariation.show(item.id)
+        }
+        console.log('testinggggggggggg', firstIndex)
       }
     },
     getVariationName(event, type){
@@ -220,7 +234,6 @@ export default {
       }else{
         this.newAttribute.payload_value = event.target.value
       }
-      console.log('PAYLOAD?', this.newAttribute.payload)
       if(this.variationData.variation[0] !== undefined){
         if(this.variationData.variation[0].payload !== null || this.variationData.variation[0].payload !== '' || this.variationData.variation[0].payload !== undefined){
           this.newAttribute.payload = this.variationData.variation[0].payload
@@ -248,12 +261,6 @@ export default {
           this.variationName = `${this.item.title} (${this.newAttribute.payload_value})`
         }
       }
-      var varName = document.getElementById('variationName').value
-      var varHolder = document.getElementById('variationName')
-      // varHolder.style.width = varHolder.style.width = ((this.variationName.length + 1) * 10) + 'px'
-      // varName.style.width = varName.style.width = ((this.variationName.length + 1) * 8) + 'px'
-      console.log('Variation Length', this.variationName.length)
-
     },
     deleteVariation(){
       let parameter = {
@@ -285,24 +292,22 @@ export default {
     payloadValueExit(newValue){
       console.log('>>>>>>>>', this.variationData.variation)
       if(this.variationData.variation !== null){
-        this.variationData.variation.map(el => {
-          console.log('-----------', parseInt(newValue), parseInt(el.payload_value))
-          if(parseInt(newValue) === parseInt(el.payload_value)){
-            this.errorMessage = 'Value is already existed in the list'
-            return true
-          }else{
-            this.errorMessage = null
-            return false
-          }
+        let exist = this.variationData.variation.filter(el => {
+          return parseInt(newValue) === parseInt(el.payload_value)
         })
+        if(exist.length > 0){
+          this.errorMessage = 'Value is already existed in the list'
+        }else{
+          this.errorMessage = null
+        }
       }
     },
     create(){
-      // if(this.item && this.variationData.variation.length > 0){
-      //   this.newAttribute.payload = this.variationData.variation[0].payload
-      // }
+      if(this.item && this.variationData.variation.length > 0){
+        this.newAttribute.payload = this.variationData.variation[0].payload
+      }
       if(parseInt(this.newAttribute.payload_value) > 0 && this.newAttribute.payload_value !== null && this.newAttribute.payload_value !== ''){
-        // this.payloadValueExit(this.newAttribute.payload_value)
+        this.payloadValueExit(this.newAttribute.payload_value)
         if(this.errorMessage !== null){
           return
         }
@@ -314,8 +319,8 @@ export default {
         this.APIRequest('product_attributes/create', this.newAttribute).then(response => {
           console.log('After IN CREATE', this.newAttribute)
           if(response.data !== null){
-            this.variationName = ''
-            this.newAttribute.payload_value = 0
+            this.variationName = this.variationData.title
+            this.newAttribute.payload_value = ''
             // this.newAttribute.payload = null
             this.errorMessage = null
             $('#demo').collapse({toggle: false}).collapse('hide')
