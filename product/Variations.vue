@@ -91,9 +91,9 @@
         <!-- <button class="btn btn-primary form-control-custom" style="margin-left: 10px;" @click="confirmAdd()" :disabled="isEdit===false"><i class="fa fa-plus"></i></button> -->
     </div>
     <Confirmation
-        :title="'Confirm Delete'"
+        :title="'Confirmation Modal'"
         :message="confirmationMessage"
-        ref="confirmationModal"
+        ref="confirmationModalVariation"
         @onConfirm="processData($event)"
       />
     <create-modal :property="createProductTraceModal"></create-modal>
@@ -204,14 +204,14 @@ export default {
           let parameter = {
             id: this.newAttribute
           }
-          this.$refs.confirmationModal.show(parameter)
+          this.$refs.confirmationModalVariation.show(parameter)
         }
       } else {
         this.isDelete = true
         console.log('TESTING', item)
         console.log('TESTING', this.confirmationMessage)
         this.toDeleteVariation = item.id
-        this.$refs.confirmationModal.show()
+        this.$refs.confirmationModalVariation.show(item.id)
       }
     },
     getVariationName(event, type){

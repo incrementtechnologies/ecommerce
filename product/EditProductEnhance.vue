@@ -247,7 +247,7 @@
           <span class="text-danger">{{errorMessagePublished}}</span>
         </div>
         <div class="product-item-title" v-if="isEdit === true">
-          <button class="btn btn-danger" @click="showConfirmationModal(data.id, 'products')" v-if="(data.inventories === null && data.product_traces === null && data.status === 'pending') || isEmptyVariation===true" style="margin-top: 5px;">Delete</button>
+          <button class="btn btn-danger" @click="confirmDeleteProduct(data.id)" v-if="(data.inventories === null && data.product_traces === null && data.status === 'pending') || isEmptyVariation===true" style="margin-top: 5px;">Delete</button>
           <button class="btn btn-danger pull-right" @click="cancel()" style="margin-right: 2px; margin-top: 5px;" :hidden="showUpdateButton">Cancel</button>
           <button class="btn btn-primary pull-right" @click="confirmPublished($event)" style="margin-right: 2px; margin-top: 5px;" :hidden="showUpdateButton">Update</button>
         </div>
@@ -285,8 +285,29 @@
       </div>
     </div>
     <browse-images-modal></browse-images-modal>
-    <confirmation ref="confirmationModal" :title="'Confirmation Message'" :message="confirmationMessage" @onConfirm="removeBySplice($event.id, $event)"></confirmation>
+    <confirmation ref="confirmModal" :title="'Confirmation Message'" :message="confirmationMessage" @onConfirm="removeBySplice($event.id, $event)"></confirmation>
     <confirmation ref="confirmationPublish" id="confirmationPublish" :title="'Confirmation Message'" :message="confirmationMessage" @onConfirm="updateProduct()"></confirmation>
+  
+  <!-- Delete Product Modal -->
+    <div class="modal fade" id="confirmDeleteProduct" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-primary" id="exampleModalLabel">Confirmation Message</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true" class="text-primary">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <label>{{confirmationMessage}}</label>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+            <button type="button" class="btn btn-primary" @click="deleteProduct(productId)">Yes</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -296,6 +317,7 @@ import CONFIG from 'src/config.js'
 import COMMON from 'src/common.js'
 import GROUP from './Group.js'
 import Conversion from 'src/services/conversion.js'
+import Confirmation from 'src/components/increment/generic/modal/Confirmation.vue'
 import axios from 'axios'
 export default {
   mounted(){
@@ -367,7 +389,8 @@ export default {
       bundledData: null,
       variationData: null,
       tempTags: null,
-      isEmptyVariation: false
+      isEmptyVariation: false,
+      productId: null
     }
   },
   computed: {
@@ -496,6 +519,11 @@ export default {
         this.updateProduct()
       }
     },
+    confirmDeleteProduct(id){
+      this.productId = id
+      this.confirmationMessage = 'Are you sure you want to delete this product?'
+      $('#confirmDeleteProduct').modal('show')
+    },
     addGroup(){
       if(this.group === null || this.group === ''){
         this.errorMessageGroups = 'Empty field cannot be added'
@@ -560,12 +588,13 @@ export default {
       }
     },
     showConfirmationModal(id, array){
+      console.log('==============<<<<<<<<<')
       let parameter = {
         id: id,
         array: array
       }
       this.confirmationMessage = 'Are you sure you want to delete this ' + array + '?'
-      this.$refs.confirmationModal.show(parameter)
+      this.$refs.confirmModal.show(parameter)
     },
     selectImage(url){
       this.selectedImage = url
@@ -721,9 +750,11 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('products/retrieve_variation', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        console.log('================', response.data.length)
+        console.log('================', response.data[0].variation.length)
         if(response.data[0].variation.length <= 0){
           this.isEmptyVariation = true
+        }else{
+          this.isEmptyVariation = false
         }
         response.data[0].variation = response.data[0].variation.sort(this.getSortOrder('payload_value'))
         this.variationData = response.data[0]
@@ -757,6 +788,7 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('products/delete', parameter).then(response => {
         $('#loading').css({display: 'none'})
+        $('#confirmDeleteProduct').modal('hide')
         ROUTER.push('/products')
       })
     },
@@ -1002,7 +1034,11 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
+@import "~assets/style/colors.scss";
+.text-primary{
+  color: $primary !important;
+}
   .title{
     width: 95%;
     float: left;
