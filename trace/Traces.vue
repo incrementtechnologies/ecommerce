@@ -528,7 +528,7 @@ export default {
       if(this.data !== null){
         for (var i = 0; i < this.data.length; i++) {
           let item = this.data[i]
-          var code = item.product.title + item.variation[0].payload_value + this.conversion.getUnitsAbbreviation(item.variation[0].payload) + '<>' + item.product.merchant.name + '<>' + item.batch_number + '<>' + item.manufacturing_date + '<>' + item.code + '<>' + item.product.merchant.website
+          var code = item.product.title + item.variation[0].payload_value + this.conversion.getUnitsAbbreviation(item.variation[0].payload) + '<>' + item.product.merchant.name + '<>' + item.batch_number + '<>' + item.manufacturing_date_orig + '<>' + item.code + '<>' + item.product.merchant.website
             // this is an export hehe
           if(item.status === 'inactive'){
             var object = {
