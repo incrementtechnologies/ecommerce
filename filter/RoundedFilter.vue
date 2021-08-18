@@ -1,14 +1,6 @@
 <template>
   <div class="filter">
     <div class="input-group" style="positive: relative;">
-      <select class="btn btn-primary select-btn dropdown" v-model="filterValue" @change="selectCategory" v-if="category.length !== 1">
-        <option class="dropdown-title" v-for="(item, index) in category" :value="index" :key="index">
-          {{item.title}}
-        </option>
-      </select>
-      <button class="btn btn-primary select-btn dropdown" style="border-top-left-radius: 20px !important;border-bottom-left-radius: 20px !important;" v-if="category.length === 1">
-          {{category[0].title}}
-      </button>
       <select class="btn btn-white select-btn dropdown" style="border-color:#ddd" v-model="sortValue" @change="changeSort" v-if="activeSort !== null">
         <option class="dropdown-title" v-for="(item, index) in activeSort" :value="index" :key="index">
           {{item.title}}
@@ -65,11 +57,11 @@
           <i :class="`fa fa-${grid[toggleStyle]}`" @click="changeView()" aria-hidden="true"></i>
         </div>
       </div>
-      <div class="view-container" v-if="category[0].title !== 'Product'">
+      <!-- <div class="view-container" v-if="category[0].title !== 'Product'">
         <div class="search view-option text-primary action-link">
             <i class="fas fa-search" @click="changeSort"></i>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
