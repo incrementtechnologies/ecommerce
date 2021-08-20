@@ -30,12 +30,12 @@
         <thead>
           <tr>
             <td>Batch Number
-              <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayBatch('desc')" v-if="activeSortBatch === 'asc'"></i>
-              <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayBatch('asc')" v-if="activeSortBatch === 'desc'"></i>
+              <i class="fas fa-chevron-up pull-right action-link" @click="sortCol('batch_number','desc')" v-if="activeSortBatch === 'asc'"></i>
+              <i class="fas fa-chevron-down  pull-right action-link" @click="sortCol('batch_number', 'asc')" v-if="activeSortBatch === 'desc'"></i>
             </td>
             <td>Manufacture Date
-              <i class="fas fa-chevron-up pull-right action-link" @click="sortArrayDate('desc')" v-if="activeSortDate === 'asc'"></i>
-              <i class="fas fa-chevron-down  pull-right action-link" @click="sortArrayDate('asc')" v-if="activeSortDate === 'desc'"></i>
+              <i class="fas fa-chevron-up pull-right action-link" @click="sortCol('manufacturing_date', 'desc')" v-if="activeSortDate === 'asc'"></i>
+              <i class="fas fa-chevron-down  pull-right action-link" @click="sortCol('manufacturing_date', 'asc')" v-if="activeSortDate === 'desc'"></i>
             </td>
             <td>Batch Quantity</td>
             <td>Active Quantity</td>
@@ -388,6 +388,15 @@ export default {
     },
     redirect(parameter){
       ROUTER.push(parameter)
+    },
+    sortCol(field, orderBy){
+      if(field === 'batch_number'){
+        this.activeSortBatch = orderBy
+        this.retrieve({'batch_number': orderBy}, {column: field, value: ''}, 'active')
+      }else if(field === 'manufacturing_date'){
+        this.activeSortDate = orderBy
+        this.retrieve({'manufacturing_date': orderBy}, {column: field, value: ''}, 'active')
+      }
     },
     retrieve(sort, filter, status){
       this.showInventory = false
