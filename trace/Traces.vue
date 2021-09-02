@@ -19,7 +19,7 @@
         <button class="btn btn-primary pull-left" v-if="viewInactive === true" @click="retrieve({'created_at': 'desc'}, {column: 'created_at', value: ''}, 'active'), viewInactive = !viewInactive">Show Active</button>
         <button class="btn btn-warning pull-right" v-if="viewInactive === true" style="margin-bottom: 10px;" @click="exportData()"><i class="fas fa-file-export" style="padding-right: 5px;"></i>Export</button>
       </div> -->
-      <filter-product v-bind:category="category" 
+      <filter-product v-bind:category="category"
         :activeCategoryIndex="0"
         :activeSortingIndex="0"
         @changeSortEvent="retrieve($event.sort, $event.filter)"
@@ -40,7 +40,10 @@
             <td>Batch Quantity</td>
             <td>Active Quantity</td>
             <!-- <td>Status</td> -->
-            <td>Created At</td>
+            <td>Created At
+              <i class="fas fa-chevron-up pull-right action-link" @click="sortCol('created_at', 'desc')" v-if="activeSortCreated === 'asc'"></i>
+              <i class="fas fa-chevron-down  pull-right action-link" @click="sortCol('created_at', 'asc')" v-if="activeSortCreated === 'desc'"></i>
+            </td>
             <td>Actions</td>
           </tr>
         </thead>
@@ -252,7 +255,7 @@ export default {
       listStyle: 'list',
       selectedBatch: null,
       category: [{
-        title: 'Product Traces',
+        title: 'Filter Batches',
         sorting: [{
           title: 'Created ascending',
           payload: 'created_at',
@@ -290,6 +293,7 @@ export default {
       viewInactive: false,
       activeSortBatch: 'asc',
       activeSortDate: 'asc',
+      activeSortCreated: 'asc',
       showInventory: false,
       inventoryList: null,
       selectedVariation: null,
@@ -392,10 +396,19 @@ export default {
     sortCol(field, orderBy){
       if(field === 'batch_number'){
         this.activeSortBatch = orderBy
+        this.activeSortDate = orderBy
+        this.activeSortCreated = orderBy
         this.retrieve({'batch_number': orderBy}, {column: field, value: ''}, 'active')
       }else if(field === 'manufacturing_date'){
         this.activeSortDate = orderBy
+        this.activeSortBatch = orderBy
+        this.activeSortCreated = orderBy
         this.retrieve({'manufacturing_date': orderBy}, {column: field, value: ''}, 'active')
+      }else if(field === 'created_at'){
+        this.activeSortCreated = orderBy
+        this.activeSortDate = orderBy
+        this.activeSortBatch = orderBy
+        this.retrieve({'created_at': orderBy}, {column: field, value: ''}, 'active')
       }
     },
     retrieve(sort, filter, status){
@@ -557,6 +570,17 @@ export default {
         csvExporter.generateCsv(exportData)
       }
       $('#loading').css({'display': 'none'})
+    },
+    search(event){
+      console.log('---------', this.data[1].traces)
+      if(this.data !== null && this.data.length > 0){
+        let temp = this.data[1].traces.filter(item => {
+          let a = Object.values(item)
+          console.log('==========', a.includes(event.value))
+          return Object.values(item).includes(event.value)
+        })
+        console.log('==========', event.value, temp)
+      }
     }
   }
 }
