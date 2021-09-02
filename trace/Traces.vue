@@ -570,17 +570,6 @@ export default {
         csvExporter.generateCsv(exportData)
       }
       $('#loading').css({'display': 'none'})
-    },
-    search(event){
-      console.log('---------', this.data[1].traces)
-      if(this.data !== null && this.data.length > 0){
-        let temp = this.data[1].traces.filter(item => {
-          let a = Object.values(item)
-          console.log('==========', a.includes(event.value))
-          return Object.values(item).includes(event.value)
-        })
-        console.log('==========', event.value, temp)
-      }
     }
   }
 }
