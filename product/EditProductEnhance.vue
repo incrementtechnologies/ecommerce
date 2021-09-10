@@ -176,7 +176,7 @@
          <div class="product-item-title">
           <label>Mixing Order <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.mixing_order" placeholder="Type product sku here..." :disabled="data.status === 'published' || isEdit===false">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.mixing_order" placeholder="Type mixing order" :disabled="data.status === 'published' || isEdit===false">
         </div>
         <div class="product-item-title">
           <label>Formulation <label v-if="data.status === 'published'" class="text-danger">*</label></label>
@@ -743,9 +743,9 @@ export default {
       $('#loading').css({display: 'block'})
       this.APIRequest('products/retrieve_bundled', parameter).then(response => {
         $('#loading').css({display: 'none'})
-        if(response.data[0].bundled !== null){
-          response.data[0].bundled = response.data[0].bundled.sort(this.getSortOrderBundled('payload_value'))
-        }
+        // if(response.data[0].bundled !== null){
+        //   response.data[0].bundled = response.data[0].bundled.sort(this.getSortOrderBundled('payload_value'))
+        // }
         this.bundledData = response.data[0]
         console.log('BUNDLED DATA', this.bundledData)
       })
@@ -872,6 +872,7 @@ export default {
       return true
     },
     updateProduct(){
+      console.log('[STATUS]', this.data)
       if(this.validate() === false){
         return
       }
@@ -900,7 +901,7 @@ export default {
             this.data.status = 'pending'
             return
           }
-          if(Object.values(this.data.details).includes(null) === true){
+          if(Object.values(this.data.details).includes(null) === true || Object.values(this.data.details).includes('') === true){
             console.log('[NULL]')
             this.errorMessagePublished = 'All field should have values if published'
             $('#confirmationPublish').modal('hide')
