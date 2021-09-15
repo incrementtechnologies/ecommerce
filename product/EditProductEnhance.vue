@@ -925,7 +925,7 @@ export default {
             this.data.status = 'pending'
             return
           }
-          if((Object.values(this.data.details).includes(null) === true || Object.values(this.data.details).includes(undefined)) && this.data.details.hracs.length <= 0){
+          if((Object.values(this.data.details).includes(null) === true || Object.values(this.data.details).includes('') === true || Object.values(this.data.details).includes(undefined)) && this.data.details.hracs.length <= 0){
             this.errorMessagePublished = 'All field should have values if published'
             $('#confirmationPublish').modal('hide')
             this.data.status = 'pending'
