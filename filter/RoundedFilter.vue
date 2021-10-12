@@ -1,7 +1,7 @@
 <template>
   <div class="filter">
     <div class="input-group" style="positive: relative;">
-      <select class="btn btn-white select-btn dropdown" style="border-color:#ddd" v-model="sortValue" @change="changeSort" v-if="activeSort !== null">
+      <select class="btn btn-white select-btn dropdown" style="border-color:#ddd; border-right: none" v-model="sortValue" @change="changeSort" v-if="activeSort !== null">
         <option class="dropdown-title" v-for="(item, index) in activeSort" :value="index" :key="index">
           {{item.title}}
         </option>
@@ -24,7 +24,7 @@
         :placeholder="'Search date'"
         :format="'MMM D, YYYY'"
         :input-class="'form-control'"
-        :input-attr="{style: 'height: 40px !important; width: 100% !important; border-right-style: none;'}"
+        :input-attr="{style: 'height: 40px !important; width: 100% !important; border-left: none'}"
       ></date-picker>
 
       <!-- Date Tag -->
@@ -79,6 +79,7 @@
 .form-control{
   height: 40px !important;
   width: 100% !important;
+  border-left: none !important;
 }
 
 .input-group{
