@@ -407,9 +407,9 @@ export default {
       }
       $('#loading').css({'display': 'block'})
       this.APIRequest('products/retrieve_basic', parameter).then(response => {
-        $('#loading').css({'display': 'none'})
         $('#createProductTracesModal').modal('hide')
         if(response.data.length > 0){
+          $('#loading').css({'display': 'none'})
           this.data = response.data
           console.log(this.activePage)
           this.numPages = parseInt(response.size / this.limit) + (response.size % this.limit ? 1 : 0)
@@ -417,6 +417,7 @@ export default {
             this.selectedItem = this.data[this.selectedIndex]
           }
         }else{
+          $('#loading').css({'display': 'none'})
           this.data = null
           this.selectedIndex = null
           this.selectedItem = null

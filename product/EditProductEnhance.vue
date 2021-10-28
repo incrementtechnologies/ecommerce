@@ -323,7 +323,7 @@ export default {
   mounted(){
     this.retrieve()
     // this.retrieveBundled()
-    this.retrieveVariation()
+    // this.retrieveVariation()
     this.isEdit = false
   },
   data(){
@@ -390,7 +390,8 @@ export default {
       variationData: null,
       tempTags: null,
       isEmptyVariation: false,
-      productId: null
+      productId: null,
+      retrievebundle: false
     }
   },
   computed: {
@@ -457,10 +458,11 @@ export default {
         this.selectedMenu = this.productMenu[index]
       }
       if(index === 1){
+        this.retrievebundle = false
         this.retrieveVariation()
       }else if(index === 2){
+        this.retrievebundle = true
         this.retrieveVariation()
-        this.retrieveBundled()
       }
     },
     cancel() {
@@ -770,6 +772,9 @@ export default {
         }
         response.data[0].variation = response.data[0].variation.sort(this.getSortOrder('payload_value'))
         this.variationData = response.data[0]
+        if(this.retrievebundle === true){
+          this.retrieveBundled()
+        }
         console.log('[Variation Data]', this.variationData)
       })
     },
