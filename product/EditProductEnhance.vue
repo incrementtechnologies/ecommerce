@@ -323,7 +323,7 @@ export default {
   mounted(){
     this.retrieve()
     // this.retrieveBundled()
-    this.retrieveVariation()
+    // this.retrieveVariation()
     this.isEdit = false
   },
   data(){
