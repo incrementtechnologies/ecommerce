@@ -230,7 +230,7 @@
          <div class="product-item-title">
           <label>APVMA Approval date <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
-          <input type="date" class="form-control form-control-custom" v-model="data.details.approval_date" placeholder="Approval date" :disabled="data.status === 'published' || isEdit===false">
+          <input type="date" class="form-control form-control-custom" v-model="data.details.approval_date" placeholder="Approval date" max='2030-12-31' :disabled="data.status === 'published' || isEdit===false">
         </div>
         <div class="product-item-title">
           <label>SKU <label v-if="data.status === 'published'" class="text-danger">*</label></label>
