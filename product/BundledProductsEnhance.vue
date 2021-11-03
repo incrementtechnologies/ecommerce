@@ -7,7 +7,7 @@
     <!-- <center v-if="item === null"><i class="fa fa-circle-o-notch fa-spin" style="font-size:50px;color:#cae166"></i><br>Loading</center> -->
     <div class="variations-content" v-if="item !== null &&  item.bundled !== null && item.bundled.length > 0">
         <div class="table-responsive"> 
-          <table class="table table-hover">
+          <table class="table table-hover" v-if="emptyVariation === false">
             <thead>
               <tr>
                 <td><b>Bundled Name</b></td>
@@ -115,6 +115,16 @@ import Confirmation from 'src/components/increment/generic/modal/Confirmation.vu
 export default {
   mounted(){
     console.log('fdsfsfasd', this.selectedAttr)
+    if(this.item !== null && this.item.bundled !== null && this.item.bundled.length > 0){
+      let temp = this.item.bundled.filter(el => {
+        return el.variation.length > 0
+      })
+      if(temp.length <= 0){
+        this.emptyVariation = true
+      }else{
+        this.emptyVariation = false
+      }
+    }
   },
   props: ['item', 'isEdit', 'variationData'],
   data(){
@@ -143,7 +153,8 @@ export default {
       confirmationMessage: null,
       isDelete: null,
       selectedAttr: null,
-      hasActive: false
+      hasActive: false,
+      emptyVariation: false
     }
   },
   components: {
