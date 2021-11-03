@@ -17,9 +17,9 @@
             </thead>
             <tbody>
               <tr  v-for="(itemVariation, indexVariation) in item.bundled" :key="indexVariation">
-                <td>{{`${itemVariation.qty} X ${item.title} (${itemVariation.variation[0].payload_value} ${convertion.getUnitsAbbreviation(itemVariation.variation[0].payload)})`}}</td>
-                <td>{{itemVariation.scanned_qty}}</td>
-                <td v-if="isEdit"><button v-if="itemVariation.scanned_qty === 0 || itemVariation.scanned_qty === null" class="btn btn-danger" @click="addOrDelete(itemVariation, false)" title="Delete Inventory" :disabled="isEdit===false">Delete</button></td>
+                  <td v-if="itemVariation.variation.length > 0">{{`${itemVariation.qty} X ${item.title} (${itemVariation.variation[0].payload_value} ${convertion.getUnitsAbbreviation(itemVariation.variation[0].payload)})`}}</td>
+                  <td v-if="itemVariation.variation.length > 0">{{itemVariation.scanned_qty}}</td>
+                  <td v-if="isEdit && itemVariation.variation.length > 0"><button v-if="itemVariation.scanned_qty === 0 || itemVariation.scanned_qty === null" class="btn btn-danger" @click="addOrDelete(itemVariation, false)" title="Delete Inventory" :disabled="isEdit===false">Delete</button></td>
               </tr>
             </tbody>
           </table>
