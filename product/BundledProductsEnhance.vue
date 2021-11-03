@@ -115,18 +115,8 @@ import Confirmation from 'src/components/increment/generic/modal/Confirmation.vu
 export default {
   mounted(){
     console.log('fdsfsfasd', this.selectedAttr)
-    if(this.item !== null && this.item.bundled !== null && this.item.bundled.length > 0){
-      let temp = this.item.bundled.filter(el => {
-        return el.variation.length > 0
-      })
-      if(temp.length <= 0){
-        this.emptyVariation = true
-      }else{
-        this.emptyVariation = false
-      }
-    }
   },
-  props: ['item', 'isEdit', 'variationData'],
+  props: ['item', 'isEdit', 'variationData', 'emptyVariation'],
   data(){
     return {
       user: AUTH.user,
@@ -153,8 +143,7 @@ export default {
       confirmationMessage: null,
       isDelete: null,
       selectedAttr: null,
-      hasActive: false,
-      emptyVariation: false
+      hasActive: false
     }
   },
   components: {

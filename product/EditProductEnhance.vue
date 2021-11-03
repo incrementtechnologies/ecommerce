@@ -276,7 +276,7 @@
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Bundled Products'">
-        <bundled-products v-if="data.status === 'published' && variationData !== null" :item="bundledData" :isEdit="isEdit" :variationData="variationData"></bundled-products>
+        <bundled-products v-if="data.status === 'published' && variationData !== null" :item="bundledData" :isEdit="isEdit" :variationData="variationData" :emptyVariation="emptyVariation"></bundled-products>
         <p v-else>Create a product variation before setting bundle configurations.</p>
       </div>
 
@@ -391,7 +391,8 @@ export default {
       tempTags: null,
       isEmptyVariation: false,
       productId: null,
-      retrievebundle: false
+      retrievebundle: false,
+      emptyVariation: false
     }
   },
   computed: {
@@ -750,6 +751,16 @@ export default {
         // }
         this.bundledData = response.data[0]
         console.log('BUNDLED DATA', this.bundledData)
+        if(this.bundledData !== null && this.bundledData.bundled !== null && this.bundledData.bundled.length > 0){
+          let temp = this.bundledData.bundled.filter(el => {
+            return el.variation.length > 0
+          })
+          if(temp.length <= 0 || temp <= 0){
+            this.emptyVariation = true
+          }else{
+            this.emptyVariation = false
+          }
+        }
       })
     },
     retrieveVariation(){
