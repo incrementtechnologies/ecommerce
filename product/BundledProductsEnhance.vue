@@ -7,7 +7,7 @@
     <!-- <center v-if="item === null"><i class="fa fa-circle-o-notch fa-spin" style="font-size:50px;color:#cae166"></i><br>Loading</center> -->
     <div class="variations-content" v-if="item !== null &&  item.bundled !== null && item.bundled.length > 0">
         <div class="table-responsive"> 
-          <table class="table table-hover" v-if="emptyVariation === false">
+          <table class="table table-hover">
             <thead>
               <tr>
                 <td><b>Bundled Name</b></td>
@@ -116,7 +116,7 @@ export default {
   mounted(){
     console.log('fdsfsfasd', this.selectedAttr)
   },
-  props: ['item', 'isEdit', 'variationData', 'emptyVariation'],
+  props: ['item', 'isEdit', 'variationData', 'loading'],
   data(){
     return {
       user: AUTH.user,

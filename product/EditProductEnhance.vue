@@ -261,8 +261,9 @@
         </ul>
       </div>
       <div class="details-holder" v-if="selectedMenu.title === 'Variation'">
+        <skeleton v-if="loading" :size="3" :styleData="'border-radius: 5px; height: 50px; width: 300px;'"></skeleton>
         <variations v-if="data.status === 'published'" :item="data" :isEdit="isEdit" :variationData="variationData"></variations>
-        <p v-else>You must publish this product before creating variations.</p>
+        <p v-if="variationData === null && loading === false">You must publish this product before creating variations.</p>
       </div>
       <div class="details-holder" v-if="selectedMenu.title === 'Price'">
         <prices :item="data"></prices>
@@ -276,8 +277,9 @@
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Bundled Products'">
-        <bundled-products v-if="data.status === 'published' && variationData !== null" :item="bundledData" :isEdit="isEdit" :variationData="variationData" :emptyVariation="emptyVariation"></bundled-products>
-        <p v-else>Create a product variation before setting bundle configurations.</p>
+         <skeleton v-if="loading" :size="3" :styleData="'border-radius: 5px; height: 50px; width: 300px;'"></skeleton>
+        <bundled-products v-if="data.status === 'published' && variationData !== null &&(bundledData !== null && bundledData.bundled.length > 0)" :item="bundledData" :isEdit="isEdit" :variationData="variationData" :loading="loading"></bundled-products>
+        <p v-if="bundledData === null && loading === false">Create a product variation before setting bundle configurations.</p>
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Documentation'">
@@ -392,7 +394,8 @@ export default {
       isEmptyVariation: false,
       productId: null,
       retrievebundle: false,
-      emptyVariation: false
+      emptyVariation: false,
+      loading: false
     }
   },
   computed: {
@@ -420,7 +423,8 @@ export default {
     'prices': require('components/increment/ecommerce/product/Prices.vue'),
     'confirmation': require('components/increment/generic/modal/Confirmation.vue'),
     'images': require('components/increment/ecommerce/product/Images.vue'),
-    'other-details': require('components/increment/ecommerce/product/OtherDetailsEnhance.vue')
+    'other-details': require('components/increment/ecommerce/product/OtherDetailsEnhance.vue'),
+    'skeleton': require('components/increment/generic/lazy/Skeleton.vue')
   },
   methods: {
     redirect(parameter){
@@ -735,6 +739,7 @@ export default {
       })
     },
     retrieveBundled(){
+      this.bundledData = null
       let parameter = {
         condition: [{
           value: this.code,
@@ -743,27 +748,18 @@ export default {
         }],
         account_id: this.user.userID
       }
-      $('#loading').css({display: 'block'})
+      this.loading = true
       this.APIRequest('products/retrieve_bundled', parameter).then(response => {
-        $('#loading').css({display: 'none'})
-        // if(response.data[0].bundled !== null){
-        //   response.data[0].bundled = response.data[0].bundled.sort(this.getSortOrderBundled('payload_value'))
-        // }
-        this.bundledData = response.data[0]
-        console.log('BUNDLED DATA', this.bundledData)
-        if(this.bundledData !== null && this.bundledData.bundled !== null && this.bundledData.bundled.length > 0){
-          let temp = this.bundledData.bundled.filter(el => {
-            return el.variation.length > 0
-          })
-          if(temp.length <= 0 || temp <= 0){
-            this.emptyVariation = true
-          }else{
-            this.emptyVariation = false
-          }
+        this.loading = false
+        if(response.data.bundled.length > 0){
+          response.data.bundled = response.data.bundled.sort(this.getSortOrderBundled('payload_value'))
         }
+        this.bundledData = response.data
+        console.log('BUNDLED DATA', this.bundledData)
       })
     },
     retrieveVariation(){
+      this.variationData = null
       let parameter = {
         condition: [{
           value: this.code,
@@ -772,9 +768,11 @@ export default {
         }],
         account_id: this.user.userID
       }
-      $('#loading').css({display: 'block'})
+      this.loading = true
+      // $('#loading').css({display: 'block'})
       this.APIRequest('products/retrieve_variation', parameter).then(response => {
-        $('#loading').css({display: 'none'})
+        this.loading = false
+        // $('#loading').css({display: 'none'})
         console.log('================', response.data[0].variation.length)
         if(response.data[0].variation.length <= 0){
           this.isEmptyVariation = true
@@ -801,6 +799,8 @@ export default {
     },
     getSortOrderBundled(prop) {
       return function(a, b) {
+        console.log('-----a::', a)
+        console.log('-----b::', b.variation)
         if (a.variation[0][prop] > b.variation[0][prop]) {
           return 1
         } else if (a.variation[0][prop] < b.variation[0][prop]) {
