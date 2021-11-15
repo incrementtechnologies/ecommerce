@@ -68,7 +68,7 @@
         <span class="p-0" style="color:grey;">{{data.description}}...<a @click="seeMore = !seeMore" style="text-decoration:underline;cursor:pointer;">See Less</a></span>
       </div>
       <div v-else>
-        <div v-if="data.description.length < 300">
+        <div v-if="data.description.length <= 300">
           <p style="color:grey;">{{data.description}}</p>
         </div>
         <div class="p-0" v-if="data.description.length > 300">
