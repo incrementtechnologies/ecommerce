@@ -278,8 +278,8 @@
 
       <div class="details-holder" v-if="selectedMenu.title === 'Bundled Products'">
          <skeleton v-if="loading" :size="3" :styleData="'border-radius: 5px; height: 50px; width: 300px;'"></skeleton>
-        <bundled-products v-if="data.status === 'published' && variationData !== null &&(bundledData !== null && bundledData.bundled.length > 0)" :item="bundledData" :isEdit="isEdit" :variationData="variationData" :loading="loading"></bundled-products>
-        <p v-if="(bundledData === null || (bundledData !== null && bundledData.bundled.length <= 0)) && loading === false">Create a product variation before setting bundle configurations.</p>
+        <bundled-products v-if="data.status === 'published' && variationData !== null" :item="bundledData" :isEdit="isEdit" :variationData="variationData" :loading="loading"></bundled-products>
+        <p v-if="bundledData === null  && loading === false">Create a product variation before setting bundle configurations.</p>
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Documentation'">
