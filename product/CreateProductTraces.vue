@@ -227,7 +227,7 @@ export default {
         this.newData.manufacturing_date = this.manufacturing.year + '-' + this.manufacturing.month + ((this.manufacturing.date === null || this.manufacturing.date === '') ? '' : '-' + this.manufacturing.date)
         console.log(this.newData)
         $('#loading').css({'display': 'block'})
-        this.APIRequest('product_traces/', this.newData).then(response => {
+        this.APIRequest('product_traces/create', this.newData).then(response => {
           $('#loading').css({'display': 'none'})
           if(response.error.length > 0 && response.error !== null){
             this.errorMessage = response.error
