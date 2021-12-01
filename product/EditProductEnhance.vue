@@ -263,7 +263,7 @@
       <div class="details-holder" v-if="selectedMenu.title === 'Variation'">
         <skeleton v-if="loading" :size="3" :styleData="'border-radius: 5px; height: 50px; width: 300px;'"></skeleton>
         <variations v-if="data.status === 'published'" :item="data" :isEdit="isEdit" :variationData="variationData"></variations>
-        <p v-if="variationData === null && loading === false">You must publish this product before creating variations.</p>
+        <p v-if="variationData.variation.length <= 0 && loading === false && selectedMenu.title === 'Variation'">You must publish this product before creating variations.</p>
       </div>
       <div class="details-holder" v-if="selectedMenu.title === 'Price'">
         <prices :item="data"></prices>
@@ -278,8 +278,8 @@
 
       <div class="details-holder" v-if="selectedMenu.title === 'Bundled Products'">
          <skeleton v-if="loading" :size="3" :styleData="'border-radius: 5px; height: 50px; width: 300px;'"></skeleton>
+        <p v-if="bundledData.bundled.length <= 0 && loading === false && selectedMenu.title === 'Bundled Products'">Create a product variation before setting bundle configurations.</p>
         <bundled-products v-if="data.status === 'published' && variationData !== null" :item="bundledData" :isEdit="isEdit" :variationData="variationData" :loading="loading"></bundled-products>
-        <p v-if="bundledData === null  && loading === false">Create a product variation before setting bundle configurations.</p>
       </div>
 
       <div class="details-holder" v-if="selectedMenu.title === 'Documentation'">
@@ -655,6 +655,7 @@ export default {
       this.APIRequest('products/retrieve', parameter).then(response => {
         $('#loading').css({display: 'none'})
         console.log('[DATAS]', response.data)
+        this.selectMenu(0)
         if(response.data.length > 0){
           this.data = response.data[0]
           if(this.data.status === 'published'){
@@ -781,10 +782,10 @@ export default {
         }
         response.data[0].variation = response.data[0].variation.sort(this.getSortOrder('payload_value'))
         this.variationData = response.data[0]
+        console.log('[Variation Data]', this.variationData)
         if(this.retrievebundle === true){
           this.retrieveBundled()
         }
-        console.log('[Variation Data]', this.variationData)
       })
     },
     getSortOrder(prop) {

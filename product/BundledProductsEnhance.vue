@@ -28,11 +28,11 @@
     <div v-if="item !== null && (item.bundled.length === 0 || item.bundled === null) && !isEdit">
       <p style="color:black;">No bundle configurations added. Click edit to add a bundle configuration.</p>
     </div>
-    <div v-if="variationData.variation.length <= 0 && isEdit === true">
+    <!-- <div v-if="variationData.variation.length <= 0 && isEdit === true">
       <p>
         Create a product variation before setting bundle configurations
       </p>
-    </div>
+    </div> -->
     <button class="btn btn-primary form-control-custom" data-toggle="collapse" data-target="#demo" v-if="variationData.variation.length > 0 && item !== null && isEdit === true">Create new bundle configuration</button>
     <div id="demo" class="collapse">
       <div>
