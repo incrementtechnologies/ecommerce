@@ -15,12 +15,12 @@
         <div class="product-item-title">
           <label>Title <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.title" placeholder="Type product title here..." :disabled="data.status === 'published' || isEdit === false">
+          <input type="text" class="form-control form-control-custom" v-model="data.title" placeholder="Type product title here..." :disabled="productStatus === 'published' || isEdit === false">
         </div>
         <div class="product-item-title">
           <label>Description <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
-          <textarea class="form-control" rows="20" v-model="data.description" placeholder="Type product description here..." :disabled="data.status === 'published' || isEdit===false"></textarea>
+          <textarea class="form-control" rows="20" v-model="data.description" placeholder="Type product description here..." :disabled="productStatus === 'published' || isEdit===false"></textarea>
         </div>
         <div v-if="errorMessage !== null">
           <label class="text-danger">Opps! {{errorMessage}}</label>
@@ -28,10 +28,10 @@
         <div class="product-item-title mb-3">
           <label>Classification <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
-         <select class="form-control form-control-custom"  v-model="tempTags" :disabled="data.status === 'published' || isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
+         <select class="form-control form-control-custom"  v-model="tempTags" :disabled="productStatus === 'published' || isEdit===false || listGroup.length > 0" @change="tagChecker($event)" v-if="data.tags !== ''">
             <option v-for="(tag, index) in returnTags.TAGS" :key="index" :value="tag" :selected="data.tags === tag ? true : false">{{tag}}</option>
           </select>
-          <select class="form-control form-control-custom"  v-model="tempTags" :disabled="data.status === 'published' || isEdit===false" @change="tagChecker($event)" v-else>
+          <select class="form-control form-control-custom"  v-model="tempTags" :disabled="productStatus === 'published' || isEdit===false" @change="tagChecker($event)" v-else>
             <option v-for="(tag, index) in returnTags.TAGS" :key="index" :value="tag">{{tag}}</option>
           </select>
         </div>
@@ -76,12 +76,12 @@
           <label class="mb-0" :style="[data.status !== 'published' || isEdit === false ? { 'margin-bottom': '-20px', 'font-weight': '600'} : { 'margin-bottom': '-20px !important', 'font-weight': '600'}]" v-if="errorMessageHracs === null">HRAC Mode of Action <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <div class="mt-0" v-show="data.status !== 'published' && isEdit">
             <div class="product-item-title mt-0" style="width: 90%">
-              <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="data.status === 'published' || isEdit===false">
+              <select class="form-control form-control-custom" v-model="selectedHracs" :disabled="productStatus === 'published' || isEdit===false">
                   <option v-for="(el, index) in formulations.HRAC" :key="index" :value="el" >{{el}}</option>
               </select>
             </div>
             <div class="product-item-title pl-3 " style="width: 10%; margin-top: 1%;">
-                <button class="btn btn-primary" @click="addHrac" :disabled="data.status === 'published' || isEdit===false"><i class="fa fa-plus"></i></button>
+                <button class="btn btn-primary" @click="addHrac" :disabled="productStatus === 'published' || isEdit===false"><i class="fa fa-plus"></i></button>
             </div>
           </div>
           <div class="">
@@ -166,22 +166,22 @@
         <div class="product-item-title">
           <label>Solvent (if applicable) <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.solvent" placeholder="Solvent" :disabled="data.status === 'published' || isEdit===false">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.solvent" placeholder="Solvent" :disabled="productStatus === 'published' || isEdit===false">
         </div>
          <div class="product-item-title">
           <label>Other scheduled ingredients <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.other_ingredient" placeholder="Other ingredients" :disabled="data.status === 'published' || isEdit===false">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.other_ingredient" placeholder="Other ingredients" :disabled="productStatus === 'published' || isEdit===false">
         </div>
          <div class="product-item-title">
           <label>Mixing Order <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.mixing_order" placeholder="Type mixing order" :disabled="data.status === 'published' || isEdit===false">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.mixing_order" placeholder="Type mixing order" :disabled="productStatus === 'published' || isEdit===false">
         </div>
         <div class="product-item-title">
           <label>Formulation <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
-          <select class="form-control form-control-custom" v-model="data.details.formulation" :disabled="data.status === 'published' || isEdit===false">
+          <select class="form-control form-control-custom" v-model="data.details.formulation" :disabled="productStatus === 'published' || isEdit===false">
             <option v-for="(formulation, index) in formulations.FORMULATION" :key="index" :value="formulation">{{formulation}}</option>
           </select>
         </div>
@@ -203,7 +203,7 @@
               </div>
               <div v-else>
                 <label class="form-check-label" v-if="data.details.safety_equipment.includes(equip)">
-                  <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="data.status === 'published' || !isEdit"><span>{{equip}}</span>
+                  <input type="checkbox" class="form-check-input" v-model="data.details.safety_equipment" :id="'equipment' + index" :value="equip" :disabled="productStatus === 'published' || !isEdit"><span>{{equip}}</span>
                 </label>
               </div>
             </div>
@@ -217,7 +217,7 @@
             <input type="number"
               @keydown="filterKey" 
               @input="filterInput"
-              class="form-control form-control-custom"  style="width: 79%;" v-model="data.details.shelf_life" placeholder="Type shelf life" :disabled="data.status === 'published' || isEdit===false">
+              class="form-control form-control-custom"  style="width: 79%;" v-model="data.details.shelf_life" placeholder="Type shelf life" :disabled="productStatus === 'published' || isEdit===false">
             <div class="p-2"></div>
             <input type="text" class="form-control form-control-custom" style="width:19%;" placeholder="Month/s" disabled>
           </div>
@@ -225,22 +225,22 @@
          <div class="product-item-title">
           <label>APVMA Approval number <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.details.approval_number" placeholder="Approval number" :disabled="data.status === 'published' || isEdit===false">
+          <input type="text" class="form-control form-control-custom" v-model="data.details.approval_number" placeholder="Approval number" :disabled="productStatus === 'published' || isEdit===false">
         </div>
          <div class="product-item-title">
           <label>APVMA Approval date <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
-          <input type="date" class="form-control form-control-custom" v-model="data.details.approval_date" placeholder="Approval date" max='2030-12-31' :disabled="data.status === 'published' || isEdit===false">
+          <input type="date" class="form-control form-control-custom" v-model="data.details.approval_date" placeholder="Approval date" max='2030-12-31' :disabled="productStatus === 'published' || isEdit===false">
         </div>
         <div class="product-item-title">
           <label>SKU <label v-if="data.status === 'published'" class="text-danger">*</label></label>
           <br>
-          <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here..." :disabled="data.status === 'published' || isEdit===false">
+          <input type="text" class="form-control form-control-custom" v-model="data.sku" placeholder="Type product sku here..." :disabled="productStatus === 'published' || isEdit===false">
         </div>
         <div class="product-item-title">
           <label>Status</label>
           <br>
-          <select class="form-control form-control-custom" v-model="data.status" @change="publishProduct($event)" :disabled="data.status === 'published' || isEdit===false">
+          <select class="form-control form-control-custom"  @change="publishProduct($event)" :disabled="productStatus === 'published' || isEdit===false">
             <option value="pending" :selected="data.status !== 'published' ? true : false">Pending</option>
             <option value="published" :selected="data.status === 'published' ? true : false">Published</option>
           </select>
@@ -531,7 +531,7 @@ export default {
       this.productStatus = event.target.value
     },
     confirmPublished(){
-      if(this.productStatus === 'published' && this.data.status === 'published'){
+      if(this.productStatus === 'published'){
         this.confirmationMessage = 'Are you sure you want to publish this product? After publishing, you will not be able to update product details. Cancel Publish'
         $('#confirmationPublish').modal('show')
       }else{
@@ -658,6 +658,7 @@ export default {
         this.selectMenu(0)
         if(response.data.length > 0){
           this.data = response.data[0]
+          this.productStatus = this.data.status
           if(this.data.status === 'published'){
             this.showUpdateButton = true
           }
@@ -903,6 +904,7 @@ export default {
       }else{
         this.data.tags = this.data.tags
       }
+      this.data.status = this.productStatus
       if(this.data.status === 'published'){
         console.log('[STATUS]', this.data.status)
         if(this.data.tags === 'Herbicide'){
