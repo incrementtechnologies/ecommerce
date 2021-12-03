@@ -263,7 +263,7 @@
       <div class="details-holder" v-if="selectedMenu.title === 'Variation'">
         <skeleton v-if="loading" :size="3" :styleData="'border-radius: 5px; height: 50px; width: 300px;'"></skeleton>
         <variations v-if="data.status === 'published'" :item="data" :isEdit="isEdit" :variationData="variationData"></variations>
-        <p v-if="variationData.variation.length <= 0 && loading === false && selectedMenu.title === 'Variation'">You must publish this product before creating variations.</p>
+        <p v-if="variationData.variation.length <= 0 && loading === false && selectedMenu.title === 'Variation' && data.status !== 'published'">You must publish this product before creating variations.</p>
       </div>
       <div class="details-holder" v-if="selectedMenu.title === 'Price'">
         <prices :item="data"></prices>
@@ -278,7 +278,7 @@
 
       <div class="details-holder" v-if="selectedMenu.title === 'Bundled Products'">
          <skeleton v-if="loading" :size="3" :styleData="'border-radius: 5px; height: 50px; width: 300px;'"></skeleton>
-        <p v-if="bundledData.bundled.length <= 0 && loading === false && selectedMenu.title === 'Bundled Products'">Create a product variation before setting bundle configurations.</p>
+        <p v-if="bundledData.bundled.length <= 0 && loading === false && selectedMenu.title === 'Bundled Products' && variationData.variation.length <= 0">Create a product variation before setting bundle configurations.</p>
         <bundled-products v-if="data.status === 'published' && variationData !== null" :item="bundledData" :isEdit="isEdit" :variationData="variationData" :loading="loading"></bundled-products>
       </div>
 
