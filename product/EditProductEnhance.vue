@@ -240,7 +240,7 @@
         <div class="product-item-title">
           <label>Status</label>
           <br>
-          <select class="form-control form-control-custom"  @change="publishProduct($event)" :disabled="productStatus === 'published' || isEdit===false">
+          <select class="form-control form-control-custom"  @change="publishProduct($event)" :disabled="data.status === 'published' || isEdit===false">
             <option value="pending" :selected="data.status !== 'published' ? true : false">Pending</option>
             <option value="published" :selected="data.status === 'published' ? true : false">Published</option>
           </select>
@@ -904,7 +904,7 @@ export default {
       }else{
         this.data.tags = this.data.tags
       }
-      if(this.data.status === 'published'){
+      if(this.productStatus === 'published'){
         console.log('[STATUS]', this.data.status)
         if(this.data.tags === 'Herbicide'){
           console.log('[tags]', this.data.tags)
