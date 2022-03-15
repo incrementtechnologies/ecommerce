@@ -240,7 +240,7 @@
         <div class="product-item-title">
           <label>Status</label>
           <br>
-          <select class="form-control form-control-custom"  @change="publishProduct($event)" :disabled="productStatus === 'published' || isEdit===false">
+          <select class="form-control form-control-custom"  @change="publishProduct($event)" :disabled="data.status === 'published' || isEdit===false">
             <option value="pending" :selected="data.status !== 'published' ? true : false">Pending</option>
             <option value="published" :selected="data.status === 'published' ? true : false">Published</option>
           </select>
@@ -904,8 +904,7 @@ export default {
       }else{
         this.data.tags = this.data.tags
       }
-      this.data.status = this.productStatus
-      if(this.data.status === 'published'){
+      if(this.productStatus === 'published'){
         console.log('[STATUS]', this.data.status)
         if(this.data.tags === 'Herbicide'){
           console.log('[tags]', this.data.tags)
@@ -917,14 +916,14 @@ export default {
             console.log('[LENGTH]')
             this.errorMessagePublished = 'All field should have values if published'
             $('#confirmationPublish').modal('hide')
-            this.data.status = 'pending'
+            this.productStatus = 'pending'
             return
           }
           if(Object.values(this.data.details).includes(null) === true || Object.values(this.data.details).includes('') === true){
             console.log('[NULL]')
             this.errorMessagePublished = 'All field should have values if published'
             $('#confirmationPublish').modal('hide')
-            this.data.status = 'pending'
+            this.productStatus = 'pending'
             return
           }
         }else{
@@ -941,17 +940,18 @@ export default {
           if(empty.length > 1){
             this.errorMessagePublished = 'All field should have values if published'
             $('#confirmationPublish').modal('hide')
-            this.data.status = 'pending'
+            this.productStatus = 'pending'
             return
           }
           if((Object.values(this.data.details).includes(null) === true || Object.values(this.data.details).includes('') === true || Object.values(this.data.details).includes(undefined)) && this.data.details.hracs.length <= 0){
             this.errorMessagePublished = 'All field should have values if published'
             $('#confirmationPublish').modal('hide')
-            this.data.status = 'pending'
+            this.productStatus = 'pending'
             return
           }
         }
       }
+      this.data.status = this.productStatus
       this.data.details = JSON.stringify(this.data.details)
       console.log(this.data.details)
       $('#loading').css({display: 'block'})
