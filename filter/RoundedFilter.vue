@@ -25,6 +25,7 @@
         :format="'MMM D, YYYY'"
         :input-class="'form-control'"
         :input-attr="{style: 'height: 40px !important; width: 100% !important; border-left: none'}"
+        @change="changeSort"
       ></date-picker>
 
       <!-- Date Tag -->
